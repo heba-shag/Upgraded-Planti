@@ -30,6 +30,7 @@ const App = () => {
             <Popover>
               <PopoverButton
                 type="button"
+                onClick={() => setThemeSettings(true)}
                 style={{ background: 'blue', borderRadius: '50%' }}
                 className="text-3xl text-white p-3 hover:drop-shadow-xl hover:bg-light-gray"
               >

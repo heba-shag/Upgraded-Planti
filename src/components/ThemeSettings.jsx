@@ -5,6 +5,7 @@ import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 import { themeColors } from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
+import { Popover } from '@headlessui/react';
 
 const ThemeSettings = () => {
   const { setColor, setMode, currentMode, currentColor, setThemeSettings } = useStateContext();
@@ -62,7 +63,7 @@ const ThemeSettings = () => {
           <p className="font-semibold text-xl ">Theme Colors</p>
           <div className="flex gap-3">
             {themeColors.map((item, index) => (
-              <TooltipComponent key={index} content={item.name} position="TopCenter">
+              <Popover key={index} content={item.name} position="TopCenter">
                 <div
                   className="relative mt-2 cursor-pointer flex gap-5 items-center"
                   key={item.name}
@@ -76,7 +77,7 @@ const ThemeSettings = () => {
                     <BsCheck className={`ml-2 text-2xl text-white ${item.color === currentColor ? 'block' : 'hidden'}`} />
                   </button>
                 </div>
-              </TooltipComponent>
+              </Popover>
             ))}
           </div>
         </div>
