@@ -3,12 +3,12 @@ import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutline
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
 import { BiColorFill } from 'react-icons/bi';
-import { IoMdContacts } from 'react-icons/io';
+import { IoIosColorPalette, IoMdContacts } from 'react-icons/io';
 import { RiContactsLine, RiStockLine } from 'react-icons/ri';
 import { MdOutlineSupervisorAccount } from 'react-icons/md';
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { TiTick } from 'react-icons/ti';
-import { GiFertilizerBag, GiLouvrePyramid } from 'react-icons/gi';
+import { GiFertilizerBag, GiLouvrePyramid, GiMedicinePills, GiPlantSeed } from 'react-icons/gi';
 import { GrLocation } from 'react-icons/gr';
 import avatar from './avatar.jpg';
 import avatar2 from './avatar2.jpg';
@@ -575,12 +575,16 @@ export const links = [
         icon: <GiFertilizerBag />,
       },
       {
-        name: 'employees',
-        icon: <IoMdContacts />,
+        name: 'insecticide',
+        icon: <GiMedicinePills />,
       },
       {
-        name: 'customers',
-        icon: <RiContactsLine />,
+        name: 'cuttings',
+        icon: <GiPlantSeed />,
+      },
+      {
+        name: 'color',
+        icon: <IoIosColorPalette />,
       },
     ],
   },
@@ -957,7 +961,7 @@ export const userProfileData = [
   },
 ];
 
-export const ordersGrid = [
+export const fertilizersGrid = [
   {
     field: 'title',
     headerText: 'Scientific Name',
@@ -991,6 +995,89 @@ export const ordersGrid = [
     editType: 'dropdownedit',
     textAlign: 'Center',
     placeholder:'About'
+
+  },
+];
+
+export const insecticidesGrid = [
+  {
+    field: 'title',
+    headerText: 'Scientific Name',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Scientific Name'
+  },
+  {
+    field: 'publicTitle',
+    headerText: 'Name',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Name'
+  },
+  {
+    field: 'type',
+    headerText: 'Type',
+    textAlign: 'Center',
+    editType: 'dropdownedit', // تغيير من 'numericedit' إلى 'dropdownedit'
+    width: '150',
+    options: [
+      {value: 0, label: "Sıvı ilaç"},
+      {value: 1, label: "Toz ilaç"}
+    ],
+    editParams: {
+      params: {
+        dataSource: [
+          {value: 0, text: "Sıvı ilaç"},
+          {value: 1, text: "Toz ilaç"}
+        ],
+        fields: { text: 'text', value: 'value' }
+      }
+    },
+    template: (data) => {
+      const selectedOption = insecticidesGrid.find(col => col.field === 'type')
+      ?.options.find(opt => opt.value === data.type);
+      return selectedOption ? selectedOption.label : data.type;
+    }
+  } ,
+  {
+    field: 'description',
+    headerText: 'description',
+    width: '150',
+    editType: 'dropdownedit',
+    
+    textAlign: 'Center',
+    placeholder:'About'
+
+  },
+];
+
+export const cuttingsGrid = [
+  {
+    field: 'title',
+    headerText: 'Name',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Name'
+  },
+  {
+    field: 'type',
+    headerText: 'Type',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Type'
+  },
+  {
+    field: 'age',
+    headerText: 'Age',
+    format: 'C2',
+    textAlign: 'Center',
+    editType: 'numericedit',
+    width: '150',
+    placeholder:'Age'
 
   },
 ];

@@ -13,6 +13,8 @@ import AdminLogIn from './pages/AdminLogin';
 import PersistLogin from './PersistLogin';
 import ProtectedRoute from './contexts/ProtectedRoutes';
 import GetAllFertilizer from './pages/Products/Fertilizer/GetAllFertilizers';
+import GetAllInsecticide from './pages/Products/Insecticide/GetAllInsecticide';
+import GetAllCutting from './pages/Products/Cutting/GetAllCutting';
 
 const Layout = ({ children }) => {
   const { activeMenu, themeSettings, setThemeSettings } = useStateContext();
@@ -82,24 +84,24 @@ const App = () => {
           <Route path="/" element={<AdminLogIn />} />
           <Route element={<PersistLogin />}>
             <Route element={<ProtectedRoute />}>
+              <Route path="/ecommerce" element={
+                <Layout>
+                  <Ecommerce />
+                </Layout>
+              } />
               <Route path="/fertilizers" element={
                 <Layout>
                   <GetAllFertilizer />
                 </Layout>
               } />
-              <Route path="/orders" element={
+              <Route path="/insecticide" element={
                 <Layout>
-                  <Orders />
+                  <GetAllInsecticide />
                 </Layout>
               } />
-              <Route path="/employees" element={
+              <Route path="/cuttings" element={
                 <Layout>
-                  <Employees />
-                </Layout>
-              } />
-              <Route path="/customers" element={
-                <Layout>
-                  <Customers />
+                  <GetAllCutting />
                 </Layout>
               } />
               <Route path="/kanban" element={
