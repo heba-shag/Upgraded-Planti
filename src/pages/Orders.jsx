@@ -1,14 +1,49 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from '../components';
 import { ordersData, contextMenuItems, ordersGrid } from '../data/dummy';
+import { SiAxios } from 'react-icons/si';
+import axios from 'axios';
 
 const Orders = () => {
+  // let [ordersData,setOrdersData]=useState([]);
   const [data, setData] = useState(ordersData);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [filterConfig, setFilterConfig] = useState({ key: null, value: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // عدد العناصر لكل صفحة
   const [editingRow, setEditingRow] = useState(null); // الصف الذي يتم تعديله
+
+  let isDev=process.env.NODE_ENV === 'development';
+  const APIS = isDev? {
+    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
+    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+  }:{
+    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
+    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+  }
+//   useEffect(()=>{
+//     axios.get(APIS.getAllFertilizer()
+//     //   ,{
+//     //     headers:{
+//     //         Authorization:token,
+//     //     },
+//     // }
+//   )
+//     .then((res)=>{
+//         if(res.status!==200){
+//           throw Error("couldn't fetch data for that resource" );
+//         }
+//         console.og(res.data);
+//         setOrdersData(res.data);            
+//         setData(res.data.data);
+//     })
+//     .catch(err=>{
+//         console.log(err)
+//     })
+
+// },[]);
+
+console.log(ordersData,data);
 
   // وظيفة الفرز
   const handleSort = (key) => {
@@ -167,7 +202,19 @@ const Orders = () => {
                   )}
                 </td>
               </tr>
+              
             ))}
+            <tr style={{display:"flex",justifyContent:"center"}}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" >
+                <button
+                        // onClick={() => handleDelete(item.OrderID)}
+                        style={{width:"100%"}}
+                        className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-gray-600"
+                      >
+                        add
+                      </button>
+                </td>
+              </tr>
           </tbody>
         </table>
       </div>

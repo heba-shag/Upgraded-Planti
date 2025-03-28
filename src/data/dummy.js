@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
@@ -22,6 +22,93 @@ import product5 from './product5.jpg';
 import product6 from './product6.jpg';
 import product7 from './product7.jpg';
 import product8 from './product8.jpg';
+
+let isDev=process.env.NODE_ENV === 'development';
+  const APIS = isDev? {
+    //AUTH
+    baseRoleUrl:process.env.REACT_APP_API_ROLE_URL,
+    baseUsersUrl:process.env.REACT_APP_API_USERS_URL,
+    baseLoginUrl:process.env.REACT_APP_API_LOGIN_URL,
+
+    getAllRole:()=>{return(`${APIS.baseRoleUrl}/GetAll`)},
+    
+    //PRODUCTS
+    baseLandUrl:process.env.REACT_APP_API_LAND_URL,
+    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
+    baseInsecticideUrl:process.env.REACT_APP_API_INSECTICIDE_URL,
+    baseCuttingUrl:process.env.REACT_APP_API_CUTTING_URL,
+    baseColorUrl:process.env.REACT_APP_API_COLOR_URL,
+    baseFlowerUrl:process.env.REACT_APP_API_FLOWER_URL,
+
+    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    getAllInsecticide:()=>{return(`${APIS.baseInsecticideUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    getAllCutting:()=>{return(`${APIS.baseCuttingUrl}/GetAll`)},
+    getAllColor:()=>{return(`${APIS.baseColorUrl}/GetAll`)},
+    getAllCuttingColor:()=>{return(`${APIS.baseCuttingUrl}/GetAllCuttingColor`)},
+    getAllFlower:()=>{return(`${APIS.baseFlowerUrl}/GetAll`)},
+
+
+    //TO LAND
+    baseFertilizerLandUrl:process.env.REACT_APP_API_FERTILIZERLAND_URL,
+    baseInsecticideLandUrl:process.env.REACT_APP_API_INSECTICIDELAND_URL,
+    baseCuttingLandUrl:process.env.REACT_APP_API_CUTTINGLAND_URL,
+
+    getAllFertilizerLand:()=>{return(`${APIS.baseFertilizerLandUrl}/GetAll`)},
+    getAllInsecticideLand:()=>{return(`${APIS.baseInsecticideLandUrl}/GetAll`)},
+    getAllCuttingLand:()=>{return(`${APIS.baseFertilizerUrl}/GetAll`)},
+
+    //ORDER
+    baseClientUrl:process.env.REACT_APP_API_CLIENT_URL,
+    baseOrderUrl:process.env.REACT_APP_API_ORDER_URL,
+
+    getAllClient:()=>{return(`${APIS.baseClientUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    getAllOrder:()=>{return(`${APIS.baseOrderUrl}/GetAll`)},
+    
+
+    }:{
+    //AUTH
+    baseRoleUrl:process.env.REACT_APP_API_ROLE_URL,
+    baseUsersUrl:process.env.REACT_APP_API_USERS_URL,
+    baseLoginUrl:process.env.REACT_APP_API_LOGIN_URL,
+
+    getAllRole:()=>{return(`${APIS.baseRoleUrl}/GetAll`)},
+    
+    //PRODUCTS
+    baseLandUrl:process.env.REACT_APP_API_LAND_URL,
+    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
+    baseInsecticideUrl:process.env.REACT_APP_API_INSECTICIDE_URL,
+    baseCuttingUrl:process.env.REACT_APP_API_CUTTING_URL,
+    baseColorUrl:process.env.REACT_APP_API_COLOR_URL,
+    baseFlowerUrl:process.env.REACT_APP_API_FLOWER_URL,
+
+    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    getAllInsecticide:()=>{return(`${APIS.baseInsecticideUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    getAllCutting:()=>{return(`${APIS.baseCuttingUrl}/GetAll`)},
+    getAllColor:()=>{return(`${APIS.baseColorUrl}/GetAll`)},
+    getAllCuttingColor:()=>{return(`${APIS.baseCuttingUrl}/GetAllCuttingColor`)},
+    getAllFlower:()=>{return(`${APIS.baseFlowerUrl}/GetAll`)},
+
+
+    //TO LAND
+    baseFertilizerLandUrl:process.env.REACT_APP_API_FERTILIZERLAND_URL,
+    baseInsecticideLandUrl:process.env.REACT_APP_API_INSECTICIDELAND_URL,
+    baseCuttingLandUrl:process.env.REACT_APP_API_CUTTINGLAND_URL,
+
+    getAllFertilizerLand:()=>{return(`${APIS.baseFertilizerLandUrl}/GetAll`)},
+    getAllInsecticideLand:()=>{return(`${APIS.baseInsecticideLandUrl}/GetAll`)},
+    getAllCuttingLand:()=>{return(`${APIS.baseFertilizerUrl}/GetAll`)},
+
+    //ORDER
+    baseClientUrl:process.env.REACT_APP_API_CLIENT_URL,
+    baseOrderUrl:process.env.REACT_APP_API_ORDER_URL,
+
+    getAllClient:()=>{return(`${APIS.baseClientUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    getAllOrder:()=>{return(`${APIS.baseOrderUrl}/GetAll`)},
+  }
+
+  // useEffect(()=>{
+  //   axios.get()
+  // })
 
 export const gridOrderImage = (props) => (
   <div>
@@ -871,12 +958,7 @@ export const userProfileData = [
 ];
 
 export const ordersGrid = [
-  {
-    headerText: 'Image',
-    template: gridOrderImage,
-    textAlign: 'Center',
-    width: '120',
-  },
+  
   {
     field: 'OrderItems',
     headerText: 'Item',
@@ -2122,6 +2204,7 @@ export const employeesData = [
 ];
 
 export const ordersData = [
+  
   {
     OrderID: 10248,
     CustomerName: 'Vinet',
