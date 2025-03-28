@@ -12,6 +12,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import AdminLogIn from './pages/AdminLogin';
 import PersistLogin from './PersistLogin';
 import ProtectedRoute from './contexts/ProtectedRoutes';
+import GetAllFertilizer from './pages/Products/Fertilizer/GetAllFertilizers';
 
 const Layout = ({ children }) => {
   const { activeMenu, themeSettings, setThemeSettings } = useStateContext();
@@ -81,9 +82,9 @@ const App = () => {
           <Route path="/" element={<AdminLogIn />} />
           <Route element={<PersistLogin />}>
             <Route element={<ProtectedRoute />}>
-              <Route path="/ecommerce" element={
+              <Route path="/fertilizers" element={
                 <Layout>
-                  <Ecommerce />
+                  <GetAllFertilizer />
                 </Layout>
               } />
               <Route path="/orders" element={

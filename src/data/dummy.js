@@ -8,7 +8,7 @@ import { RiContactsLine, RiStockLine } from 'react-icons/ri';
 import { MdOutlineSupervisorAccount } from 'react-icons/md';
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { TiTick } from 'react-icons/ti';
-import { GiLouvrePyramid } from 'react-icons/gi';
+import { GiFertilizerBag, GiLouvrePyramid } from 'react-icons/gi';
 import { GrLocation } from 'react-icons/gr';
 import avatar from './avatar.jpg';
 import avatar2 from './avatar2.jpg';
@@ -571,8 +571,8 @@ export const links = [
     title: 'Pages',
     links: [
       {
-        name: 'orders',
-        icon: <AiOutlineShoppingCart />,
+        name: 'fertilizers',
+        icon: <GiFertilizerBag />,
       },
       {
         name: 'employees',
@@ -958,46 +958,40 @@ export const userProfileData = [
 ];
 
 export const ordersGrid = [
-  
   {
-    field: 'OrderItems',
-    headerText: 'Item',
+    field: 'title',
+    headerText: 'Scientific Name',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
-  },
-  { field: 'CustomerName',
-    headerText: 'Customer Name',
-    width: '150',
-    textAlign: 'Center',
+    placeholder:'Scientific Name'
   },
   {
-    field: 'TotalAmount',
-    headerText: 'Total Amount',
+    field: 'publicTitle',
+    headerText: 'Name',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Name'
+  },
+  {
+    field: 'npk',
+    headerText: 'NPK',
     format: 'C2',
     textAlign: 'Center',
     editType: 'numericedit',
     width: '150',
-  },
-  {
-    headerText: 'Status',
-    template: gridOrderStatus,
-    field: 'OrderItems',
-    textAlign: 'Center',
-    width: '120',
-  },
-  {
-    field: 'OrderID',
-    headerText: 'Order ID',
-    width: '120',
-    textAlign: 'Center',
-  },
+    placeholder:'00-00-00'
 
+  },
   {
-    field: 'Location',
-    headerText: 'Location',
+    field: 'description',
+    headerText: 'description',
     width: '150',
+    editType: 'dropdownedit',
     textAlign: 'Center',
+    placeholder:'About'
+
   },
 ];
 

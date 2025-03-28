@@ -1,49 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import { Header } from '../components';
-import { ordersData, contextMenuItems, ordersGrid } from '../data/dummy';
+import {  contextMenuItems, ordersGrid } from '../data/dummy';
 import { SiAxios } from 'react-icons/si';
 import axios from 'axios';
+import { useStateContext } from '../contexts/ContextProvider';
 
 const Orders = () => {
-  // let [ordersData,setOrdersData]=useState([]);
+  let [ordersData,setOrdersData]=useState([]);
   const [data, setData] = useState(ordersData);
+
+  let [npk,setNpk]=useState('');
+  let [title,setTitle]=useState('');
+  let [publicTitle,setPublicTitle]=useState('');
+  let [description,setDescription]=useState('');
+
+
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [filterConfig, setFilterConfig] = useState({ key: null, value: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // عدد العناصر لكل صفحة
   const [editingRow, setEditingRow] = useState(null); // الصف الذي يتم تعديله
-
+  const [isAdding, setIsAdding] = useState(false);
+  const [newItem, setNewItem] = useState({
+    npk: '',
+    title: '',
+    publicTitle: '',
+    description: ''
+  });
+  let [runUseEffect,setRun]=useState(0);
+  let userNow=useStateContext();
+  let token=userNow.auth.token;
   let isDev=process.env.NODE_ENV === 'development';
   const APIS = isDev? {
     baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
     getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    addFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Add`)},
+    deleteFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Remove`)},
+    updateFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Update`)} ,
+
+
   }:{
     baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
     getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    addFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Add`)} ,
+    deleteFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Remove`)},
+    updateFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Update`)} 
+
   }
-//   useEffect(()=>{
-//     axios.get(APIS.getAllFertilizer()
-//     //   ,{
-//     //     headers:{
-//     //         Authorization:token,
-//     //     },
-//     // }
-//   )
-//     .then((res)=>{
-//         if(res.status!==200){
-//           throw Error("couldn't fetch data for that resource" );
-//         }
-//         console.og(res.data);
-//         setOrdersData(res.data);            
-//         setData(res.data.data);
-//     })
-//     .catch(err=>{
-//         console.log(err)
-//     })
+  useEffect(()=>{
+    axios.get(APIS.getAllFertilizer()
+      ,{
+        headers:{
+            Authorization:token,
+        },
+    }
+  )
+    .then((res)=>{
+        if(res.status!==200){
+          throw Error("couldn't fetch data for that resource" );
+        }
+        setOrdersData(res.data.data);
+        setData(res.data.data);
+    })
+    .catch(err=>{
+        console.log(err)
+    })
 
-// },[]);
+},[runUseEffect]);
 
-console.log(ordersData,data);
 
   // وظيفة الفرز
   const handleSort = (key) => {
@@ -83,11 +107,49 @@ console.log(ordersData,data);
     // يمكن استخدام مكتبة مثل `pdfmake` لتنفيذ التصدير
   };
 
-  // وظيفة الحذف
-  const handleDelete = (id) => {
-    const updatedData = data.filter((item) => item.OrderID !== id);
-    setData(updatedData);
+  const handleAdd = async () => {
+    
+    try {
+      let res = await axios.post(APIS.addFertilizer(),{
+        npk:newItem.npk,
+        title:newItem.title,
+        publicTitle:newItem.publicTitle,
+        description:newItem.description,
+      } , {
+        headers: {
+          Authorization: token,
+        },
+      });
+      if (res.status === 200) {
+        setRun((prev) => prev + 1);
+        setIsAdding(false);
+        setNewItem({
+          npk: '',
+          title: '',
+          publicTitle: '',
+          description: ''
+        });
+      }
+    } catch(err) {
+      console.log(err);
+    }
   };
+
+  // وظيفة الحذف
+  const handleDelete = async(id) => {
+      try{
+          let res=await axios.delete(`${APIS.deleteFertilizer()}?id=${id}`,{
+              headers:{
+                  Authorization:token,
+              },
+          });
+          if(res.status===200){
+            setRun((prev)=>prev+1);
+          }
+      }catch{
+          console.log("none");
+      }
+  }
 
   // وظيفة التعديل
   const handleEdit = (row) => {
@@ -95,10 +157,34 @@ console.log(ordersData,data);
   };
 
   // حفظ التعديلات
-  const handleSave = () => {
-    setEditingRow(null);
-    // يمكن إضافة منطق لحفظ التعديلات في قاعدة البيانات
-  };
+  const handleSave = async(item) => {
+    let flag=true;
+ 
+    if(editingRow.npk.length!==6||editingRow.npk===''||editingRow.title===''||editingRow.publicTitle===''){
+      flag=false
+    }
+    if(flag){
+      try{
+      let res=await axios.post(`${APIS.updateFertilizer()}?id=${item.id}`,{
+        npk:editingRow.npk,
+        title:editingRow.title,
+        publicTitle:editingRow.publicTitle,
+        description:editingRow.description
+      },{
+          headers:{
+              Authorization:token,
+          },
+      });
+      if (res.status===200){
+        setRun((prev)=>prev+1);
+        setEditingRow(null);
+
+      }
+      }catch(err){
+        console.log("err.response.errorMessageDetails");
+      }
+    }
+  }
 
   // التصفح بين الصفحات
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -157,29 +243,31 @@ console.log(ordersData,data);
           </thead>
           <tbody className="divide-y divide-gray-200">
             {currentItems.map((item, index) => (
+
               <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
+                {console.log(currentItems,item)}
                 {ordersGrid.map((column, colIndex) => (
-                  
                   <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {editingRow?.OrderID === item.OrderID ? (
+
+                    {editingRow?.id === item.id ? (
                       <input
                         type="text"
                         value={editingRow[column.field]}
                         onChange={(e) =>
                           setEditingRow({ ...editingRow, [column.field]: e.target.value })
                         }
+                        
                         className="w-full px-2 py-1 border border-gray-300 rounded-md"
                       />
                     ) : (
                       item[column.field]
                     )}
-                    {console.log(item.status)}
                   </td>
                 ))}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {editingRow?.OrderID === item.OrderID ? (
+                  {editingRow?.id === item.id ? (
                     <button
-                      onClick={handleSave}
+                      onClick={()=>handleSave(item)}
                       className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
                     >
                       Save
@@ -193,7 +281,7 @@ console.log(ordersData,data);
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(item.OrderID)}
+                        onClick={() => handleDelete(item.id)}
                         className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
                       >
                         Delete
@@ -204,7 +292,52 @@ console.log(ordersData,data);
               </tr>
               
             ))}
-            <tr style={{display:"flex",justifyContent:"center"}}>
+            {isAdding && (
+              <tr className="hover:bg-gray-50 transition-colors duration-200">
+                {ordersGrid.map((column, colIndex) => (
+                  <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <input
+                      type="text"
+                      value={newItem[column.field]}
+                      onChange={(e) =>
+                        setNewItem({ ...newItem, [column.field]: e.target.value })
+                      }
+                      placeholder={column.placeholder} 
+                      className="w-full px-2 py-1 border border-gray-300 rounded-md"
+                    />
+                  </td>
+                ))}
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <button
+                    onClick={handleAdd}
+                    className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 mr-2"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setIsAdding(false)}
+                    className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            )}
+  
+            {/* زر إظهار سطر الإضافة */}
+            <tr>
+              <td colSpan={ordersGrid.length + 1} className="px-6 py-4 text-center">
+                {!isAdding && (
+                  <button
+                    onClick={() => setIsAdding(true)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  >
+                    Add New Item
+                  </button>
+                )}
+              </td>
+            </tr>
+            {/* <tr style={{display:"flex",justifyContent:"center"}}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" >
                 <button
                         // onClick={() => handleDelete(item.OrderID)}
@@ -214,7 +347,7 @@ console.log(ordersData,data);
                         add
                       </button>
                 </td>
-              </tr>
+              </tr> */}
           </tbody>
         </table>
       </div>
