@@ -10,6 +10,8 @@ import { HiOutlineRefresh } from 'react-icons/hi';
 import { TiTick } from 'react-icons/ti';
 import { GiFertilizerBag, GiLouvrePyramid, GiMedicinePills, GiPlantSeed } from 'react-icons/gi';
 import { GrLocation } from 'react-icons/gr';
+import { TbPlant2 } from "react-icons/tb";
+
 import avatar from './avatar.jpg';
 import avatar2 from './avatar2.jpg';
 import avatar3 from './avatar3.png';
@@ -571,6 +573,14 @@ export const links = [
     title: 'Pages',
     links: [
       {
+        name: 'customer',
+        icon: <GiFertilizerBag />,
+      },
+      {
+        name: 'employees',
+        icon: <GiFertilizerBag />,
+      },
+      {
         name: 'fertilizers',
         icon: <GiFertilizerBag />,
       },
@@ -585,6 +595,10 @@ export const links = [
       {
         name: 'color',
         icon: <IoIosColorPalette />,
+      },
+      {
+        name: 'flower',
+        icon: <TbPlant2 />,
       },
     ],
   },
@@ -1078,6 +1092,118 @@ export const cuttingsGrid = [
     editType: 'numericedit',
     width: '150',
     placeholder:'Age'
+
+  },
+];
+
+export const colorsGrid = [
+  {
+    field: 'title',
+    headerText: 'Name',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Name'
+  },
+  {
+    field: 'code',
+    headerText: 'Code',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Code'
+  },
+  
+];
+
+export const flowersGrid = [
+  {
+    field: 'note',
+    headerText: 'Note',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Note'
+  },
+  {
+    field: 'worker',
+    headerText: 'Worker',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Worker'
+  },
+  {
+    field: 'worker',
+    headerText: 'Worker',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Worker'
+  },
+  {
+    field: 'cuttingLand.land.title', 
+    headerText: 'الاسم',
+    width: '150',
+    textAlign: 'Center',
+  },
+  {
+    field: 'cuttingLand.id',
+    headerText: 'الاسم',
+    width: '150',
+    textAlign: 'Center',
+  },
+
+  // {
+  //   field: 'date',
+  //   headerText: 'Date',
+  //   width: '150',
+  //   textAlign: 'Center',
+  //   template: (data) => data|| 'No date',
+  //   editTemplate: () => (
+  //     <input
+  //       type="date"
+  //       className="w-full p-2 border rounded"
+  //       defaultValue={date || ''}
+  //       onChange={(e) => onChange(e.target.value)}
+  //     />
+  //   )
+  // },
+  {
+    field: 'publicTitle',
+    headerText: 'Name',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'Name'
+  },
+  {
+    field: 'count',
+    headerText: 'Count',
+    format: 'C2',
+    textAlign: 'Center',
+    editType: 'numericedit',
+    width: '150',
+    placeholder:'count'
+
+  },
+  {
+    field: 'long',
+    headerText: 'Long',
+    format: 'C2',
+    textAlign: 'Center',
+    editType: 'numericedit',
+    width: '150',
+    placeholder:'long'
+
+  },
+  {
+    field: 'description',
+    headerText: 'description',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder:'About'
 
   },
 ];

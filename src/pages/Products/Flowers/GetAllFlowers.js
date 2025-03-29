@@ -4,7 +4,7 @@ import {  contextMenuItems, fertilizersGrid } from '../../../data/dummy';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
 
-const GetAllFertilizer = () => {
+const GetAllFlowers = () => {
   let [ordersData,setOrdersData]=useState([]);
   const [data, setData] = useState(ordersData);
 
@@ -15,33 +15,35 @@ const GetAllFertilizer = () => {
   const [editingRow, setEditingRow] = useState(null); // الصف الذي يتم تعديله
   const [isAdding, setIsAdding] = useState(false);
   const [newItem, setNewItem] = useState({
-    npk: '',
-    title: '',
-    publicTitle: '',
-    description: ''
+    note: '',
+    worker: '',
+    count: '',
+    long: '',
+    date:'',
+    cuttingLandTitle:'',
   });
   let [runUseEffect,setRun]=useState(0);
   let userNow=useStateContext();
   let token=userNow.auth.token;
   let isDev=process.env.NODE_ENV === 'development';
   const APIS = isDev? {
-    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
-    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    addFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Add`)},
-    deleteFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Remove`)},
-    updateFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Update`)} ,
+    baseFlowerUrl:process.env.REACT_APP_API_FLOWER_URL,
+    getAllFlower:()=>{return(`${APIS.baseFlowerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    addFlower:()=>{return (`${APIS.baseFlowerUrl}/Add`)},
+    deleteFlower:()=>{return (`${APIS.baseFlowerUrl}/Remove`)},
+    updateFlower:()=>{return (`${APIS.baseFlowerUrl}/Update`)} ,
 
 
   }:{
-    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
-    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    addFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Add`)} ,
-    deleteFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Remove`)},
-    updateFertilizer:()=>{return (`${APIS.baseFertilizerUrl}/Update`)} 
+    baseFlowerUrl:process.env.REACT_APP_API_FLOWER_URL,
+    getAllFlower:()=>{return(`${APIS.baseFlowerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
+    addFlower:()=>{return (`${APIS.baseFlowerUrl}/Add`)},
+    deleteFlower:()=>{return (`${APIS.baseFlowerUrl}/Remove`)},
+    updateFlower:()=>{return (`${APIS.baseFlowerUrl}/Update`)} ,
 
   }
   useEffect(()=>{
-    axios.get(APIS.getAllFertilizer()
+    axios.get(APIS.getAllFlower()
       ,{
         headers:{
             Authorization:token,
@@ -52,8 +54,8 @@ const GetAllFertilizer = () => {
         if(res.status!==200){
           throw Error("couldn't fetch data for that resource" );
         }
-        setOrdersData(res.data.data);
-        setData(res.data.data);
+        setOrdersData(res.data.data.data);
+        setData(res.data.data.data);
     })
     .catch(err=>{
         console.log(err)
@@ -106,7 +108,7 @@ const GetAllFertilizer = () => {
         return;
     }
     try {
-      let res = await axios.post(APIS.addFertilizer(),{
+      let res = await axios.post(`${APIS.addFlower()}?cuttingLandId=${newItem.cuttingLandId}`,{
         npk:newItem.npk,
         title:newItem.title,
         publicTitle:newItem.publicTitle,
@@ -356,4 +358,4 @@ const GetAllFertilizer = () => {
   );
 };
 
-export default GetAllFertilizer;
+export default GetAllFlowers;

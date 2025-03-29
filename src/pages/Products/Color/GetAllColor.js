@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Header } from '../../../components';
-import { contextMenuItems, cuttingsGrid } from '../../../data/dummy';
+import { colorsGrid, contextMenuItems, cuttingsGrid } from '../../../data/dummy';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
 
-const GetAllCutting = () => {
+const GetAllColor = () => {
   // تعريف الـ state
   let [ordersData, setOrdersData] = useState([]);
   const [data, setData] = useState(ordersData);
@@ -16,8 +16,7 @@ const GetAllCutting = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [newItem, setNewItem] = useState({
     title: '',
-    type: '',
-    age: '',
+    code: '',
   });
 
   let [runUseEffect, setRun] = useState(0);
@@ -27,22 +26,22 @@ const GetAllCutting = () => {
 
   // تعريف الـ APIs
   const APIS = isDev ? {
-    baseCuttingUrl: process.env.REACT_APP_API_CUTTING_URL,
-    getAllCutting: () => `${APIS.baseCuttingUrl}/GetAll?pageSize=1000000000&pageNum=0`,
-    addCutting: () => `${APIS.baseCuttingUrl}/Add`,
-    deleteCutting: () => `${APIS.baseCuttingUrl}/Remove`,
-    updateCutting: () => `${APIS.baseCuttingUrl}/Update`,
+    baseColorUrl: process.env.REACT_APP_API_COLOR_URL,
+    getAllColor: () => `${APIS.baseColorUrl}/GetAll?pageSize=1000000000&pageNum=0`,
+    addColor: () => `${APIS.baseColorUrl}/Add`,
+    deleteColor: () => `${APIS.baseColorUrl}/Remove`,
+    updateColor: () => `${APIS.baseColorUrl}/Update`,
   } : {
-    baseCuttingUrl: process.env.REACT_APP_API_CUTTING_URL,
-    getAllCutting: () => `${APIS.baseCuttingUrl}/GetAll?pageSize=1000000000&pageNum=0`,
-    addCutting: () => `${APIS.baseCuttingUrl}/Add`,
-    deleteCutting: () => `${APIS.baseCuttingUrl}/Remove`,
-    updateCutting: () => `${APIS.baseCuttingUrl}/Update`,
+    baseColorUrl: process.env.REACT_APP_API_COLOR_URL,
+    getAllColor: () => `${APIS.baseColorUrl}/GetAll?pageSize=1000000000&pageNum=0`,
+    addColor: () => `${APIS.baseColorUrl}/Add`,
+    deleteColor: () => `${APIS.baseColorUrl}/Remove`,
+    updateColor: () => `${APIS.baseColorUrl}/Update`,
   };
 
   // جلب البيانات
   useEffect(() => {
-    axios.get(APIS.getAllCutting(), {
+    axios.get(APIS.getAllColor(), {
       headers: {
         Authorization: token,
       },
@@ -92,14 +91,15 @@ const GetAllCutting = () => {
   const handleExportToPdf = () => {
     console.log('Exporting to PDF...');
   };
+
   // وظائف CRUD
   const handleAdd = async () => {
-    if (!newItem.title || !newItem.type || !newItem.age) {
+    if (!newItem.title || !newItem.code) {
         alert("Please fill all required fields");
         return;
     }
     try {
-      let res = await axios.post(`${APIS.addCutting()}?title=${newItem.title}&type=${newItem.type}&age=${newItem.age}`,null, {
+      let res = await axios.post(`${APIS.addColor()}?title=${newItem.title}&code=${newItem.code}`,null, {
         headers: {
           Authorization: token,
         },
@@ -109,8 +109,7 @@ const GetAllCutting = () => {
         setIsAdding(false);
         setNewItem({
           title: '',
-          type: '',
-          age: '',
+          code: '',
         });
       }
     } catch(err) {
@@ -121,7 +120,7 @@ const GetAllCutting = () => {
 
   const handleDelete = async(id) => {
     try {
-      let res = await axios.delete(`${APIS.deleteCutting()}?id=${id}`, {
+      let res = await axios.delete(`${APIS.deleteColor()}?id=${id}`, {
         headers: {
           Authorization: token,
         },
@@ -140,12 +139,12 @@ const GetAllCutting = () => {
   };
 
   const handleSave = async(item) => {
-    if (!editingRow.title || !editingRow.type || !editingRow.age) {
+    if (!editingRow.title || !editingRow.code ) {
         alert("Please fill all required fields");
         return;
     }
     try {
-    let res = await axios.post(`${APIS.updateCutting()}?id=${item.id}&title=${editingRow.title}&type=${editingRow.type}&age=${ editingRow.age}`,null, {
+    let res = await axios.post(`${APIS.updateColor()}?id=${item.id}&title=${editingRow.title}&code=${editingRow.code}`,null, {
         headers: {
         Authorization: token,
         },
@@ -188,7 +187,7 @@ const GetAllCutting = () => {
           <table className="min-w-full bg-white border border-gray-200">
             <thead className="bg-gray-100">
               <tr>
-                {cuttingsGrid.map((column, index) => (
+                {colorsGrid.map((column, index) => (
                   <th
                     key={index}
                     className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
@@ -220,7 +219,7 @@ const GetAllCutting = () => {
   
                 <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
                   {console.log(currentItems,item)}
-                  {cuttingsGrid.map((column, colIndex) => (
+                  {colorsGrid.map((column, colIndex) => (
                     <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
   
                       {editingRow?.id === item.id ? (
@@ -268,7 +267,7 @@ const GetAllCutting = () => {
               ))}
               {isAdding && (
                 <tr className="hover:bg-gray-50 transition-colors duration-200">
-                  {cuttingsGrid.map((column, colIndex) => (
+                  {colorsGrid.map((column, colIndex) => (
                     <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <input
                         type="text"
@@ -300,7 +299,7 @@ const GetAllCutting = () => {
     
               {/* زر إظهار سطر الإضافة */}
               <tr>
-                <td colSpan={cuttingsGrid.length + 1} className="px-6 py-4 text-center">
+                <td colSpan={colorsGrid.length + 1} className="px-6 py-4 text-center">
                   {!isAdding && (
                     <button
                       onClick={() => setIsAdding(true)}
@@ -331,4 +330,4 @@ const GetAllCutting = () => {
     );
 };
 
-export default GetAllCutting;
+export default GetAllColor;

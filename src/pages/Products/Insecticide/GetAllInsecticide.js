@@ -96,6 +96,10 @@ const GetAllInsecticide = () => {
 
   // وظائف CRUD
   const handleAdd = async () => {
+    if (!newItem.title || !newItem.publicTitle ) {
+        alert("Please fill all required fields");
+        return;
+    }
     try {
       let res = await axios.post(APIS.addInsecticide(), {
         title: newItem.title,
@@ -120,6 +124,7 @@ const GetAllInsecticide = () => {
     } catch(err) {
       console.log(err);
     }
+    alert("Item added successfully!");
   };
 
   const handleDelete = async(id) => {
@@ -135,6 +140,8 @@ const GetAllInsecticide = () => {
     } catch {
       console.log("none");
     }
+    alert("Item deleted successfully!");
+
   };
 
   const handleEdit = (row) => {
@@ -142,7 +149,10 @@ const GetAllInsecticide = () => {
   };
 
   const handleSave = async(item) => {
-    
+    if (!editingRow.title || !editingRow.publicTitle ) {
+        alert("Please fill all required fields");
+        return;
+    }
       try {
         let res = await axios.post(`${APIS.updateInsecticide()}?id=${item.id}`, {
           title: editingRow.title,
@@ -161,7 +171,8 @@ const GetAllInsecticide = () => {
       } catch(err) {
         console.log(err);
       }
-    
+      alert("Item edited successfully!");
+
   };
 
   // التصفح بين الصفحات

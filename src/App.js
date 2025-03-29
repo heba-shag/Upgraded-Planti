@@ -15,6 +15,8 @@ import ProtectedRoute from './contexts/ProtectedRoutes';
 import GetAllFertilizer from './pages/Products/Fertilizer/GetAllFertilizers';
 import GetAllInsecticide from './pages/Products/Insecticide/GetAllInsecticide';
 import GetAllCutting from './pages/Products/Cutting/GetAllCutting';
+import GetAllColor from './pages/Products/Color/GetAllColor';
+import GetAllFlowers from './pages/Products/Flowers/GetAllFlowers';
 
 const Layout = ({ children }) => {
   const { activeMenu, themeSettings, setThemeSettings } = useStateContext();
@@ -102,6 +104,26 @@ const App = () => {
               <Route path="/cuttings" element={
                 <Layout>
                   <GetAllCutting />
+                </Layout>
+              } />
+              <Route path="/color" element={
+                <Layout>
+                  <GetAllColor />
+                </Layout>
+              } />
+              <Route path="/flower" element={
+                <Layout>
+                  <GetAllFlowers />
+                </Layout>
+              } />
+              <Route path="/customer" element={
+                <Layout>
+                  <Customers />
+                </Layout>
+              } />
+              <Route path="/employees" element={
+                <Layout>
+                  <Employees />
                 </Layout>
               } />
               <Route path="/kanban" element={
