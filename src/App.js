@@ -9,7 +9,7 @@ import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
-import AdminLogIn from './pages/AdminLogin';
+import AdminLogIn from './pages/AuthPages/AdminLogin';
 import PersistLogin from './PersistLogin';
 import ProtectedRoute from './contexts/ProtectedRoutes';
 import GetAllFertilizer from './pages/Products/Fertilizer/GetAllFertilizers';
@@ -17,6 +17,21 @@ import GetAllInsecticide from './pages/Products/Insecticide/GetAllInsecticide';
 import GetAllCutting from './pages/Products/Cutting/GetAllCutting';
 import GetAllColor from './pages/Products/Color/GetAllColor';
 import GetAllFlowers from './pages/Products/Flowers/GetAllFlowers';
+import MainLands from './pages/Lands/MainLands';
+import SecLands from './pages/Lands/SecLands';
+import ThirdLands from './pages/Lands/ThirdLand';
+import FourthLands from './pages/Lands/FourthLands';
+import InsecticideToLand from './pages/AddToLand/InsecticideToLand';
+import FertilizrToLand from './pages/AddToLand/FertilizerToLand';
+import CuttingToLand from './pages/AddToLand/CuttingToLand';
+import Flowers from './pages/AddToLand/Flowers';
+import FertilizerMix from './pages/Products/Mixes/FertilizerMix';
+import FertilizerMixToLand from './pages/Mixes-to-land/FertilizerMix-to-land';
+import InsecticideMixToLand from './pages/Mixes-to-land/InsecticideMix-to-land';
+import InsecticideMix from './pages/Products/Mixes/InsecticideMix';
+import FlowerDepo from './pages/Products/Flowers/FlowersDepo';
+import FertilizerDepo from './pages/Products/Fertilizer/FertilizersDepo';
+import FertilizerTransaction from './pages/Products/Fertilizer/FertilizerTransaction';
 
 const Layout = ({ children }) => {
   const { activeMenu, themeSettings, setThemeSettings } = useStateContext();
@@ -91,6 +106,26 @@ const App = () => {
                   <Ecommerce />
                 </Layout>
               } />
+              <Route path="/lands" element={
+                <Layout>
+                  <MainLands />
+                </Layout>
+              } />
+              <Route path="/lands/:id" element={
+                <Layout>
+                  <SecLands />
+                </Layout>
+              } />
+              <Route path="/lands/:id/:id" element={
+                <Layout>
+                  <ThirdLands />
+                </Layout>
+              } />
+              <Route path="/lands/:id/:id/:id" element={
+                <Layout>
+                  <FourthLands />
+                </Layout>
+              } />
               <Route path="/fertilizers" element={
                 <Layout>
                   <GetAllFertilizer />
@@ -111,6 +146,32 @@ const App = () => {
                   <GetAllColor />
                 </Layout>
               } />
+              <Route path="/fertilizer-mix" element={
+                <Layout>
+                  <FertilizerMix />
+                </Layout>
+              } />
+              <Route path="/insecticide-mix" element={
+                <Layout>
+                  <InsecticideMix />
+                </Layout>
+              } />
+              <Route path="/insecticide-to-land" element={
+                <Layout>
+                  <InsecticideToLand />
+                </Layout>
+              } />
+              <Route path="/fertilizer-to-land" element={
+                <Layout>
+                  <FertilizrToLand />
+                </Layout>
+              } />
+              <Route path="/cutting-to-land" element={
+                <Layout>
+                  <CuttingToLand />
+                </Layout>
+              } />
+              
               <Route path="/flower" element={
                 <Layout>
                   <GetAllFlowers />
@@ -129,6 +190,37 @@ const App = () => {
               <Route path="/kanban" element={
                 <Layout>
                   <Kanban />
+                </Layout>
+              } />
+
+              <Route path="/fertilizer-mix-to-land" element={
+                <Layout>
+                  <FertilizerMixToLand />
+                </Layout>
+              } />
+              <Route path="/insecticide-mix-to-land" element={
+                <Layout>
+                  <InsecticideMixToLand />
+                </Layout>
+              } />
+              <Route path="/fertilizer-depo" element={
+                <Layout>
+                  <FertilizerDepo />
+                </Layout>
+              } />
+              <Route path="/fertilizer-transaction" element={
+                <Layout>
+                  <FertilizerTransaction />
+                </Layout>
+              } />
+              <Route path="/insecticide-depo" element={
+                <Layout>
+                  <InsecticideMixToLand />
+                </Layout>
+              } />
+              <Route path="/flower-depo" element={
+                <Layout>
+                  <FlowerDepo />
                 </Layout>
               } />
               <Route path="/editor" element={

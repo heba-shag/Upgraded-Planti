@@ -141,19 +141,19 @@ const GetAllCutting = () => {
 
   const handleSave = async(item) => {
     if (!editingRow.title || !editingRow.type || !editingRow.age) {
-        alert("Please fill all required fields");
-        return;
+      alert("Please fill all required fields");
+      return;
     }
     try {
-    let res = await axios.post(`${APIS.updateCutting()}?id=${item.id}&title=${editingRow.title}&type=${editingRow.type}&age=${ editingRow.age}`,null, {
+      let res = await axios.post(`${APIS.updateCutting()}?id=${item.id}&title=${editingRow.title}&type=${editingRow.type}&age=${ editingRow.age}`,null, {
         headers: {
-        Authorization: token,
+          Authorization: token,
         },
-    });
-    if (res.status === 200) {
+      });
+      if (res.status === 200) {
         setRun((prev) => prev + 1);
         setEditingRow(null);
-    }
+      }
     } catch(err) {
     console.log(err);
     }
@@ -169,7 +169,7 @@ const GetAllCutting = () => {
 
   return (
       <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-        <Header category="Page" title="Orders" />
+        <Header category="Page" title="Cuttings" />
         <div className="flex justify-end space-x-4 mb-4">
           <button
             onClick={handleExportToExcel}
@@ -217,12 +217,11 @@ const GetAllCutting = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {currentItems.map((item, index) => (
-  
+
                 <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
                   {console.log(currentItems,item)}
                   {cuttingsGrid.map((column, colIndex) => (
                     <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-  
                       {editingRow?.id === item.id ? (
                         <input
                           type="text"
@@ -230,7 +229,6 @@ const GetAllCutting = () => {
                           onChange={(e) =>
                             setEditingRow({ ...editingRow, [column.field]: e.target.value })
                           }
-                          
                           className="w-full px-2 py-1 border border-gray-300 rounded-md"
                         />
                       ) : (

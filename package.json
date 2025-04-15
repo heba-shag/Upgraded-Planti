@@ -53,7 +53,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "start:staging": "env-cmd -f .env.staging react-scripts start",
-    "build:staging": "env-cmd -f .env.staging react-scripts build",
+    "build:staging": "set NODE_OPTIONS=--max_old_space_size=4096 && env-cmd -f .env.staging react-scripts build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

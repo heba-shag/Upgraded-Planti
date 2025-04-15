@@ -5,12 +5,13 @@ import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft
 import { BiColorFill } from 'react-icons/bi';
 import { IoIosColorPalette, IoMdContacts } from 'react-icons/io';
 import { RiContactsLine, RiStockLine } from 'react-icons/ri';
-import { MdOutlineSupervisorAccount } from 'react-icons/md';
+import { MdAgriculture, MdLandslide, MdOutlineSupervisorAccount } from 'react-icons/md';
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { TiTick } from 'react-icons/ti';
-import { GiFertilizerBag, GiLouvrePyramid, GiMedicinePills, GiPlantSeed } from 'react-icons/gi';
+import { GiChemicalTank, GiFertilizerBag, GiLouvrePyramid, GiMedicinePills, GiPlantRoots, GiPlantSeed, GiPlantWatering } from 'react-icons/gi';
 import { GrLocation } from 'react-icons/gr';
 import { TbPlant2 } from "react-icons/tb";
+import { LuWarehouse } from "react-icons/lu";
 
 import avatar from './avatar.jpg';
 import avatar2 from './avatar2.jpg';
@@ -522,6 +523,47 @@ export const customersGrid = [
 
 ];
 
+export const insecticideLandGrid = [
+  { type: 'checkbox', width: '50' },
+  { 
+    field: 'date',
+    headerText: 'Date',
+    width: '150',
+    textAlign: 'Center',
+    format: 'yMd'
+  },
+  { 
+    field: 'insecticideTitle',
+    headerText: 'Insecticide',
+    width: '150',
+    textAlign: 'Center'
+  },
+  { 
+    field: 'landTitle',
+    headerText: 'Land',
+    width: '150',
+    textAlign: 'Center'
+  },
+  { 
+    field: 'liter',
+    headerText: 'Liters',
+    width: '100',
+    textAlign: 'Center'
+  },
+  { 
+    field: 'quantity',
+    headerText: 'Quantity',
+    width: '100',
+    textAlign: 'Center'
+  },
+  { 
+    field: 'note',
+    headerText: 'Notes',
+    width: '200',
+    textAlign: 'Center'
+  }
+];
+
 export const employeesGrid = [
   { headerText: 'Employee',
     width: '150',
@@ -558,6 +600,45 @@ export const employeesGrid = [
     textAlign: 'Center' },
 ];
 
+export const mainLandsGrid = [
+  { headerText: 'Land Name',
+    field: 'title',
+    width: '150',
+    template: gridEmployeeProfile,
+    textAlign: 'Center',
+    placeholder:'Name',
+  },
+  { field: 'location',
+    headerText: 'Location',
+    width: '170',
+    textAlign: 'Center',
+    placeholder:'Location',
+  },
+  // { field: 'HireDate',
+  //   headerText: 'Hire Date',
+  //   width: '135',
+  //   format: 'yMd',
+  //   textAlign: 'Center' },
+
+  {
+    field: 'size',
+    headerText: 'Size',
+    format: 'C2',
+    textAlign: 'Center',
+    editType: 'numericedit',
+    width: '150',
+    placeholder:'Size',
+  },
+  // { field: 'ReportsTo',
+  //   headerText: 'Reports To',
+  //   width: '120',
+  //   textAlign: 'Center' },
+  // { field: 'EmployeeID',
+  //   headerText: 'Employee ID',
+  //   width: '125',
+  //   textAlign: 'Center' },
+];
+
 export const links = [
   {
     title: 'Dashboard',
@@ -566,11 +647,15 @@ export const links = [
         name: 'ecommerce',
         icon: <FiShoppingBag />,
       },
+      {
+        name: 'lands',
+        icon: <MdLandslide />,
+      },
     ],
   },
 
   {
-    title: 'Pages',
+    title: 'Products',
     links: [
       {
         name: 'customer',
@@ -596,6 +681,34 @@ export const links = [
         name: 'color',
         icon: <IoIosColorPalette />,
       },
+
+      {
+        name: 'fertilizer-mix',
+        icon: <GiChemicalTank />,
+      },
+
+      {
+        name: 'insecticide-mix',
+        icon: <GiChemicalTank />,
+      },
+      
+    ],
+  },
+  {
+    title: 'Pages',
+    links: [
+      {
+        name: 'insecticide-to-land',
+        icon: <GiPlantWatering />,
+      },
+      {
+        name: 'fertilizer-to-land',
+        icon: <MdAgriculture />,
+      },
+      {
+        name: 'cutting-to-land',
+        icon: <GiPlantRoots />,
+      },
       {
         name: 'flower',
         icon: <TbPlant2 />,
@@ -605,62 +718,91 @@ export const links = [
   {
     title: 'Apps',
     links: [
+      // {
+      //   name: 'calendar',
+      //   icon: <AiOutlineCalendar />,
+      // },
+      // {
+      //   name: 'kanban',
+      //   icon: <BsKanban />,
+      // },
       {
-        name: 'calendar',
-        icon: <AiOutlineCalendar />,
-      },
-      {
-        name: 'kanban',
+        name: 'fertilizer-mix-to-land',
         icon: <BsKanban />,
       },
       {
-        name: 'editor',
-        icon: <FiEdit />,
+        name: 'insecticide-mix-to-land',
+        icon: <BsKanban />,
       },
-      {
-        name: 'color-picker',
-        icon: <BiColorFill />,
-      },
+      // {
+      //   name: 'editor',
+      //   icon: <FiEdit />,
+      // },
+      // {
+      //   name: 'color-picker',
+      //   icon: <BiColorFill />,
+      // },
     ],
   },
   {
-    title: 'Charts',
+    title: 'Depos',
     links: [
       {
-        name: 'line',
-        icon: <AiOutlineStock />,
+        name: 'insecticide-depo',
+        icon: <LuWarehouse />,
       },
       {
-        name: 'area',
-        icon: <AiOutlineAreaChart />,
-      },
-
-      {
-        name: 'bar',
-        icon: <AiOutlineBarChart />,
+        name: 'fertilizer-depo',
+        icon: <LuWarehouse />,
       },
       {
-        name: 'pie',
-        icon: <FiPieChart />,
+        name: 'fertilizer-transaction',
+        icon: <LuWarehouse />,
       },
       {
-        name: 'financial',
-        icon: <RiStockLine />,
-      },
-      {
-        name: 'color-mapping',
-        icon: <BsBarChart />,
-      },
-      {
-        name: 'pyramid',
-        icon: <GiLouvrePyramid />,
-      },
-      {
-        name: 'stacked',
-        icon: <AiOutlineBarChart />,
+        name: 'flower-depo',
+        icon: <LuWarehouse />,
       },
     ],
   },
+  // {
+  //   title: 'Charts',
+  //   links: [
+  //     {
+  //       name: 'line',
+  //       icon: <AiOutlineStock />,
+  //     },
+  //     {
+  //       name: 'area',
+  //       icon: <AiOutlineAreaChart />,
+  //     },
+
+  //     {
+  //       name: 'bar',
+  //       icon: <AiOutlineBarChart />,
+  //     },
+  //     {
+  //       name: 'pie',
+  //       icon: <FiPieChart />,
+  //     },
+  //     {
+  //       name: 'financial',
+  //       icon: <RiStockLine />,
+  //     },
+  //     {
+  //       name: 'color-mapping',
+  //       icon: <BsBarChart />,
+  //     },
+  //     {
+  //       name: 'pyramid',
+  //       icon: <GiLouvrePyramid />,
+  //     },
+  //     {
+  //       name: 'stacked',
+  //       icon: <AiOutlineBarChart />,
+  //     },
+  //   ],
+  // },
 ];
 
 export const cartData = [
@@ -1116,98 +1258,154 @@ export const colorsGrid = [
   
 ];
 
+// export const flowersGrid = [
+//   {
+//     field: 'note',
+//     headerText: 'Note',
+//     width: '150',
+//     editType: 'dropdownedit',
+//     textAlign: 'Center',
+//     placeholder:'Note'
+//   },
+//   {
+//     field: 'worker',
+//     headerText: 'Worker',
+//     width: '150',
+//     editType: 'dropdownedit',
+//     textAlign: 'Center',
+//     placeholder:'Worker'
+//   },
+//   {
+//     field: 'worker',
+//     headerText: 'Worker',
+//     width: '150',
+//     editType: 'dropdownedit',
+//     textAlign: 'Center',
+//     placeholder:'Worker'
+//   },
+//   {
+//     field: 'cuttingLand.land.title', 
+//     headerText: 'الاسم',
+//     width: '150',
+//     textAlign: 'Center',
+//   },
+//   {
+//     field: 'cuttingLand.id',
+//     headerText: 'الاسم',
+//     width: '150',
+//     textAlign: 'Center',
+//   },
+
+//   // {
+//   //   field: 'date',
+//   //   headerText: 'Date',
+//   //   width: '150',
+//   //   textAlign: 'Center',
+//   //   template: (data) => data|| 'No date',
+//   //   editTemplate: () => (
+//   //     <input
+//   //       type="date"
+//   //       className="w-full p-2 border rounded"
+//   //       defaultValue={date || ''}
+//   //       onChange={(e) => onChange(e.target.value)}
+//   //     />
+//   //   )
+//   // },
+//   {
+//     field: 'publicTitle',
+//     headerText: 'Name',
+//     width: '150',
+//     editType: 'dropdownedit',
+//     textAlign: 'Center',
+//     placeholder:'Name'
+//   },
+//   {
+//     field: 'count',
+//     headerText: 'Count',
+//     format: 'C2',
+//     textAlign: 'Center',
+//     editType: 'numericedit',
+//     width: '150',
+//     placeholder:'count'
+
+//   },
+//   {
+//     field: 'long',
+//     headerText: 'Long',
+//     format: 'C2',
+//     textAlign: 'Center',
+//     editType: 'numericedit',
+//     width: '150',
+//     placeholder:'long'
+
+//   },
+//   {
+//     field: 'description',
+//     headerText: 'description',
+//     width: '150',
+//     editType: 'dropdownedit',
+//     textAlign: 'Center',
+//     placeholder:'About'
+
+//   },
+// ];
+
 export const flowersGrid = [
   {
-    field: 'note',
-    headerText: 'Note',
-    width: '150',
-    editType: 'dropdownedit',
+    headerText: 'ID',
+    field: 'id',
+    width: '50',
     textAlign: 'Center',
-    placeholder:'Note'
+    type: 'number'
   },
   {
-    field: 'worker',
+    headerText: 'Title',
+    field: 'id',
+    width: '150',
+    textAlign: 'Center',
+  },
+  {
     headerText: 'Worker',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Worker'
-  },
-  {
     field: 'worker',
-    headerText: 'Worker',
     width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Worker'
+    textAlign: 'Center'
   },
   {
-    field: 'cuttingLand.land.title', 
-    headerText: 'الاسم',
+    headerText: 'Date',
+    field: 'date',
     width: '150',
+    format: 'yMd',
     textAlign: 'Center',
+    type: 'date'
   },
   {
-    field: 'cuttingLand.id',
-    headerText: 'الاسم',
-    width: '150',
-    textAlign: 'Center',
+    headerText: 'Flowers Data',
+    field: 'flowers',
+    width: '200',
+    textAlign: 'Center'
   },
-
-  // {
-  //   field: 'date',
-  //   headerText: 'Date',
-  //   width: '150',
-  //   textAlign: 'Center',
-  //   template: (data) => data|| 'No date',
-  //   editTemplate: () => (
-  //     <input
-  //       type="date"
-  //       className="w-full p-2 border rounded"
-  //       defaultValue={date || ''}
-  //       onChange={(e) => onChange(e.target.value)}
-  //     />
-  //   )
-  // },
-  {
-    field: 'publicTitle',
-    headerText: 'Name',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Name'
-  },
-  {
-    field: 'count',
-    headerText: 'Count',
-    format: 'C2',
-    textAlign: 'Center',
-    editType: 'numericedit',
-    width: '150',
-    placeholder:'count'
-
-  },
-  {
-    field: 'long',
-    headerText: 'Long',
-    format: 'C2',
-    textAlign: 'Center',
-    editType: 'numericedit',
-    width: '150',
-    placeholder:'long'
-
-  },
-  {
-    field: 'description',
-    headerText: 'description',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'About'
-
-  },
+  
+  
 ];
 
+// export const contextMenuItems = [
+//   'AutoFit',
+//   'AutoFitAll',
+//   'SortAscending',
+//   'SortDescending',
+//   'Copy',
+//   'Edit',
+//   'Delete',
+//   'Save',
+//   'Cancel',
+//   'PdfExport',
+//   'ExcelExport',
+//   'CsvExport',
+//   'FirstPage',
+//   'PrevPage',
+//   'LastPage',
+//   'NextPage'
+// ];
 export const customersData = [
   {
     CustomerID: 1001,

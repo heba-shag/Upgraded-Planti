@@ -168,7 +168,7 @@ const GetAllColor = () => {
 
   return (
       <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-        <Header category="Page" title="Orders" />
+        <Header category="Page" title="Colors" />
         <div className="flex justify-end space-x-4 mb-4">
           <button
             onClick={handleExportToExcel}
@@ -218,7 +218,6 @@ const GetAllColor = () => {
               {currentItems.map((item, index) => (
   
                 <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
-                  {console.log(currentItems,item)}
                   {colorsGrid.map((column, colIndex) => (
                     <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
   

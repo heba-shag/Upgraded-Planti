@@ -185,7 +185,7 @@ const GetAllInsecticide = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Orders" />
+      <Header category="Page" title="Insecticides" />
       <div className="flex justify-end space-x-4 mb-4">
         <button
           onClick={handleExportToExcel}

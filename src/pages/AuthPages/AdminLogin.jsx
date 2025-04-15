@@ -1,10 +1,10 @@
 import {  useState } from "react";
 import { FaCheckSquare, FaRegCheckSquare, FaRegUserCircle } from "react-icons/fa";
-import { useStateContext } from "../contexts/ContextProvider";
+import { useStateContext } from "../../contexts/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "universal-cookie";
-// import "../"
+import './logInStyle.css';
 
 
 export default function AdminLogIn(){
@@ -71,7 +71,7 @@ console.log(adminLoginApi.addLogin());
                 
 
                 <div className="done-btn"  style={{textAlign:"center"}}>
-                    <button type="submit">Register</button>
+                    <button type="submit">login</button>
                 </div>
             </form>
         </div>
