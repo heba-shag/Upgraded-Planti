@@ -32,6 +32,7 @@ import InsecticideMix from './pages/Products/Mixes/InsecticideMix';
 import FlowerDepo from './pages/Products/Flowers/FlowersDepo';
 import FertilizerDepo from './pages/Products/Fertilizer/FertilizersDepo';
 import FertilizerTransaction from './pages/Products/Fertilizer/FertilizerTransaction';
+import AddNewUser from './pages/AuthPages/AddnewUser';
 
 const Layout = ({ children }) => {
   const { activeMenu, themeSettings, setThemeSettings } = useStateContext();
@@ -101,6 +102,14 @@ const App = () => {
           <Route path="/" element={<AdminLogIn />} />
           <Route element={<PersistLogin />}>
             <Route element={<ProtectedRoute />}>
+              <Route path="/login" element={<AdminLogIn/>} />
+              <Route path="/add-new-user" element={<AddNewUser/>} />
+
+              <Route path="/ecommerce" element={
+                <Layout>
+                  <Ecommerce />
+                </Layout>
+              } />
               <Route path="/ecommerce" element={
                 <Layout>
                   <Ecommerce />

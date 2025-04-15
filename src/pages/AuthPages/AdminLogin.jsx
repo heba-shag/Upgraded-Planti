@@ -4,7 +4,7 @@ import { useStateContext } from "../../contexts/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "universal-cookie";
-import './logInStyle.css';
+import '../AuthPages/logInStyle.css';
 
 
 export default function AdminLogIn(){
@@ -49,31 +49,33 @@ console.log(adminLoginApi.addLogin());
         }
     }
     return(
-        <div className="register">
-            <form onSubmit={Submit}>
-                <div className="done-btn"  style={{textAlign:"center"}}>
-                    <FaRegUserCircle className="icon"/>
-                </div>
-                
+        <div className='parent'>
+            <div className="register">
+                <form onSubmit={Submit}>
+                    <div className="done-btn"  style={{textAlign:"center"}}>
+                        <FaRegUserCircle className="icon"/>
+                    </div>
+                    
 
-                        <div className="inputInfo adminInfo">
-                            <label htmlFor="email">Email:</label>
-                            <input id="email" placeholder="Email.." type="email" required value={email} onChange={(e)=> setEmail(e.target.value)}/>
-                            {/* {accept && emailError===422 && (<p className="error">email is already been taken</p>)} */}
-                        </div>
+                            <div className="inputInfo adminInfo">
+                                <label htmlFor="email">Email:</label>
+                                <input id="email" placeholder="Email.." type="email" required value={email} onChange={(e)=> setEmail(e.target.value)}/>
+                                {/* {accept && emailError===422 && (<p className="error">email is already been taken</p>)} */}
+                            </div>
 
-                        <div className="inputInfo adminInfo">
-                            <label htmlFor="password">Password:</label>
-                            <input id="password" placeholder="Enter password.." type="password" value={password} onChange={(e)=> setPassword(e.target.value)} />
-                            {/* {password.length < 8 && accept && (<p className="error">should be 8 characters or more</p>)} */}
-                        </div>
-                
-                
+                            <div className="inputInfo adminInfo">
+                                <label htmlFor="password">Password:</label>
+                                <input id="password" placeholder="Enter password.." type="password" value={password} onChange={(e)=> setPassword(e.target.value)} />
+                                {/* {password.length < 8 && accept && (<p className="error">should be 8 characters or more</p>)} */}
+                            </div>
+                    
+                    
 
-                <div className="done-btn"  style={{textAlign:"center"}}>
-                    <button type="submit">login</button>
-                </div>
-            </form>
+                    <div className="done-btn"  style={{textAlign:"center"}}>
+                        <button type="submit">login</button>
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }

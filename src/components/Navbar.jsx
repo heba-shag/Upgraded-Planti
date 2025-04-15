@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
-import { FiShoppingCart } from 'react-icons/fi';
+import { FiLogIn, FiShoppingCart } from 'react-icons/fi';
 import { BsChatLeft } from 'react-icons/bs';
 import { RiNotification3Line } from 'react-icons/ri';
 import { MdKeyboardArrowDown } from 'react-icons/md';
@@ -10,6 +10,8 @@ import avatar from '../data/avatar.jpg';
 import { Cart, Chat, Notification, UserProfile } from '.';
 import { useStateContext } from '../contexts/ContextProvider';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import { Link } from 'react-router-dom';
+import { FaUserPlus } from 'react-icons/fa';
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
     
@@ -60,26 +62,11 @@ const Navbar = () => {
         <NavButton title="Cart" customFunc={() => handleClick('cart')} color={currentColor} icon={<FiShoppingCart />} />
         <NavButton title="Chat" dotColor="#03C9D7" customFunc={() => handleClick('chat')} color={currentColor} icon={<BsChatLeft />} />
         <NavButton title="Notification" dotColor="rgb(254, 201, 15)" customFunc={() => handleClick('notification')} color={currentColor} icon={<RiNotification3Line />} />
-        <Popover content="Profile" position="BottomCenter">
-          <div
-            className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
-            onClick={() => handleClick('userProfile')}
-          >
-            <img
-              className="rounded-full w-8 h-8"
-              src={avatar}
-              alt="user-profile"
-            />
-            <p>
-              <span className="text-gray-400 text-14">Hi,</span>{' '}
-              <span className="text-gray-400 font-bold ml-1 text-14">
-                Michael
-              </span>
-            </p>
-            <MdKeyboardArrowDown className="text-gray-400 text-14" />
-          </div>
-        </Popover>
 
+        <Link to="/add-new-user" > <NavButton customFunc={() => handleClick('add-new-user')} color={currentColor} icon={<FaUserPlus />} /></Link>
+        <Link to="/login" > <NavButton color={currentColor} icon={<FiLogIn />} /></Link>
+
+        {/* <Link to="/login"><FiLogIn className='icon'/></Link> */}
         {/* {isClicked.cart && (<Cart />)} 
         {isClicked.chat && (<Chat />)}
         {isClicked.notification && (<Notification />)}

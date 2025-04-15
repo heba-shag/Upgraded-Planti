@@ -26,11 +26,13 @@
 }
 
 .parent{
+    position: relative;
     height:100vh;
     width: 100%;
     display:flex;
     justify-content:center;
     align-items:center;
+    background: #aaaa;
     .addTaskIcon{
         padding: 0.6rem;
         border-radius: 8px;
@@ -73,6 +75,7 @@
         .done-btn{
             width: 90%;
             justify-content: center;
+            display:flex;
             button{
                 width: 50%;
                 text-decoration: none;
@@ -103,13 +106,157 @@
         }
     }
 
-    
+    .register{
 
-
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 40px;
+        
     
+        button, .register-nav{
+            text-decoration: none;
+            outline: none;
+            border: none;
+            background-color: var(--PrimaryColor);
+            padding: 10px 20px;
+            color: white;
+            -o-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            -o-transition: 0.3s;
+            -webkit-transition: 0.3s;
+            -moz-transition: 0.3s;
+            -ms-transition: 0.3s;
+            transition: 0.3s;
+            border: 2px solid white;
+            font-weight: bold;
+        }
+    
+        button:hover,.register-nav:hover{
+            background-color: white;
+            border: 2px solid var(--PrimaryColor);
+            color: var(--PrimaryColor);
+        }
+    
+        form{
+            .adminInfo{
+                width: 90%!important;
+            }
+            .inputInfo{
+                width: 45%;
+                label{
+                    display: inline-flex;
+                    justify-content: start;
+                    height: 1.5rem;
+                    width: 100%;
+                    color: var(--whiteColor);
+                } 
+    
+                input,select{
+                    padding: 10px 20px;
+                    width: 100%;
+                    outline: none;
+                    border: 2px solid white;
+                    -o-border-radius: 10px;
+                    -webkit-border-radius: 10px;
+                    -moz-border-radius: 10px;
+                    -ms-border-radius: 10px;
+                    border-radius: 10px;
+                    box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.1);
+                    -o-transition: 0.3s;
+                    -webkit-transition: 0.3s;
+                    -moz-transition: 0.3s;
+                    -ms-transition: 0.3s;
+                    transition: 0.3s;
+                    margin-bottom: 8px;
+                }
+    
+                input:focus{
+                    border: 2px solid var(--PrimaryColor);
+                }
+    
+                input::placeholder{
+                    color: rgba(0,0,0,0.3);
+                }
+            }
+    
+            .error{
+                color: red;
+                font-size: 12px;
+                margin-top: 0;
+                font-weight: lighter;
+            }
+        } 
+    
+    
+    
+    }
 }
 
-/* .dark{ */
+.parent{
+    position: relative;
+    height:100vh;
+    width: 100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: #aaaa;
+    form{
+        overflow: auto;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 75vh;
+        width: 40%;
+        box-shadow: 0px 2px 15px rgb(0, 0, 0,30%);
+        padding: 20px;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0, 0.6);
+        border-radius: .8rem;
+        -webkit-border-radius: .8rem;
+        -moz-border-radius: .8rem;
+        -ms-border-radius: .8rem;
+        -o-border-radius: .8rem;
+
+        .done-btn{
+            width: 90%;
+            justify-content: center;
+            display:flex;
+            button{
+                width: 50%;
+                text-decoration: none;
+                outline: none;
+                border: none;
+                background-color: var(--PrimaryColor);
+                padding: 10px 20px;
+                color: white;
+                -o-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                -ms-border-radius: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                -o-transition: 0.3s;
+                -webkit-transition: 0.3s;
+                -moz-transition: 0.3s;
+                -ms-transition: 0.3s;
+                transition: 0.3s;
+                font-weight: bold;
+            }
+            .icon{
+                color: var(--inputColor);
+                font-size: 4.5rem;
+                cursor: auto;
+                /* width: 90%; */
+            }
+        }
+    }
     .register{
 
     position: absolute;
@@ -117,6 +264,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 40px;
+
 
     button, .register-nav{
         text-decoration: none;
@@ -199,12 +347,14 @@
 
 
 }
-/* } */
+}
 .delete-message{
     height: 16rem;
     width: 34rem;
     border: 0.2rem solid var(--PrimaryColor);
     position: absolute;
+    bottom: -25vh;
+    left: 20vw;
     justify-content:center;
     align-items:center;
     flex-wrap: wrap;
