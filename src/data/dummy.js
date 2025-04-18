@@ -4,7 +4,7 @@ import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, Fi
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
 import { BiColorFill } from 'react-icons/bi';
 import { IoIosColorPalette, IoMdContacts } from 'react-icons/io';
-import { RiContactsLine, RiStockLine } from 'react-icons/ri';
+import { RiContactsLine, RiCustomerService2Fill, RiStockLine } from 'react-icons/ri';
 import { MdAgriculture, MdLandslide, MdOutlineSupervisorAccount } from 'react-icons/md';
 import { HiOutlineRefresh } from 'react-icons/hi';
 import { TiTick } from 'react-icons/ti';
@@ -26,92 +26,6 @@ import product6 from './product6.jpg';
 import product7 from './product7.jpg';
 import product8 from './product8.jpg';
 
-let isDev=process.env.NODE_ENV === 'development';
-  const APIS = isDev? {
-    //AUTH
-    baseRoleUrl:process.env.REACT_APP_API_ROLE_URL,
-    baseUsersUrl:process.env.REACT_APP_API_USERS_URL,
-    baseLoginUrl:process.env.REACT_APP_API_LOGIN_URL,
-
-    getAllRole:()=>{return(`${APIS.baseRoleUrl}/GetAll`)},
-    
-    //PRODUCTS
-    baseLandUrl:process.env.REACT_APP_API_LAND_URL,
-    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
-    baseInsecticideUrl:process.env.REACT_APP_API_INSECTICIDE_URL,
-    baseCuttingUrl:process.env.REACT_APP_API_CUTTING_URL,
-    baseColorUrl:process.env.REACT_APP_API_COLOR_URL,
-    baseFlowerUrl:process.env.REACT_APP_API_FLOWER_URL,
-
-    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    getAllInsecticide:()=>{return(`${APIS.baseInsecticideUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    getAllCutting:()=>{return(`${APIS.baseCuttingUrl}/GetAll`)},
-    getAllColor:()=>{return(`${APIS.baseColorUrl}/GetAll`)},
-    getAllCuttingColor:()=>{return(`${APIS.baseCuttingUrl}/GetAllCuttingColor`)},
-    getAllFlower:()=>{return(`${APIS.baseFlowerUrl}/GetAll`)},
-
-
-    //TO LAND
-    baseFertilizerLandUrl:process.env.REACT_APP_API_FERTILIZERLAND_URL,
-    baseInsecticideLandUrl:process.env.REACT_APP_API_INSECTICIDELAND_URL,
-    baseCuttingLandUrl:process.env.REACT_APP_API_CUTTINGLAND_URL,
-
-    getAllFertilizerLand:()=>{return(`${APIS.baseFertilizerLandUrl}/GetAll`)},
-    getAllInsecticideLand:()=>{return(`${APIS.baseInsecticideLandUrl}/GetAll`)},
-    getAllCuttingLand:()=>{return(`${APIS.baseFertilizerUrl}/GetAll`)},
-
-    //ORDER
-    baseClientUrl:process.env.REACT_APP_API_CLIENT_URL,
-    baseOrderUrl:process.env.REACT_APP_API_ORDER_URL,
-
-    getAllClient:()=>{return(`${APIS.baseClientUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    getAllOrder:()=>{return(`${APIS.baseOrderUrl}/GetAll`)},
-    
-
-    }:{
-    //AUTH
-    baseRoleUrl:process.env.REACT_APP_API_ROLE_URL,
-    baseUsersUrl:process.env.REACT_APP_API_USERS_URL,
-    baseLoginUrl:process.env.REACT_APP_API_LOGIN_URL,
-
-    getAllRole:()=>{return(`${APIS.baseRoleUrl}/GetAll`)},
-    
-    //PRODUCTS
-    baseLandUrl:process.env.REACT_APP_API_LAND_URL,
-    baseFertilizerUrl:process.env.REACT_APP_API_FERTILIZER_URL,
-    baseInsecticideUrl:process.env.REACT_APP_API_INSECTICIDE_URL,
-    baseCuttingUrl:process.env.REACT_APP_API_CUTTING_URL,
-    baseColorUrl:process.env.REACT_APP_API_COLOR_URL,
-    baseFlowerUrl:process.env.REACT_APP_API_FLOWER_URL,
-
-    getAllFertilizer:()=>{return(`${APIS.baseFertilizerUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    getAllInsecticide:()=>{return(`${APIS.baseInsecticideUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    getAllCutting:()=>{return(`${APIS.baseCuttingUrl}/GetAll`)},
-    getAllColor:()=>{return(`${APIS.baseColorUrl}/GetAll`)},
-    getAllCuttingColor:()=>{return(`${APIS.baseCuttingUrl}/GetAllCuttingColor`)},
-    getAllFlower:()=>{return(`${APIS.baseFlowerUrl}/GetAll`)},
-
-
-    //TO LAND
-    baseFertilizerLandUrl:process.env.REACT_APP_API_FERTILIZERLAND_URL,
-    baseInsecticideLandUrl:process.env.REACT_APP_API_INSECTICIDELAND_URL,
-    baseCuttingLandUrl:process.env.REACT_APP_API_CUTTINGLAND_URL,
-
-    getAllFertilizerLand:()=>{return(`${APIS.baseFertilizerLandUrl}/GetAll`)},
-    getAllInsecticideLand:()=>{return(`${APIS.baseInsecticideLandUrl}/GetAll`)},
-    getAllCuttingLand:()=>{return(`${APIS.baseFertilizerUrl}/GetAll`)},
-
-    //ORDER
-    baseClientUrl:process.env.REACT_APP_API_CLIENT_URL,
-    baseOrderUrl:process.env.REACT_APP_API_ORDER_URL,
-
-    getAllClient:()=>{return(`${APIS.baseClientUrl}/GetAll?pageSize=1000000000&pageNum=0`)},
-    getAllOrder:()=>{return(`${APIS.baseOrderUrl}/GetAll`)},
-  }
-
-  // useEffect(()=>{
-  //   axios.get()
-  // })
 
 export const gridOrderImage = (props) => (
   <div>
@@ -133,24 +47,6 @@ export const gridOrderStatus = (props) => (
   </button>
 );
 
-export const kanbanGrid = [
-  { headerText: 'To Do',
-    keyField: 'Open',
-    allowToggle: true },
-
-  { headerText: 'In Progress',
-    keyField: 'InProgress',
-    allowToggle: true },
-
-  { headerText: 'Testing',
-    keyField: 'Testing',
-    allowToggle: true,
-    isExpanded: false },
-
-  { headerText: 'Done',
-    keyField: 'Close',
-    allowToggle: true },
-];
 const gridEmployeeProfile = (props) => (
   <div className="flex items-center gap-2">
     <img
@@ -210,26 +106,7 @@ export const EditorData = () => (
     </h3>
   </div>
 );
-const customerGridImage = (props) => (
-  <div className="image flex gap-4">
-    <img
-      className="rounded-full w-10 h-10"
-      src={props.CustomerImage}
-      alt="employee"
-    />
-    <div>
-      <p>{props.CustomerName}</p>
-      <p>{props.CustomerEmail}</p>
-    </div>
-  </div>
-);
 
-const customerGridStatus = (props) => (
-  <div className="flex gap-2 justify-center items-center text-gray-700 capitalize">
-    <p style={{ background: props.StatusBg }} className="rounded-full h-3 w-3" />
-    <p>{props.Status}</p>
-  </div>
-);
 export const areaPrimaryXAxis = {
   valueType: 'DateTime',
   labelFormat: 'y',
@@ -481,47 +358,6 @@ export const LinePrimaryYAxis = {
   minorTickLines: { width: 0 },
 };
 
-export const customersGrid = [
-  { type: 'checkbox', width: '50' },
-  { headerText: 'Name',
-    width: '150',
-    template: customerGridImage,
-    textAlign: 'Center' },
-  { field: 'ProjectName',
-    headerText: 'Project Name',
-    width: '150',
-    textAlign: 'Center' },
-  { field: 'Status',
-    headerText: 'Status',
-    width: '130',
-    format: 'yMd',
-    textAlign: 'Center',
-    template: customerGridStatus },
-  {
-    field: 'Weeks',
-    headerText: 'Weeks',
-    width: '100',
-    format: 'C2',
-    textAlign: 'Center' },
-  { field: 'Budget',
-    headerText: 'Budget',
-    width: '100',
-    format: 'yMd',
-    textAlign: 'Center' },
-
-  { field: 'Location',
-    headerText: 'Location',
-    width: '150',
-    textAlign: 'Center' },
-
-  { field: 'CustomerID',
-    headerText: 'Customer ID',
-    width: '120',
-    textAlign: 'Center',
-    isPrimaryKey: true,
-  },
-
-];
 
 export const insecticideLandGrid = [
   { type: 'checkbox', width: '50' },
@@ -565,39 +401,28 @@ export const insecticideLandGrid = [
 ];
 
 export const employeesGrid = [
-  { headerText: 'Employee',
-    width: '150',
-    template: gridEmployeeProfile,
-    textAlign: 'Center' },
-  { field: 'Name',
-    headerText: '',
+  
+  { field: 'name',
+    headerText: 'Name',
     width: '0',
     textAlign: 'Center',
   },
-  { field: 'Title',
-    headerText: 'Designation',
+  { field: 'isLocal',
+    headerText: 'Is Local?',
     width: '170',
     textAlign: 'Center',
   },
-  { headerText: 'Country',
-    width: '120',
-    textAlign: 'Center',
-    template: gridEmployeeCountry },
-
-  { field: 'HireDate',
-    headerText: 'Hire Date',
-    width: '135',
-    format: 'yMd',
-    textAlign: 'Center' },
-
-  { field: 'ReportsTo',
-    headerText: 'Reports To',
-    width: '120',
-    textAlign: 'Center' },
-  { field: 'EmployeeID',
-    headerText: 'Employee ID',
+  { field: 'codePhoneNumber',
+    headerText: 'Code',
     width: '125',
     textAlign: 'Center' },
+  {field: 'phoneNumber',
+    headerText: 'Phone Number',
+    width: '150',
+    textAlign: 'Center',
+  },
+
+  
 ];
 
 export const mainLandsGrid = [
@@ -657,10 +482,7 @@ export const links = [
   {
     title: 'Products',
     links: [
-      {
-        name: 'customer',
-        icon: <GiFertilizerBag />,
-      },
+      
       {
         name: 'employees',
         icon: <GiFertilizerBag />,
@@ -763,6 +585,20 @@ export const links = [
         name: 'flower-depo',
         icon: <LuWarehouse />,
       },
+    ],
+  },
+  {
+    title: 'Buy Manage',
+    links: [
+      {
+        name: 'customer',
+        icon: <RiCustomerService2Fill />,
+      },
+      {
+        name: 'order',
+        icon: <FiShoppingCart />,
+      },
+      
     ],
   },
   // {
@@ -1258,98 +1094,6 @@ export const colorsGrid = [
   
 ];
 
-// export const flowersGrid = [
-//   {
-//     field: 'note',
-//     headerText: 'Note',
-//     width: '150',
-//     editType: 'dropdownedit',
-//     textAlign: 'Center',
-//     placeholder:'Note'
-//   },
-//   {
-//     field: 'worker',
-//     headerText: 'Worker',
-//     width: '150',
-//     editType: 'dropdownedit',
-//     textAlign: 'Center',
-//     placeholder:'Worker'
-//   },
-//   {
-//     field: 'worker',
-//     headerText: 'Worker',
-//     width: '150',
-//     editType: 'dropdownedit',
-//     textAlign: 'Center',
-//     placeholder:'Worker'
-//   },
-//   {
-//     field: 'cuttingLand.land.title', 
-//     headerText: 'الاسم',
-//     width: '150',
-//     textAlign: 'Center',
-//   },
-//   {
-//     field: 'cuttingLand.id',
-//     headerText: 'الاسم',
-//     width: '150',
-//     textAlign: 'Center',
-//   },
-
-//   // {
-//   //   field: 'date',
-//   //   headerText: 'Date',
-//   //   width: '150',
-//   //   textAlign: 'Center',
-//   //   template: (data) => data|| 'No date',
-//   //   editTemplate: () => (
-//   //     <input
-//   //       type="date"
-//   //       className="w-full p-2 border rounded"
-//   //       defaultValue={date || ''}
-//   //       onChange={(e) => onChange(e.target.value)}
-//   //     />
-//   //   )
-//   // },
-//   {
-//     field: 'publicTitle',
-//     headerText: 'Name',
-//     width: '150',
-//     editType: 'dropdownedit',
-//     textAlign: 'Center',
-//     placeholder:'Name'
-//   },
-//   {
-//     field: 'count',
-//     headerText: 'Count',
-//     format: 'C2',
-//     textAlign: 'Center',
-//     editType: 'numericedit',
-//     width: '150',
-//     placeholder:'count'
-
-//   },
-//   {
-//     field: 'long',
-//     headerText: 'Long',
-//     format: 'C2',
-//     textAlign: 'Center',
-//     editType: 'numericedit',
-//     width: '150',
-//     placeholder:'long'
-
-//   },
-//   {
-//     field: 'description',
-//     headerText: 'description',
-//     width: '150',
-//     editType: 'dropdownedit',
-//     textAlign: 'Center',
-//     placeholder:'About'
-
-//   },
-// ];
-
 export const flowersGrid = [
   {
     headerText: 'ID',
@@ -1388,24 +1132,7 @@ export const flowersGrid = [
   
 ];
 
-// export const contextMenuItems = [
-//   'AutoFit',
-//   'AutoFitAll',
-//   'SortAscending',
-//   'SortDescending',
-//   'Copy',
-//   'Edit',
-//   'Delete',
-//   'Save',
-//   'Cancel',
-//   'PdfExport',
-//   'ExcelExport',
-//   'CsvExport',
-//   'FirstPage',
-//   'PrevPage',
-//   'LastPage',
-//   'NextPage'
-// ];
+
 export const customersData = [
   {
     CustomerID: 1001,
@@ -2608,728 +2335,728 @@ export const employeesData = [
   },
 ];
 
-export const ordersData = [
+// export const ordersData = [
   
-  {
-    OrderID: 10248,
-    CustomerName: 'Vinet',
-    TotalAmount: 32.38,
-    OrderItems: 'Fresh Tomato',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      product6,
-  },
-  {
-    OrderID: 345653,
-    CustomerName: 'Carson Darrin',
-    TotalAmount: 56.34,
-    OrderItems: 'Butter Scotch',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product5,
-  },
-  {
-    OrderID: 390457,
-    CustomerName: 'Fran Perez',
-    TotalAmount: 93.31,
-    OrderItems: 'Candy Gucci',
-    Location: 'New York',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product7,
-  },
-  {
-    OrderID: 893486,
-    CustomerName: 'Anika Viseer',
-    TotalAmount: 93.31,
-    OrderItems: 'Night Lamp',
-    Location: 'Germany',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 748975,
-    CustomerName: 'Miron Vitold',
-    TotalAmount: 23.99,
-    OrderItems: 'Healthcare Erbology',
-    Location: 'Spain',
-    Status: 'rejected',
-    StatusBg: 'red',
-    ProductImage:
-    product1,
-  },
-  {
-    OrderID: 94757,
-    CustomerName: 'Omar Darobe',
-    TotalAmount: 95.99,
-    OrderItems: 'Makeup Lancome Rouge',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product2,
-  },
-  {
-    OrderID: 944895,
-    CustomerName: 'Lulia albu',
-    TotalAmount: 17.99,
-    OrderItems: 'Skincare',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product3,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Penjani',
-    TotalAmount: 59.99,
-    OrderItems: 'Headphone',
-    Location: 'USA',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Jie Yan',
-    TotalAmount: 87.99,
-    OrderItems: 'Shoes',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 38489,
-    CustomerName: 'Miron',
-    TotalAmount: 87.99,
-    OrderItems: 'Ice Cream',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
-  },
-  {
-    OrderID: 24546,
-    CustomerName: 'Frank',
-    TotalAmount: 84.99,
-    OrderItems: 'Pan Cake',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 10248,
-    CustomerName: 'Vinet',
+//   {
+//     OrderID: 10248,
+//     CustomerName: 'Vinet',
+//     TotalAmount: 32.38,
+//     OrderItems: 'Fresh Tomato',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       product6,
+//   },
+//   {
+//     OrderID: 345653,
+//     CustomerName: 'Carson Darrin',
+//     TotalAmount: 56.34,
+//     OrderItems: 'Butter Scotch',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product5,
+//   },
+//   {
+//     OrderID: 390457,
+//     CustomerName: 'Fran Perez',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Candy Gucci',
+//     Location: 'New York',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product7,
+//   },
+//   {
+//     OrderID: 893486,
+//     CustomerName: 'Anika Viseer',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Night Lamp',
+//     Location: 'Germany',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 748975,
+//     CustomerName: 'Miron Vitold',
+//     TotalAmount: 23.99,
+//     OrderItems: 'Healthcare Erbology',
+//     Location: 'Spain',
+//     Status: 'rejected',
+//     StatusBg: 'red',
+//     ProductImage:
+//     product1,
+//   },
+//   {
+//     OrderID: 94757,
+//     CustomerName: 'Omar Darobe',
+//     TotalAmount: 95.99,
+//     OrderItems: 'Makeup Lancome Rouge',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product2,
+//   },
+//   {
+//     OrderID: 944895,
+//     CustomerName: 'Lulia albu',
+//     TotalAmount: 17.99,
+//     OrderItems: 'Skincare',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product3,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Penjani',
+//     TotalAmount: 59.99,
+//     OrderItems: 'Headphone',
+//     Location: 'USA',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Jie Yan',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Shoes',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 38489,
+//     CustomerName: 'Miron',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Ice Cream',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
+//   },
+//   {
+//     OrderID: 24546,
+//     CustomerName: 'Frank',
+//     TotalAmount: 84.99,
+//     OrderItems: 'Pan Cake',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 10248,
+//     CustomerName: 'Vinet',
 
-    TotalAmount: 32.38,
-    OrderItems: 'Fresh Tomato',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      product6,
-  },
-  {
-    OrderID: 345653,
-    CustomerName: 'Carson Darrin',
-    TotalAmount: 56.34,
-    OrderItems: 'Butter Scotch',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product5,
-  },
-  {
-    OrderID: 390457,
-    CustomerName: 'Fran Perez',
-    TotalAmount: 93.31,
-    OrderItems: 'Candy Gucci',
-    Location: 'New York',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product7,
-  },
-  {
-    OrderID: 893486,
-    CustomerName: 'Anika Viseer',
-    TotalAmount: 93.31,
-    OrderItems: 'Night Lamp',
-    Location: 'Germany',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 748975,
-    CustomerName: 'Miron Vitold',
-    TotalAmount: 23.99,
-    OrderItems: 'Healthcare Erbology',
-    Location: 'Spain',
-    Status: 'rejected',
-    StatusBg: 'red',
-    ProductImage:
-      product1,
-  },
-  {
-    OrderID: 94757,
-    CustomerName: 'Omar Darobe',
-    TotalAmount: 95.99,
-    OrderItems: 'Makeup Lancome Rouge',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product2,
-  },
-  {
-    OrderID: 944895,
-    CustomerName: 'Lulia albu',
-    TotalAmount: 17.99,
-    OrderItems: 'Skincare',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product3,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Penjani',
-    TotalAmount: 59.99,
-    OrderItems: 'Headphone',
-    Location: 'USA',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Jie Yan',
-    TotalAmount: 87.99,
-    OrderItems: 'Shoes',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 38489,
-    CustomerName: 'Miron',
-    TotalAmount: 87.99,
-    OrderItems: 'Ice Cream',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
-  },
-  {
-    OrderID: 24546,
-    CustomerName: 'Frank',
-    TotalAmount: 84.99,
-    OrderItems: 'Pan Cake',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 10248,
-    CustomerName: 'Vinet',
+//     TotalAmount: 32.38,
+//     OrderItems: 'Fresh Tomato',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       product6,
+//   },
+//   {
+//     OrderID: 345653,
+//     CustomerName: 'Carson Darrin',
+//     TotalAmount: 56.34,
+//     OrderItems: 'Butter Scotch',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product5,
+//   },
+//   {
+//     OrderID: 390457,
+//     CustomerName: 'Fran Perez',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Candy Gucci',
+//     Location: 'New York',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product7,
+//   },
+//   {
+//     OrderID: 893486,
+//     CustomerName: 'Anika Viseer',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Night Lamp',
+//     Location: 'Germany',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 748975,
+//     CustomerName: 'Miron Vitold',
+//     TotalAmount: 23.99,
+//     OrderItems: 'Healthcare Erbology',
+//     Location: 'Spain',
+//     Status: 'rejected',
+//     StatusBg: 'red',
+//     ProductImage:
+//       product1,
+//   },
+//   {
+//     OrderID: 94757,
+//     CustomerName: 'Omar Darobe',
+//     TotalAmount: 95.99,
+//     OrderItems: 'Makeup Lancome Rouge',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product2,
+//   },
+//   {
+//     OrderID: 944895,
+//     CustomerName: 'Lulia albu',
+//     TotalAmount: 17.99,
+//     OrderItems: 'Skincare',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product3,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Penjani',
+//     TotalAmount: 59.99,
+//     OrderItems: 'Headphone',
+//     Location: 'USA',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Jie Yan',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Shoes',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 38489,
+//     CustomerName: 'Miron',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Ice Cream',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
+//   },
+//   {
+//     OrderID: 24546,
+//     CustomerName: 'Frank',
+//     TotalAmount: 84.99,
+//     OrderItems: 'Pan Cake',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 10248,
+//     CustomerName: 'Vinet',
 
-    TotalAmount: 32.38,
-    OrderItems: 'Fresh Tomato',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      product6,
-  },
-  {
-    OrderID: 345653,
-    CustomerName: 'Carson Darrin',
-    TotalAmount: 56.34,
-    OrderItems: 'Butter Scotch',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product5,
-  },
-  {
-    OrderID: 390457,
-    CustomerName: 'Fran Perez',
-    TotalAmount: 93.31,
-    OrderItems: 'Candy Gucci',
-    Location: 'New York',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product7,
-  },
-  {
-    OrderID: 893486,
-    CustomerName: 'Anika Viseer',
-    TotalAmount: 93.31,
-    OrderItems: 'Night Lamp',
-    Location: 'Germany',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 748975,
-    CustomerName: 'Miron Vitold',
-    TotalAmount: 23.99,
-    OrderItems: 'Healthcare Erbology',
-    Location: 'Spain',
-    Status: 'rejected',
-    StatusBg: 'red',
-    ProductImage:
-      product1,
-  },
-  {
-    OrderID: 94757,
-    CustomerName: 'Omar Darobe',
-    TotalAmount: 95.99,
-    OrderItems: 'Makeup Lancome Rouge',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product2,
-  },
-  {
-    OrderID: 944895,
-    CustomerName: 'Lulia albu',
-    TotalAmount: 17.99,
-    OrderItems: 'Skincare',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product3,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Penjani',
-    TotalAmount: 59.99,
-    OrderItems: 'Headphone',
-    Location: 'USA',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Jie Yan',
-    TotalAmount: 87.99,
-    OrderItems: 'Shoes',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 38489,
-    CustomerName: 'Miron',
-    TotalAmount: 87.99,
-    OrderItems: 'Ice Cream',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
-  },
-  {
-    OrderID: 24546,
-    CustomerName: 'Frank',
-    TotalAmount: 84.99,
-    OrderItems: 'Pan Cake',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 10248,
-    CustomerName: 'Vinet',
+//     TotalAmount: 32.38,
+//     OrderItems: 'Fresh Tomato',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       product6,
+//   },
+//   {
+//     OrderID: 345653,
+//     CustomerName: 'Carson Darrin',
+//     TotalAmount: 56.34,
+//     OrderItems: 'Butter Scotch',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product5,
+//   },
+//   {
+//     OrderID: 390457,
+//     CustomerName: 'Fran Perez',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Candy Gucci',
+//     Location: 'New York',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product7,
+//   },
+//   {
+//     OrderID: 893486,
+//     CustomerName: 'Anika Viseer',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Night Lamp',
+//     Location: 'Germany',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 748975,
+//     CustomerName: 'Miron Vitold',
+//     TotalAmount: 23.99,
+//     OrderItems: 'Healthcare Erbology',
+//     Location: 'Spain',
+//     Status: 'rejected',
+//     StatusBg: 'red',
+//     ProductImage:
+//       product1,
+//   },
+//   {
+//     OrderID: 94757,
+//     CustomerName: 'Omar Darobe',
+//     TotalAmount: 95.99,
+//     OrderItems: 'Makeup Lancome Rouge',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product2,
+//   },
+//   {
+//     OrderID: 944895,
+//     CustomerName: 'Lulia albu',
+//     TotalAmount: 17.99,
+//     OrderItems: 'Skincare',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product3,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Penjani',
+//     TotalAmount: 59.99,
+//     OrderItems: 'Headphone',
+//     Location: 'USA',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Jie Yan',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Shoes',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 38489,
+//     CustomerName: 'Miron',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Ice Cream',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
+//   },
+//   {
+//     OrderID: 24546,
+//     CustomerName: 'Frank',
+//     TotalAmount: 84.99,
+//     OrderItems: 'Pan Cake',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 10248,
+//     CustomerName: 'Vinet',
 
-    TotalAmount: 32.38,
-    OrderItems: 'Fresh Tomato',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      product6,
-  },
-  {
-    OrderID: 345653,
-    CustomerName: 'Carson Darrin',
-    TotalAmount: 56.34,
-    OrderItems: 'Butter Scotch',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product5,
-  },
-  {
-    OrderID: 390457,
-    CustomerName: 'Fran Perez',
-    TotalAmount: 93.31,
-    OrderItems: 'Candy Gucci',
-    Location: 'New York',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product7,
-  },
-  {
-    OrderID: 893486,
-    CustomerName: 'Anika Viseer',
-    TotalAmount: 93.31,
-    OrderItems: 'Night Lamp',
-    Location: 'Germany',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 748975,
-    CustomerName: 'Miron Vitold',
-    TotalAmount: 23.99,
-    OrderItems: 'Healthcare Erbology',
-    Location: 'Spain',
-    Status: 'rejected',
-    StatusBg: 'red',
-    ProductImage:
-      product1,
-  },
-  {
-    OrderID: 94757,
-    CustomerName: 'Omar Darobe',
-    TotalAmount: 95.99,
-    OrderItems: 'Makeup Lancome Rouge',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product2,
-  },
-  {
-    OrderID: 944895,
-    CustomerName: 'Lulia albu',
-    TotalAmount: 17.99,
-    OrderItems: 'Skincare',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product3,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Penjani',
-    TotalAmount: 59.99,
-    OrderItems: 'Headphone',
-    Location: 'USA',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Jie Yan',
-    TotalAmount: 87.99,
-    OrderItems: 'Shoes',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 38489,
-    CustomerName: 'Miron',
-    TotalAmount: 87.99,
-    OrderItems: 'Ice Cream',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
-  },
-  {
-    OrderID: 24546,
-    CustomerName: 'Frank',
-    TotalAmount: 84.99,
-    OrderItems: 'Pan Cake',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 10248,
-    CustomerName: 'Vinet',
+//     TotalAmount: 32.38,
+//     OrderItems: 'Fresh Tomato',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       product6,
+//   },
+//   {
+//     OrderID: 345653,
+//     CustomerName: 'Carson Darrin',
+//     TotalAmount: 56.34,
+//     OrderItems: 'Butter Scotch',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product5,
+//   },
+//   {
+//     OrderID: 390457,
+//     CustomerName: 'Fran Perez',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Candy Gucci',
+//     Location: 'New York',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product7,
+//   },
+//   {
+//     OrderID: 893486,
+//     CustomerName: 'Anika Viseer',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Night Lamp',
+//     Location: 'Germany',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 748975,
+//     CustomerName: 'Miron Vitold',
+//     TotalAmount: 23.99,
+//     OrderItems: 'Healthcare Erbology',
+//     Location: 'Spain',
+//     Status: 'rejected',
+//     StatusBg: 'red',
+//     ProductImage:
+//       product1,
+//   },
+//   {
+//     OrderID: 94757,
+//     CustomerName: 'Omar Darobe',
+//     TotalAmount: 95.99,
+//     OrderItems: 'Makeup Lancome Rouge',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product2,
+//   },
+//   {
+//     OrderID: 944895,
+//     CustomerName: 'Lulia albu',
+//     TotalAmount: 17.99,
+//     OrderItems: 'Skincare',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product3,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Penjani',
+//     TotalAmount: 59.99,
+//     OrderItems: 'Headphone',
+//     Location: 'USA',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Jie Yan',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Shoes',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 38489,
+//     CustomerName: 'Miron',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Ice Cream',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
+//   },
+//   {
+//     OrderID: 24546,
+//     CustomerName: 'Frank',
+//     TotalAmount: 84.99,
+//     OrderItems: 'Pan Cake',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 10248,
+//     CustomerName: 'Vinet',
 
-    TotalAmount: 32.38,
-    OrderItems: 'Fresh Tomato',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      product6,
-  },
-  {
-    OrderID: 345653,
-    CustomerName: 'Carson Darrin',
-    TotalAmount: 56.34,
-    OrderItems: 'Butter Scotch',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product5,
-  },
-  {
-    OrderID: 390457,
-    CustomerName: 'Fran Perez',
-    TotalAmount: 93.31,
-    OrderItems: 'Candy Gucci',
-    Location: 'New York',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product7,
-  },
-  {
-    OrderID: 893486,
-    CustomerName: 'Anika Viseer',
-    TotalAmount: 93.31,
-    OrderItems: 'Night Lamp',
-    Location: 'Germany',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 748975,
-    CustomerName: 'Miron Vitold',
-    TotalAmount: 23.99,
-    OrderItems: 'Healthcare Erbology',
-    Location: 'Spain',
-    Status: 'rejected',
-    StatusBg: 'red',
-    ProductImage:
-      product1,
-  },
-  {
-    OrderID: 94757,
-    CustomerName: 'Omar Darobe',
-    TotalAmount: 95.99,
-    OrderItems: 'Makeup Lancome Rouge',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      product2,
-  },
-  {
-    OrderID: 944895,
-    CustomerName: 'Lulia albu',
-    TotalAmount: 17.99,
-    OrderItems: 'Skincare',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      product3,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Penjani',
-    TotalAmount: 59.99,
-    OrderItems: 'Headphone',
-    Location: 'USA',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      product4,
-  },
-  {
-    OrderID: 845954,
-    CustomerName: 'Jie Yan',
-    TotalAmount: 87.99,
-    OrderItems: 'Shoes',
-    Location: 'USA',
-    Status: 'pending',
-    StatusBg: '#FB9678',
-    ProductImage:
-      'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-  {
-    OrderID: 38489,
-    CustomerName: 'Miron',
-    TotalAmount: 87.99,
-    OrderItems: 'Ice Cream',
-    Location: 'USA',
-    Status: 'active',
-    StatusBg: '#03C9D7',
-    ProductImage:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
-  },
-  {
-    OrderID: 24546,
-    CustomerName: 'Frank',
-    TotalAmount: 84.99,
-    OrderItems: 'Pan Cake',
-    Location: 'Delhi',
-    Status: 'complete',
-    StatusBg: '#8BE78B',
-    ProductImage:
-      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
-  },
-  {
-    OrderID: 874534,
-    CustomerName: 'Danai',
-    TotalAmount: 122.99,
-    OrderItems: 'Watch',
-    Location: 'USA',
-    Status: 'canceled',
-    StatusBg: '#FF5C8E',
-    ProductImage:
-      'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
-  },
-];
+//     TotalAmount: 32.38,
+//     OrderItems: 'Fresh Tomato',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       product6,
+//   },
+//   {
+//     OrderID: 345653,
+//     CustomerName: 'Carson Darrin',
+//     TotalAmount: 56.34,
+//     OrderItems: 'Butter Scotch',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product5,
+//   },
+//   {
+//     OrderID: 390457,
+//     CustomerName: 'Fran Perez',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Candy Gucci',
+//     Location: 'New York',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product7,
+//   },
+//   {
+//     OrderID: 893486,
+//     CustomerName: 'Anika Viseer',
+//     TotalAmount: 93.31,
+//     OrderItems: 'Night Lamp',
+//     Location: 'Germany',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 748975,
+//     CustomerName: 'Miron Vitold',
+//     TotalAmount: 23.99,
+//     OrderItems: 'Healthcare Erbology',
+//     Location: 'Spain',
+//     Status: 'rejected',
+//     StatusBg: 'red',
+//     ProductImage:
+//       product1,
+//   },
+//   {
+//     OrderID: 94757,
+//     CustomerName: 'Omar Darobe',
+//     TotalAmount: 95.99,
+//     OrderItems: 'Makeup Lancome Rouge',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       product2,
+//   },
+//   {
+//     OrderID: 944895,
+//     CustomerName: 'Lulia albu',
+//     TotalAmount: 17.99,
+//     OrderItems: 'Skincare',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       product3,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Penjani',
+//     TotalAmount: 59.99,
+//     OrderItems: 'Headphone',
+//     Location: 'USA',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       product4,
+//   },
+//   {
+//     OrderID: 845954,
+//     CustomerName: 'Jie Yan',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Shoes',
+//     Location: 'USA',
+//     Status: 'pending',
+//     StatusBg: '#FB9678',
+//     ProductImage:
+//       'https://cdn.shopclues.com/images1/thumbnails/104158/320/320/148648730-104158193-1592481791.jpg',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+//   {
+//     OrderID: 38489,
+//     CustomerName: 'Miron',
+//     TotalAmount: 87.99,
+//     OrderItems: 'Ice Cream',
+//     Location: 'USA',
+//     Status: 'active',
+//     StatusBg: '#03C9D7',
+//     ProductImage:
+//       'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/dairy-free-ice-cream-eae372d.jpg',
+//   },
+//   {
+//     OrderID: 24546,
+//     CustomerName: 'Frank',
+//     TotalAmount: 84.99,
+//     OrderItems: 'Pan Cake',
+//     Location: 'Delhi',
+//     Status: 'complete',
+//     StatusBg: '#8BE78B',
+//     ProductImage:
+//       'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80',
+//   },
+//   {
+//     OrderID: 874534,
+//     CustomerName: 'Danai',
+//     TotalAmount: 122.99,
+//     OrderItems: 'Watch',
+//     Location: 'USA',
+//     Status: 'canceled',
+//     StatusBg: '#FF5C8E',
+//     ProductImage:
+//       'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pop-womens-garmin-watches-1641919013.jpg?crop=0.502xw:1.00xh;0.250xw,0&resize=640:*',
+//   },
+// ];
 
 export const scheduleData = [
   {
