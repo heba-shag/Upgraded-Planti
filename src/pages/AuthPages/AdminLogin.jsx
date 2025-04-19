@@ -44,6 +44,7 @@ console.log(adminLoginApi.addLogin());
             navigation('/ecommerce');
             
         }catch(err){
+            
             console.log('hi');
             // setEmailError(err.response.data.errorMessage);
         }
