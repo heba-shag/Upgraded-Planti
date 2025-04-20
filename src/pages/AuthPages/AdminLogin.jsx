@@ -26,12 +26,12 @@ export default function AdminLogIn() {
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
-        setEmailError(null); // إزالة رسالة الخطأ عند التعديل
+        setEmailError(null); 
     };
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
-        setPasswordError(null); // إزالة رسالة الخطأ عند التعديل
+        setPasswordError(null);
     };
 
     async function Submit(e) {
