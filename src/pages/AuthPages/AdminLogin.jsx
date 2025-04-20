@@ -1,82 +1,108 @@
-import {  useState } from "react";
-import { FaCheckSquare, FaRegCheckSquare, FaRegUserCircle } from "react-icons/fa";
+import { useState } from "react";
+import { FaRegUserCircle } from "react-icons/fa";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import '../AuthPages/logInStyle.css';
 
+export default function AdminLogIn() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [emailError, setEmailError] = useState(null);
+    const [passwordError, setPasswordError] = useState(null);
+    const [accept, setAccept] = useState(false);
+    
+    // Multiple environment setup
+    const isDev = process.env.NODE_ENV === 'development';
+    const adminLoginApi = {
+        baseLoginUrl:isDev? process.env.REACT_APP_API_LOGIN_URL:process.env.REACT_APP_API_LOGIN_URL,
+        addLogin: () => `${adminLoginApi.baseLoginUrl}/Login`
+    };
 
-export default function AdminLogIn(){
-    const [email,setEmail]=useState("");
-    const [password,setPassword]=useState("");
+    const navigation = useNavigate();
+    const cookie = new Cookies();
+    const UserNow = useStateContext();
 
-    // multiple environment
-    let isDev=process.env.NODE_ENV === 'development';
-    const adminLoginApi = isDev? {
-        baseLoginUrl: process.env.REACT_APP_API_LOGIN_URL,
-        addLogin:()=>{return (`${adminLoginApi.baseLoginUrl}/Login`)},
-    }:{
-        baseLoginUrl: process.env.REACT_APP_API_LOGIN_URL,
-        addLogin:()=>{return (`${adminLoginApi.baseLoginUrl}/Login`)},
-    }
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        setEmailError(null); // إزالة رسالة الخطأ عند التعديل
+    };
 
-    let [emailError,setEmailError]=useState("");
-    let navigation=useNavigate();
-    //cookie
-    let cookie=new Cookies();
-    //context
-    const UserNow=useStateContext();
-console.log(adminLoginApi.addLogin());
-    async function Submit(e){
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        setPasswordError(null); // إزالة رسالة الخطأ عند التعديل
+    };
+
+    async function Submit(e) {
         e.preventDefault();
-        try{
-            let res =await axios.post(adminLoginApi.addLogin(),{
-                email:email,
+        setAccept(true);
+        
+        try {
+            const res = await axios.post(adminLoginApi.addLogin(), {
+                email: email,
                 password: password,
             });
 
-            let token=res.data.token.token;
-            let userDetails=res.data;
-            cookie.set("authData",userDetails);
-            UserNow.setAuth({token,userDetails});
-            console.log(UserNow);
+            const token = res.data.token.token;
+            const userDetails = res.data;
+            
+            cookie.set("authData", userDetails);
+            UserNow.setAuth({ token, userDetails });
             navigation('/ecommerce');
             
-        }catch(err){
-            
-            console.log('hi');
-            // setEmailError(err.response.data.errorMessage);
+        } catch (err) {
+            console.log(err.response?.status);
+            if (err.response?.status === 404) {
+                setEmailError("Email does not exist");
+            } else if (err.response?.status === 400) {
+                setPasswordError("Wrong Password");
+            }
         }
     }
-    return(
+
+    return (
         <div className='parent'>
             <div className="register">
                 <form onSubmit={Submit}>
-                    <div className="done-btn"  style={{textAlign:"center"}}>
-                        <FaRegUserCircle className="icon"/>
+                    <div className="done-btn" style={{ textAlign: "center" }}>
+                        <FaRegUserCircle className="icon" />
                     </div>
-                    
 
-                            <div className="inputInfo adminInfo">
-                                <label htmlFor="email">Email:</label>
-                                <input id="email" placeholder="Email.." type="email" required value={email} onChange={(e)=> setEmail(e.target.value)}/>
-                                {/* {accept && emailError===422 && (<p className="error">email is already been taken</p>)} */}
-                            </div>
+                    <div className="inputInfo adminInfo">
+                        <label htmlFor="email">Email:</label>
+                        <input 
+                            id="email" 
+                            placeholder="Email.." 
+                            type="email" 
+                            required 
+                            value={email} 
+                            onChange={handleEmailChange} 
+                        />
+                        {emailError && (
+                            <p className="error">{emailError}</p>
+                        )}
+                    </div>
 
-                            <div className="inputInfo adminInfo">
-                                <label htmlFor="password">Password:</label>
-                                <input id="password" placeholder="Enter password.." type="password" value={password} onChange={(e)=> setPassword(e.target.value)} />
-                                {/* {password.length < 8 && accept && (<p className="error">should be 8 characters or more</p>)} */}
-                            </div>
-                    
-                    
+                    <div className="inputInfo adminInfo">
+                        <label htmlFor="password">Password:</label>
+                        <input 
+                            id="password" 
+                            placeholder="Enter password.." 
+                            type="password" 
+                            value={password} 
+                            onChange={handlePasswordChange} 
+                        />
+                        {passwordError && (
+                            <p className="error">{passwordError}</p>
+                        )}
+                    </div>
 
-                    <div className="done-btn"  style={{textAlign:"center"}}>
-                        <button type="submit">login</button>
+                    <div className="done-btn" style={{ textAlign: "center" }}>
+                        <button type="submit">Login</button>
                     </div>
                 </form>
             </div>
         </div>
-    )
+    );
 }
