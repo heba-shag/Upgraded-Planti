@@ -55,16 +55,16 @@ const Customers = () => {
   // API configuration
   const clientApi = isDev ? {
     baseUrl: process.env.REACT_APP_API_CLIENT_URL,
-    deleteClient: (id) => `${process.env.REACT_APP_API_CLIENT_URL}/Remove?id=${id}`,
-    updateClient: (id) => `${process.env.REACT_APP_API_CLIENT_URL}/Update?id=${id}`,
-    getAllClient: () => `${process.env.REACT_APP_API_CLIENT_URL}/GetAll?pageSize=1000000000&pageNum=0`,
-    addClient: () => `${process.env.REACT_APP_API_CLIENT_URL}/Add`,
+    deleteClient: (id) => `${clientApi.baseUrl}/Remove?id=${id}`,
+    updateClient: (id) => `${clientApi.baseUrl}/Update?id=${id}`,
+    getAllClient: () => `${clientApi.baseUrl}/GetAll?pageSize=1000000000&pageNum=0`,
+    addClient: () => `${clientApi.baseUrl}/Add`,
   } : {
     baseUrl: process.env.REACT_APP_API_CLIENT_URL,
-    deleteClient: (id) => `${process.env.REACT_APP_API_CLIENT_URL}/Remove?id=${id}`,
-    updateClient: (id) => `${process.env.REACT_APP_API_CLIENT_URL}/Update?id=${id}`,
-    getAllClient: () => `${process.env.REACT_APP_API_CLIENT_URL}/GetAll?pageSize=1000000000&pageNum=0`,
-    addClient: () => `${process.env.REACT_APP_API_CLIENT_URL}/Add`,
+    deleteClient: (id) => `${clientApi.baseUrl}/Remove?id=${id}`,
+    updateClient: (id) => `${clientApi.baseUrl}/Update?id=${id}`,
+    getAllClient: () => `${clientApi.baseUrl}/GetAll?pageSize=1000000000&pageNum=0`,
+    addClient: () => `${clientApi.baseUrl}/Add`,
   };
 
   // Fetch customers data
