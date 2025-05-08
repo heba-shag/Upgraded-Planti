@@ -4,7 +4,7 @@ import { FiSettings } from 'react-icons/fi';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 import { Navbar, Footer, Sidebar, ThemeSettings } from './components';
-import { Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Customers, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor } from './pages';
+import { Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor } from './pages';
 import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
@@ -12,6 +12,8 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import AdminLogIn from './pages/AuthPages/AdminLogin';
 import PersistLogin from './PersistLogin';
 import ProtectedRoute from './contexts/ProtectedRoutes';
+import Customers from './pages/StorageThings/Customers';
+
 import GetAllFertilizer from './pages/Products/Fertilizer/GetAllFertilizers';
 import GetAllInsecticide from './pages/Products/Insecticide/GetAllInsecticide';
 import GetAllCutting from './pages/Products/Cutting/GetAllCutting';
@@ -112,11 +114,6 @@ const App = () => {
                   <Ecommerce />
                 </Layout>
               } />
-              <Route path="/ecommerce" element={
-                <Layout>
-                  <Ecommerce />
-                </Layout>
-              } />
               <Route path="/lands" element={
                 <Layout>
                   <MainLands />
@@ -191,16 +188,6 @@ const App = () => {
               <Route path="/customer" element={
                 <Layout>
                   <Customers />
-                </Layout>
-              } />
-              <Route path="/employees" element={
-                <Layout>
-                  <Employees />
-                </Layout>
-              } />
-              <Route path="/kanban" element={
-                <Layout>
-                  <Kanban />
                 </Layout>
               } />
 
