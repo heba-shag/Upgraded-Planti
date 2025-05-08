@@ -1,14 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from '../../../components';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
-import { BiEdit, BiDetail } from 'react-icons/bi';
-import { CgRemove } from 'react-icons/cg';
 import { MdOutlineAddTask } from 'react-icons/md';
-import Select from "react-select";
 
 const FlowerDepo = () => {
-  // تعريف الـ state
   const [flowerDepot, setFlowerDepot] = useState([]);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -27,15 +23,13 @@ const FlowerDepo = () => {
   const token = userNow.auth.token;
   const isDev = process.env.NODE_ENV === 'development';
 
-  // تعريف الـ APIs
   const APIS = {
-    baseUrl:isDev? process.env.REACT_APP_API_FLOWER_URL:process.env.REACT_APP_API_FLOWER_URL,
+    baseUrl: isDev ? process.env.REACT_APP_API_FLOWER_URL : process.env.REACT_APP_API_FLOWER_URL,
     getAllFlowerStore: () => `${APIS.baseUrl}/GetAllFlowerStore?pageSize=1000000000&pageNum=0`,
     AddExternalFlower: () => `${APIS.baseUrl}/AddExternalFlower?flowerStoreId=${selectedStored}&count=${storedCount}`,
     AddTrashedFlower: () => `${APIS.baseUrl}/AddTrashedFlower?flowerStoreId=${selectedStored}&trashedCount=${storedCount}`
   };
 
-  // جلب البيانات
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -81,9 +75,6 @@ const FlowerDepo = () => {
     setFilteredData(filtered);
   };
 
-  
-
-  // إضافة زهور خارجية
   const addFunction = async () => {
     try {
       const response = await axios.post(APIS.AddExternalFlower(), null, {
@@ -102,7 +93,6 @@ const FlowerDepo = () => {
     }
   };
 
-  // إضافة زهور تالفة
   const deleteFunction = async () => {
     try {
       const response = await axios.post(APIS.AddTrashedFlower(), null, {
@@ -133,14 +123,12 @@ const FlowerDepo = () => {
     setSelectedStored(event.target.value);
   };
 
-  // التصفح بين الصفحات
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // أعمدة الجدول
   const columns = [
     { field: 'code', headerText: 'Code', placeholder: 'Filter code' },
     { field: 'count', headerText: 'Count', placeholder: 'Filter count' },
@@ -158,7 +146,8 @@ const FlowerDepo = () => {
       <div className="flex justify-end mb-4">
         <button
           onClick={handleAddRole}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center"
+          style={{ width: '150px' }}
         >
           <MdOutlineAddTask className="mr-2" />
           Add new item
@@ -178,7 +167,7 @@ const FlowerDepo = () => {
                     <span>{column.headerText}</span>
                     <button
                       onClick={() => handleSort(column.field)}
-                      className="ml-2 p-1 hover:bg-gray-200 rounded"
+                      className="ml-2 p-1 hover:bg-gray-200 rounded w-6 h-6 flex items-center justify-center"
                     >
                       {sortConfig.key === column.field && sortConfig.direction === 'ascending' ? '↑' : '↓'}
                     </button>
@@ -207,22 +196,22 @@ const FlowerDepo = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 space-x-1">
         {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }, (_, i) => (
           <button
             key={i + 1}
             onClick={() => paginate(i + 1)}
-            className={`px-4 py-2 mx-1 ${
-              currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            } rounded-md hover:bg-blue-600 hover:text-white transition-colors duration-200`}
+            className={`w-8 h-8 flex items-center justify-center text-sm ${
+              currentPage === i + 1 
+                ? 'bg-blue-500 text-white font-medium' 
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            } rounded-md transition-colors duration-200`}
           >
             {i + 1}
           </button>
         ))}
       </div>
 
-      {/* نافذة إضافة الزهور */}
       {addRoleConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -279,7 +268,6 @@ const FlowerDepo = () => {
         </div>
       )}
 
-      {/* رسالة التنبيه */}
       {showDonemessage && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
           Operation completed successfully!

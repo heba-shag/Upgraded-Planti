@@ -347,7 +347,6 @@ const FertilizerMixToLand = () => {
     } catch (err) {
       console.error('Error moving to done:', err);
       setError(err.response?.data?.errorMessage || 'Failed to assign fertilizer to lands');
-      // Rollback the UI state
       fetchLands();
     } finally {
       setIsSubmitting(false);
@@ -383,7 +382,6 @@ const FertilizerMixToLand = () => {
     } catch (err) {
       console.error('Error removing from done:', err);
       setError(err.response?.data?.errorMessage || 'Failed to remove fertilizer assignment');
-      // Rollback the UI state
       fetchLands();
     } finally {
       setIsSubmitting(false);
@@ -513,8 +511,8 @@ const FertilizerMixToLand = () => {
         </div>
       )}
       
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '20px', alignItems: 'center' }}>
-        <div style={{ flex: 1 }}>
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: '250px' }}>
           <Select
             options={mixes.map(mix => ({
               value: mix.fertilizerMixDto.id,
@@ -534,6 +532,17 @@ const FertilizerMixToLand = () => {
           startIcon={<FaPlus />}
           onClick={handleAddFertilizer}
           disabled={isSubmitting}
+          sx={{
+            minWidth: '180px',
+            padding: '8px 16px',
+            fontSize: '0.875rem',
+            fontWeight: 'bold',
+            borderRadius: '8px',
+            border: '1px solid rgba(0, 0, 0, 0.23)',
+            '&:hover': {
+              borderColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }}
         >
           Add Fertilizer
         </Button>
@@ -543,6 +552,17 @@ const FertilizerMixToLand = () => {
           startIcon={<FaFilter />}
           onClick={() => setShowFilters(!showFilters)}
           disabled={isSubmitting}
+          sx={{
+            minWidth: '120px',
+            padding: '8px 16px',
+            fontSize: '0.875rem',
+            fontWeight: 'bold',
+            borderRadius: '8px',
+            border: '1px solid rgba(0, 0, 0, 0.23)',
+            '&:hover': {
+              borderColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }}
         >
           Filters
         </Button>
@@ -552,6 +572,18 @@ const FertilizerMixToLand = () => {
             variant="contained" 
             onClick={moveToDone}
             disabled={selectedLands.length === 0 || !selectedMix || isSubmitting}
+            sx={{
+              minWidth: '220px',
+              padding: '8px 16px',
+              fontSize: '0.875rem',
+              fontWeight: 'bold',
+              borderRadius: '8px',
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: '#1976d2'
+              }
+            }}
           >
             {isSubmitting ? 'Processing...' : `Mark as Done (${selectedLands.length})`}
           </Button>
@@ -565,9 +597,10 @@ const FertilizerMixToLand = () => {
           backgroundColor: '#f5f5f5', 
           borderRadius: '4px',
           display: 'flex',
-          gap: '20px'
+          gap: '16px',
+          flexWrap: 'wrap'
         }}>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: '250px' }}>
             <Select
               options={uniqueLandNames.map(name => ({ value: name, label: name }))}
               value={landFilter ? { value: landFilter, label: landFilter } : null}
@@ -577,7 +610,7 @@ const FertilizerMixToLand = () => {
               isDisabled={isSubmitting}
             />
           </div>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: '250px' }}>
             <Select
               options={uniqueMixNames.map(name => ({ value: name, label: name }))}
               value={mixFilter ? { value: mixFilter, label: mixFilter } : null}
@@ -594,6 +627,17 @@ const FertilizerMixToLand = () => {
               setMixFilter(null);
             }}
             disabled={isSubmitting}
+            sx={{
+              minWidth: '120px',
+              padding: '8px 16px',
+              fontSize: '0.875rem',
+              fontWeight: 'bold',
+              borderRadius: '8px',
+              border: '1px solid rgba(0, 0, 0, 0.23)',
+              '&:hover': {
+                borderColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }}
           >
             Clear Filters
           </Button>
@@ -656,7 +700,21 @@ const FertilizerMixToLand = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} disabled={isSubmitting}>
+          <Button 
+            onClick={handleCloseDialog} 
+            disabled={isSubmitting}
+            sx={{
+              minWidth: '100px',
+              padding: '8px 16px',
+              fontSize: '0.875rem',
+              fontWeight: 'bold',
+              borderRadius: '8px',
+              border: '1px solid rgba(0, 0, 0, 0.23)',
+              '&:hover': {
+                borderColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }}
+          >
             Cancel
           </Button>
           <Button 
@@ -664,6 +722,18 @@ const FertilizerMixToLand = () => {
             color="primary" 
             variant="contained"
             disabled={!newFertilizer.mixId || !newFertilizer.donumNum || isSubmitting}
+            sx={{
+              minWidth: '100px',
+              padding: '8px 16px',
+              fontSize: '0.875rem',
+              fontWeight: 'bold',
+              borderRadius: '8px',
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: '#1976d2'
+              }
+            }}
           >
             {isSubmitting ? 'Saving...' : 'Save'}
           </Button>
@@ -671,7 +741,7 @@ const FertilizerMixToLand = () => {
       </Dialog>
       
       <DndProvider backend={HTML5Backend}>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           <Column
             title="To Do"
             tasks={selectedMix ? filteredLandsByMix.todo : filteredTasks.todo}

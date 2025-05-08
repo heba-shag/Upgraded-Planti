@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Typography, Button as MuiButton, MenuItem } from '@mui/material';
+import { 
+  Box, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogTitle, 
+  IconButton, 
+  TextField, 
+  Typography, 
+  Button as MuiButton, 
+  CircularProgress,
+  MenuItem,
+  Grid
+} from '@mui/material';
 import { Header } from '../../components';
 import { BsPencil, BsPlus, BsTrash } from 'react-icons/bs';
+import { BiCheckCircle, BiXCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { useStateContext } from '../../contexts/ContextProvider';
 
@@ -25,6 +39,12 @@ const Flowers = () => {
         cuttingLandId: ''
     });
     const [runUseEffect, setRun] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [notification, setNotification] = useState({
+        show: false,
+        message: '',
+        type: 'success'
+    });
 
     // Context and API config
     const userNow = useStateContext();
@@ -36,15 +56,23 @@ const Flowers = () => {
         getAllFlower: () => `${APIS.baseFlowerUrl}/GetAll`,
         deleteFlower: (id) => `${APIS.baseFlowerUrl}/Remove?id=${id}`,
         addFlower: () => `${APIS.baseFlowerUrl}/Add`,
-        updateFlower: (id) => `${APIS.baseFlowerUrl}/Update?id=${id}`,
+        updateFlower: () => `${APIS.baseFlowerUrl}/Update`,
 
         baseCuttingLandUrl: isDev ? process.env.REACT_APP_API_CUTTINGLAND_URL : process.env.REACT_APP_API_CUTTINGLAND_URL,
         getAllCuttingLand: () => `${APIS.baseCuttingLandUrl}/GetAll?pageSize=1000000000&pageNum=0`,
     };
 
+    const showNotification = (message, type = 'success') => {
+        setNotification({ show: true, message, type });
+        setTimeout(() => {
+            setNotification({ ...notification, show: false });
+        }, 3000);
+    };
+
     // Fetch data
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const [flowerRes, cuttingLandRes] = await Promise.all([
                     axios.get(APIS.getAllFlower(), { headers: { Authorization: token } }),
@@ -54,7 +82,9 @@ const Flowers = () => {
                 setCuttingLands(cuttingLandRes.data.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
-                alert('Failed to load data');
+                showNotification('Failed to load data', 'error');
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -131,39 +161,46 @@ const Flowers = () => {
 
     const handleEditSave = async () => {
         try {
+            setLoading(true);
             const { id, ...dataToSend } = tempData;
-            await axios.post(APIS.updateFlower(id,dataToSend), null, {
+            await axios.post(`${APIS.updateFlower()}?id=${id}&count=${dataToSend.count}&long=${dataToSend.long}&worker=${dataToSend.worker}&date=${new Date().toISOString(dataToSend.date)}&note=${dataToSend.note}`, null, { 
                 headers: { Authorization: token }
             });
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            alert('تم التعديل بنجاح');
+            showNotification('Record updated successfully');
         } catch (err) {
             console.error(err);
-            alert('فشل في التعديل');
+            showNotification('Failed to update record', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
     // Delete function
     const handleDelete = async (id) => {
-        if (!window.confirm('هل أنت متأكد من حذف هذا السجل؟')) return;
         
         try {
+            setLoading(true);
             await axios.delete(APIS.deleteFlower(id), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            alert('تم الحذف بنجاح');
+            showNotification('Record deleted successfully');
         } catch (err) {
             console.error(err);
-            alert('فشل في الحذف');
+            showNotification('Failed to delete record', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
     // Add functions
     const handleAddSubmit = async () => {
+        
         try {
+            setLoading(true);
             const dataToSend = {
                 date: newData.date,
                 worker: newData.worker,
@@ -190,49 +227,72 @@ const Flowers = () => {
                 }]
             });
             setRun(prev => prev + 1);
-            alert('تمت الإضافة بنجاح');
+            showNotification('Record added successfully');
         } catch (err) {
             console.error(err);
-            alert('فشل في الإضافة');
+            showNotification('Failed to add record', 'error');
+        } finally {
+            setLoading(false);
         }
-    };
-
-    const handleInputChange = (field, value) => {
-        setNewData(prev => ({ ...prev, [field]: value }));
     };
 
     // Columns configuration
     const columns = [
         { field: 'date', headerName: 'Date', width: 150 },
         { field: 'worker', headerName: 'Worker', width: 150 },
-        { field: 'count', headerName: 'Count', width: 100 },
-        { field: 'long', headerName: 'Length', width: 100 },
+        { field: 'count', headerName: 'Count', width: 100, align: 'center', headerAlign: 'center' },
+        { field: 'long', headerName: 'Length', width: 100, align: 'center', headerAlign: 'center' },
         { field: 'note', headerName: 'Note', width: 200 },
         { field: 'landTitle', headerName: 'Land', width: 150 },
         {
             field: 'actions',
             headerName: 'Actions',
-            width: 150,
+            width: 120,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
                 
                 return (
-                    <Box>
+                    <Box display="flex">
                         <IconButton 
-                            color="primary"
                             onClick={() => handleEdit(params.row)}
+                            size="small"
+                            disabled={loading}
+                            sx={{ 
+                                color: 'primary.main',
+                                '&:hover': { 
+                                    backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                                },
+                                '&:disabled': {
+                                    color: 'rgba(0, 0, 0, 0.26)'
+                                }
+                            }}
                         >
-                            <BsPencil />
+                            <BsPencil size={14} />
                         </IconButton>
                         <IconButton 
-                            color="error"
                             onClick={() => handleDelete(params.row.id)}
+                            size="small"
+                            disabled={loading}
+                            sx={{ 
+                                color: 'error.main',
+                                '&:hover': { 
+                                    backgroundColor: 'rgba(244, 67, 54, 0.08)',
+                                },
+                                '&:disabled': {
+                                    color: 'rgba(0, 0, 0, 0.26)'
+                                }
+                            }}
                         >
-                            <BsTrash />
+                            <BsTrash size={14} />
                         </IconButton>
                     </Box>
                 );
-            }
+            },
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            headerAlign: 'center',
+            align: 'center',
         },
         {
             field: 'addNew',
@@ -247,11 +307,21 @@ const Flowers = () => {
                         color="primary"
                         startIcon={<BsPlus />}
                         onClick={() => setAddModalOpen(true)}
+                        disabled={loading}
+                        sx={{ 
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontSize: '0.8125rem'
+                        }}
                     >
                         Add New
                     </MuiButton>
                 );
-            }
+            },
+            sortable: false,
+            filterable: false
         }
     ];
 
@@ -259,7 +329,23 @@ const Flowers = () => {
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <Header category="Page" title="Flowers Management" />
 
-            <div style={{ height: 600, width: '100%' }}>
+            {/* Notification */}
+            {notification.show && (
+                <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
+                    notification.type === 'success' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                }`}>
+                    {notification.type === 'success' ? (
+                        <BiCheckCircle className="w-6 h-6 mr-2" />
+                    ) : (
+                        <BiXCircle className="w-6 h-6 mr-2" />
+                    )}
+                    <span>{notification.message}</span>
+                </div>
+            )}
+
+            <Box sx={{ height: 600, width: '100%' }}>
                 <DataGrid
                     rows={prepareRows()}
                     columns={columns}
@@ -269,102 +355,183 @@ const Flowers = () => {
                     components={{
                         Toolbar: GridToolbar,
                     }}
+                    loading={loading}
                     getRowClassName={(params) => {
                         if (params.row.isAddNew) return 'add-new-row';
                         return '';
                     }}
                     sx={{
-                        '& .add-new-row': { backgroundColor: '#e8f5e9' }
+                        '& .add-new-row': { 
+                            backgroundColor: '#e8f5e9',
+                            '&:hover': {
+                                backgroundColor: '#d0e0d0'
+                            }
+                        },
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f0f0f0',
+                            fontWeight: 'bold',
+                        },
+                        '& .MuiDataGrid-cell': {
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '0 8px'
+                        },
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                            fontWeight: 'bold',
+                            fontSize: '0.875rem'
+                        },
+                        '& .MuiDataGrid-columnHeader': {
+                            backgroundColor: '#f0f0f0',
+                            '&:hover': {
+                                backgroundColor: '#e0e0e0'
+                            }
+                        }
                     }}
                 />
-            </div>
+            </Box>
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Add New Flower Record</DialogTitle>
-                <DialogContent>
-                    <Box sx={{ mt: 2 }}>
-                        <TextField
-                            select
-                            label="Land"
-                            value={newData.cuttingLandId}
-                            fullWidth
-                            margin="normal"
-                            onChange={(e) => setNewData({...newData, cuttingLandId: e.target.value})}
-                        >
-                            <MenuItem value="">Select Land</MenuItem>
-                            {cuttingLands.map((land) => (
-                                <MenuItem key={land.id} value={land.id}>
-                                    {land.land?.title || `Land ${land.id}`}
-                                </MenuItem>
-                            ))}
-                        </TextField>
+                <DialogTitle sx={{ p: 3, fontSize: '1.2rem', fontWeight: 'bold' }}>Add New Flower Record</DialogTitle>
+                <DialogContent sx={{ p: 3 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    select
+                                    label="Land"
+                                    value={newData.cuttingLandId}
+                                    fullWidth
+                                    size="medium"
+                                    onChange={(e) => setNewData({...newData, cuttingLandId: e.target.value})}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '8px',
+                                            height: '48px'
+                                        }
+                                    }}
+                                >
+                                    <MenuItem value="">Select Land</MenuItem>
+                                    {cuttingLands.map((land) => (
+                                        <MenuItem key={land.id} value={land.id}>
+                                            {land.land?.title || `Land ${land.id}`}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Date"
+                                    type="date"
+                                    value={newData.date}
+                                    onChange={(e) => setNewData({...newData, date: e.target.value})}
+                                    fullWidth
+                                    size="medium"
+                                    InputLabelProps={{ shrink: true }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '8px',
+                                            height: '48px'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Worker"
+                                    value={newData.worker}
+                                    onChange={(e) => setNewData({...newData, worker: e.target.value})}
+                                    fullWidth
+                                    size="medium"
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '8px',
+                                            height: '48px'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
 
-                        <TextField
-                            label="Date"
-                            type="date"
-                            value={newData.date}
-                            onChange={(e) => setNewData({...newData, date: e.target.value})}
-                            fullWidth
-                            margin="normal"
-                            InputLabelProps={{ shrink: true }}
-                        />
-
-                        <TextField
-                            label="Worker"
-                            value={newData.worker}
-                            onChange={(e) => setNewData({...newData, worker: e.target.value})}
-                            fullWidth
-                            margin="normal"
-                        />
-
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Flowers</Typography>
+                        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold', fontSize: '1.1rem' }}>Flowers</Typography>
                         
                         {newData.flowers.map((flower, index) => (
                             <Box key={index} sx={{ 
                                 display: 'flex', 
                                 flexDirection: 'column',
                                 gap: 2,
-                                mb: 3,
                                 p: 2,
                                 border: '1px solid #eee',
-                                borderRadius: 1
+                                borderRadius: '8px',
+                                backgroundColor: '#f9f9f9'
                             }}>
-                                <Box sx={{ display: 'flex', gap: 2 }}>
-                                    <TextField
-                                        label="Count"
-                                        type="number"
-                                        value={flower.count}
-                                        onChange={(e) => handleFlowerChange(index, 'count', e.target.value)}
-                                        sx={{ flex: 1 }}
-                                    />
-
-                                    <TextField
-                                        label="Length"
-                                        type="number"
-                                        value={flower.long}
-                                        onChange={(e) => handleFlowerChange(index, 'long', e.target.value)}
-                                        sx={{ flex: 1 }}
-                                    />
-
-                                    <IconButton 
-                                        color="error"
-                                        onClick={() => handleRemoveFlower(index)}
-                                        disabled={newData.flowers.length <= 1}
-                                        sx={{ alignSelf: 'center' }}
-                                    >
-                                        <BsTrash />
-                                    </IconButton>
-                                </Box>
-
-                                <TextField
-                                    label="Note"
-                                    value={flower.note}
-                                    onChange={(e) => handleFlowerChange(index, 'note', e.target.value)}
-                                    fullWidth
-                                    multiline
-                                    rows={2}
-                                />
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item xs={12} sm={5}>
+                                        <TextField
+                                            label="Count"
+                                            type="number"
+                                            value={flower.count}
+                                            onChange={(e) => handleFlowerChange(index, 'count', e.target.value)}
+                                            fullWidth
+                                            size="medium"
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    borderRadius: '8px',
+                                                    height: '48px'
+                                                }
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={5}>
+                                        <TextField
+                                            label="Length"
+                                            type="number"
+                                            value={flower.long}
+                                            onChange={(e) => handleFlowerChange(index, 'long', e.target.value)}
+                                            fullWidth
+                                            size="medium"
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    borderRadius: '8px',
+                                                    height: '48px'
+                                                }
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={2} sx={{ textAlign: 'right' }}>
+                                        <IconButton 
+                                            color="error"
+                                            onClick={() => handleRemoveFlower(index)}
+                                            disabled={newData.flowers.length <= 1}
+                                            sx={{ 
+                                                backgroundColor: 'rgba(244, 67, 54, 0.08)',
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(244, 67, 54, 0.2)'
+                                                },
+                                                height: '48px',
+                                                width: '48px'
+                                            }}
+                                        >
+                                            <BsTrash size={16} />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            label="Note"
+                                            value={flower.note}
+                                            onChange={(e) => handleFlowerChange(index, 'note', e.target.value)}
+                                            fullWidth
+                                            multiline
+                                            rows={2}
+                                            size="medium"
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    borderRadius: '8px'
+                                                }
+                                            }}
+                                        />
+                                    </Grid>
+                                </Grid>
                             </Box>
                         ))}
 
@@ -373,54 +540,80 @@ const Flowers = () => {
                             onClick={handleAddFlower}
                             startIcon={<BsPlus />}
                             fullWidth
-                            sx={{ mt: 2 }}
+                            sx={{ 
+                                py: 1.5,
+                                borderRadius: '8px',
+                                fontSize: '0.875rem',
+                                fontWeight: 'bold',
+                                borderColor: '#ddd',
+                                '&:hover': {
+                                    borderColor: '#bbb'
+                                }
+                            }}
                         >
                             Add Another Flower
                         </MuiButton>
                     </Box>
                 </DialogContent>
-                <DialogActions>
-                    <MuiButton onClick={() => setAddModalOpen(false)}>Cancel</MuiButton>
+                <DialogActions sx={{ p: 3, borderTop: '1px solid #eee' }}>
+                    <MuiButton 
+                        onClick={() => setAddModalOpen(false)}
+                        disabled={loading}
+                        sx={{ 
+                            px: 3,
+                            py: 1,
+                            borderRadius: '8px',
+                            border: '1px solid #ddd',
+                            color: 'text.secondary',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: '#f5f5f5'
+                            }
+                        }}
+                    >
+                        Cancel
+                    </MuiButton>
                     <MuiButton 
                         onClick={handleAddSubmit} 
                         color="primary"
                         variant="contained"
-                        disabled={!newData.cuttingLandId || !newData.date || !newData.worker}
+                        disabled={loading || !newData.cuttingLandId || !newData.date || !newData.worker}
+                        sx={{
+                            px: 3,
+                            py: 1,
+                            borderRadius: '8px',
+                            fontWeight: 'bold',
+                            boxShadow: 'none',
+                            '&:hover': {
+                                backgroundColor: '#1976d2',
+                                boxShadow: 'none'
+                            }
+                        }}
                     >
-                        Save
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Save'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
 
             {/* Edit Modal */}
-            <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-                <DialogTitle>Edit Flower Record</DialogTitle>
-                <DialogContent>
-                    <Box sx={{ mt: 2 }}>
-                        {/* <TextField
-                            select
-                            label="Land"
-                            value={tempData.cuttingLandId || ''}
-                            onChange={(e) => setTempData({...tempData, cuttingLandId: e.target.value})}
-                            fullWidth
-                            margin="normal"
-                        >
-                            <MenuItem value="">Select Land</MenuItem>
-                            {cuttingLands.map((land) => (
-                                <MenuItem key={land.id} value={land.id}>
-                                    {land.land?.title || `Land ${land.id}`}
-                                </MenuItem>
-                            ))}
-                        </TextField> */}
-
+            <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="sm" fullWidth>
+                <DialogTitle sx={{ p: 3, fontSize: '1.2rem', fontWeight: 'bold' }}>Edit Flower Record</DialogTitle>
+                <DialogContent sx={{ p: 3 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <TextField
                             label="Date"
                             type="date"
                             value={tempData.date || ''}
                             onChange={(e) => setTempData({...tempData, date: e.target.value})}
                             fullWidth
-                            margin="normal"
+                            size="medium"
                             InputLabelProps={{ shrink: true }}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: '8px',
+                                    height: '48px'
+                                }
+                            }}
                         />
 
                         <TextField
@@ -428,94 +621,102 @@ const Flowers = () => {
                             value={tempData.worker || ''}
                             onChange={(e) => setTempData({...tempData, worker: e.target.value})}
                             fullWidth
-                            margin="normal"
+                            size="medium"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: '8px',
+                                    height: '48px'
+                                }
+                            }}
                         />
+
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="Count"
+                                    type='number'
+                                    value={tempData.count || ''}
+                                    onChange={(e) => setTempData({...tempData, count: e.target.value})}
+                                    fullWidth
+                                    size="medium"
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '8px',
+                                            height: '48px'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="Length"
+                                    type='number'
+                                    value={tempData.long || ''}
+                                    onChange={(e) => setTempData({...tempData, long: e.target.value})}
+                                    fullWidth
+                                    size="medium"
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '8px',
+                                            height: '48px'
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+
                         <TextField
                             label="Note"
                             value={tempData.note || ''}
                             onChange={(e) => setTempData({...tempData, note: e.target.value})}
                             fullWidth
-                            margin="normal"
+                            multiline
+                            rows={3}
+                            size="medium"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: '8px'
+                                }
+                            }}
                         />
-
-                        <TextField
-                            label="Long"
-                            type='number'
-                            value={tempData.long || ''}
-                            onChange={(e) => setTempData({...tempData, long: e.target.value})}
-                            fullWidth
-                            margin="normal"
-                        />
-
-                        <TextField
-                            label="Count"
-                            type='number'
-                            value={tempData.long || ''}
-                            onChange={(e) => setTempData({...tempData, count: e.target.value})}
-                            fullWidth
-                            margin="normal"
-                        />
-
-                        {/* {tempData.flowers?.map((flower, index) => (
-                            <Box key={index} sx={{ 
-                                display: 'flex', 
-                                flexDirection: 'column',
-                                gap: 2,
-                                mb: 3,
-                                p: 2,
-                                border: '1px solid #eee',
-                                borderRadius: 1
-                            }}>
-                                <Box sx={{ display: 'flex', gap: 2 }}>
-                                    <TextField
-                                        label="Count"
-                                        type="number"
-                                        value={flower.count || ''}
-                                        onChange={(e) => {
-                                            const updatedFlowers = [...tempData.flowers];
-                                            updatedFlowers[index].count = e.target.value;
-                                            setTempData({...tempData, flowers: updatedFlowers});
-                                        }}
-                                        sx={{ flex: 1 }}
-                                    />
-
-                                    <TextField
-                                        label="Length"
-                                        type="number"
-                                        value={flower.long || ''}
-                                        onChange={(e) => {
-                                            const updatedFlowers = [...tempData.flowers];
-                                            updatedFlowers[index].long = e.target.value;
-                                            setTempData({...tempData, flowers: updatedFlowers});
-                                        }}
-                                        sx={{ flex: 1 }}
-                                    />
-                                </Box>
-
-                                <TextField
-                                    label="Note"
-                                    value={flower.note || ''}
-                                    onChange={(e) => {
-                                        const updatedFlowers = [...tempData.flowers];
-                                        updatedFlowers[index].note = e.target.value;
-                                        setTempData({...tempData, flowers: updatedFlowers});
-                                    }}
-                                    fullWidth
-                                    multiline
-                                    rows={2}
-                                />
-                            </Box>
-                        ))} */}
                     </Box>
                 </DialogContent>
-                <DialogActions>
-                    <MuiButton onClick={handleEditCancel}>Cancel</MuiButton>
+                <DialogActions sx={{ p: 3, borderTop: '1px solid #eee' }}>
+                    <MuiButton 
+                        onClick={handleEditCancel}
+                        disabled={loading}
+                        sx={{ 
+                            px: 3,
+                            py: 1,
+                            borderRadius: '8px',
+                            border: '1px solid #ddd',
+                            color: 'text.secondary',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: '#f5f5f5'
+                            }
+                        }}
+                    >
+                        Cancel
+                    </MuiButton>
                     <MuiButton 
                         onClick={handleEditSave} 
                         color="primary"
                         variant="contained"
+                        disabled={loading}
+                        sx={{
+                            px: 3,
+                            py: 1,
+                            borderRadius: '8px',
+                            fontWeight: 'bold',
+                            boxShadow: 'none',
+                            '&:hover': {
+                                backgroundColor: '#1976d2',
+                                boxShadow: 'none'
+                            }
+                        }}
                     >
-                        Save
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Save'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

@@ -5,7 +5,7 @@ import { Header } from '../../components';
 import { BsArrowDown, BsArrowUp, BsCheck, BsPencil, BsPlus, BsTrash, BsX } from 'react-icons/bs';
 import axios from 'axios';
 import { useStateContext } from '../../contexts/ContextProvider';
-import { BiDownload } from 'react-icons/bi';
+import { BiDownload, BiCheckCircle, BiXCircle } from 'react-icons/bi';
 
 const InsecticideToLand = () => {
     // States
@@ -23,11 +23,18 @@ const InsecticideToLand = () => {
         mixes: [{
             liter: '',
             quantity: '',
-            insecticideId: ''
+            insecticideId: '',
+            insecticideType: 0 // 0: fixed quantity, 1: editable quantity
         }]
     });
     const [expandedRows, setExpandedRows] = useState({});
     const [runUseEffect, setRun] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [notification, setNotification] = useState({
+        show: false,
+        message: '',
+        type: 'success'
+    });
 
     // Context and API config
     const userNow = useStateContext();
@@ -42,9 +49,6 @@ const InsecticideToLand = () => {
         updateInsecticideLand: () => `${APIS.baseInsecticideLandUrl}/Update`,
         excelIsecticideLand: () => `${APIS.baseInsecticideLandUrl}/ExportExcel`,
 
-        baseLandUrl: isDev ? process.env.REACT_APP_API_LAND_URL : process.env.REACT_APP_API_LAND_URL,
-        getAllLand: () => `${APIS.baseLandUrl}/GetAll?justChildren=${true}`,
-
         baseInsecticideUrl: isDev ? process.env.REACT_APP_API_INSECTICIDE_URL : process.env.REACT_APP_API_INSECTICIDE_URL,
         getAllInsecticide: () => `${APIS.baseInsecticideUrl}/GetAll?pageSize=1000000000&pageNum=0`,
 
@@ -52,9 +56,17 @@ const InsecticideToLand = () => {
         getAllCuttingLand: () => `${APIS.baseCuttingLandUrl}/GetAll?pageSize=1000000000&pageNum=0`,
     };
 
+    const showNotification = (message, type = 'success') => {
+        setNotification({ show: true, message, type });
+        setTimeout(() => {
+            setNotification({ ...notification, show: false });
+        }, 3000);
+    };
+
     // Fetch data
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const [landRes, insecticideRes, insecticideLandRes] = await Promise.all([
                     axios.get(APIS.getAllCuttingLand(), { headers: { Authorization: token } }),
@@ -63,11 +75,16 @@ const InsecticideToLand = () => {
                 ]);
 
                 setLands(landRes.data.data || landRes.data);
-                setInsecticides(insecticideRes.data.data);
+                setInsecticides(insecticideRes.data.data.map(insect => ({
+                    ...insect,
+                    type: insect.type || 0 // Default to 0 if type is not provided
+                })));
                 setInsecticideLand(insecticideLandRes.data.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
-                alert('Failed to load data');
+                showNotification('Failed to load data', 'error');
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -128,7 +145,8 @@ const InsecticideToLand = () => {
         setTempData({
             ...rowData.originalData,
             landId: rowData.originalData.land?.id,
-            insecticideId: rowData.originalData.insecticide?.id
+            insecticideId: rowData.originalData.insecticide?.id,
+            insecticideType: rowData.originalData.insecticide?.type || 0
         });
         setEditModalOpen(true);
     };
@@ -149,6 +167,7 @@ const InsecticideToLand = () => {
 
     const handleEditSave = async () => {
         try {
+            setLoading(true);
             const { id, ...dataToSend } = tempData;
             await axios.post(`${APIS.updateInsecticideLand()}?id=${id}`, dataToSend, {
                 headers: { Authorization: token }
@@ -156,32 +175,37 @@ const InsecticideToLand = () => {
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            alert('Editing Successfully');
+            showNotification('Application updated successfully');
         } catch (err) {
             console.error(err);
-            alert('Editing Failed');
+            showNotification('Failed to update application', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
     // Delete function
     const handleDelete = async (id) => {
-        if (!window.confirm('Sure?')) return;
         
         try {
+            setLoading(true);
             await axios.delete(`${APIS.deleteIsecticideLand()}?id=${id}`, {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            alert('Deleting Successfully');
+            showNotification('Application deleted successfully');
         } catch (err) {
             console.error(err);
-            alert('Deleting Failed');
+            showNotification('Failed to delete application', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
     // Add functions
     const handleAddSubmit = async () => {
         try {
+            setLoading(true);
             const dataToSend = {
                 note: newData.note,
                 date: newData.date,
@@ -202,20 +226,32 @@ const InsecticideToLand = () => {
                 landIds: [],
                 date: new Date().toISOString().split('T')[0],
                 note: '',
-                mixes: [{ liter: '', quantity: '', insecticideId: '' }]
+                mixes: [{ 
+                    liter: '', 
+                    quantity: '', 
+                    insecticideId: '',
+                    insecticideType: 0 
+                }]
             });
             setRun(prev => prev + 1);
-            alert('Added successfully');
+            showNotification('Application added successfully');
         } catch (err) {
             console.error(err);
-            alert('failed to add');
+            showNotification('Failed to add application', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleAddMix = () => {
         setNewData(prev => ({
             ...prev,
-            mixes: [...prev.mixes, { liter: '', quantity: '', insecticideId: '' }]
+            mixes: [...prev.mixes, { 
+                liter: '', 
+                quantity: '', 
+                insecticideId: '',
+                insecticideType: 0 
+            }]
         }));
     };
 
@@ -229,6 +265,18 @@ const InsecticideToLand = () => {
 
     const handleMixChange = (index, field, value) => {
         const updatedMixes = [...newData.mixes];
+        
+        // If changing insecticide, update the type as well
+        if (field === 'insecticideId') {
+            const selectedInsecticide = insecticides.find(insect => insect.id === parseInt(value));
+            updatedMixes[index].insecticideType = selectedInsecticide?.type || 0;
+            
+            // Reset quantity if type is 0 (fixed)
+            if (selectedInsecticide?.type === 0) {
+                updatedMixes[index].quantity = '';
+            }
+        }
+        
         updatedMixes[index][field] = value;
         setNewData(prev => ({ ...prev, mixes: updatedMixes }));
     };
@@ -250,6 +298,11 @@ const InsecticideToLand = () => {
                                     [params.row.id]: !prev[params.row.id]
                                 }));
                             }}
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                                }
+                            }}
                         >
                             {expandedRows[params.row.id] ? <BsArrowUp /> : <BsArrowDown />}
                         </IconButton>
@@ -258,36 +311,61 @@ const InsecticideToLand = () => {
                 return null;
             }
         },
-        { field: 'date', headerName: 'Date', width: 150 },
-        { field: 'insecticideTitle', headerName: 'Insecticide', width: 150 },
-        { field: 'landTitle', headerName: 'Land', width: 150 },
-        { field: 'liter', headerName: 'Liters', width: 100 },
-        { field: 'quantity', headerName: 'Quantity', width: 100 },
-        { field: 'note', headerName: 'Notes', width: 200 },
+        { field: 'date', headerName: 'Date', width: 120 },
+        { field: 'insecticideTitle', headerName: 'Insecticide', width: 130 },
+        { field: 'landTitle', headerName: 'Land', width: 130 },
+        { field: 'liter', headerName: 'Liters', width: 120, align: 'center', headerAlign: 'center' },
+        { field: 'quantity', headerName: 'Quantity', width: 120, align: 'center', headerAlign: 'center' },
+        { field: 'note', headerName: 'Notes', width: 130 },
         {
             field: 'actions',
             headerName: 'Actions',
-            width: 200,
+            width: 170,
             renderCell: (params) => {
                 if (params.row.isParent || params.row.isAddNew) return null;
                 
                 return (
-                    <Box>
+                    <Box display="flex" >
                         <IconButton 
-                            color="primary"
                             onClick={() => handleEdit(params.row)}
+                            size="small"
+                            disabled={loading}
+                            sx={{ 
+                                color: 'primary.main',
+                                '&:hover': { 
+                                    backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                                },
+                                '&:disabled': {
+                                    color: 'rgba(0, 0, 0, 0.26)'
+                                }
+                            }}
                         >
-                            <BsPencil />
+                            <BsPencil size={14} />
                         </IconButton>
                         <IconButton 
-                            color="error"
                             onClick={() => handleDelete(params.row.originalData.id)}
+                            size="small"
+                            disabled={loading}
+                            sx={{ 
+                                color: 'error.main',
+                                '&:hover': { 
+                                    backgroundColor: 'rgba(244, 67, 54, 0.08)',
+                                },
+                                '&:disabled': {
+                                    color: 'rgba(0, 0, 0, 0.26)'
+                                }
+                            }}
                         >
-                            <BsTrash />
+                            <BsTrash size={14} />
                         </IconButton>
                     </Box>
                 );
-            }
+            },
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            headerAlign: 'center',
+            align: 'center',
         },
         {
             field: 'addNew',
@@ -302,56 +380,96 @@ const InsecticideToLand = () => {
                         color="primary"
                         startIcon={<BsPlus />}
                         onClick={() => setAddModalOpen(true)}
+                        disabled={loading}
+                        sx={{ 
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontSize: '0.8125rem'
+                        }}
                     >
                         Add New
                     </MuiButton>
                 );
-            }
+            },
+            sortable: false,
+            filterable: false
         }
     ];
 
     const handleExportExcel = async () => {
         try {
-          const response = await axios.post(APIS.excelIsecticideLand(), {
-            headers: { Authorization: token },
-            responseType: 'blob' 
-          });
-      
-          // إنشاء رابط تحميل
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'insecticide_applications.xlsx');
-          document.body.appendChild(link);
-          link.click();
-          
-          // التنظيف
-          link.parentNode.removeChild(link);
-          window.URL.revokeObjectURL(url);
-          
-          alert('download success');
+            setLoading(true);
+            const response = await axios.post(APIS.excelIsecticideLand(), {
+                headers: { Authorization: token },
+                responseType: 'blob' 
+            });
+        
+            // Create download link
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'insecticide_applications.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Excel exported successfully');
         } catch (err) {
-          console.error('Error exporting to Excel:', err);
-          alert('Failed to exporting Excel');
+            console.error('Error exporting to Excel:', err);
+            showNotification('Failed to export to Excel', 'error');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Insecticide Land Applications" />
+            <Header 
+                category="Page" 
+                title="Insecticide Land Applications" 
+                sx={{ width: 'fit-content' }} 
+            />
+            
+            {/* Notification */}
+            {notification.show && (
+                <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
+                    notification.type === 'success' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                }`}>
+                    {notification.type === 'success' ? (
+                        <BiCheckCircle className="w-6 h-6 mr-2" />
+                    ) : (
+                        <BiXCircle className="w-6 h-6 mr-2" />
+                    )}
+                    <span>{notification.message}</span>
+                </div>
+            )}
+
             <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
                 <MuiButton
                     variant="contained"
                     color="secondary"
                     startIcon={<BiDownload />}
                     onClick={handleExportExcel}
-                    sx={{ mr: 1 }}
+                    disabled={loading}
+                    sx={{ 
+                        mr: 1,
+                        padding: '6px 12px',
+                        fontSize: '0.8125rem',
+                        minWidth: 'auto',
+                        width: 'fit-content'
+                    }}
                 >
-                    Export to Excel
+                    {loading ? 'Exporting...' : 'Export'}
                 </MuiButton>
-                
             </Box>
-            <div style={{ height: 600, width: '100%' }}>
+            <div style={{ height: 600, width: '100%', overflowX: 'auto' }}>
                 <DataGrid
                     rows={prepareRows()}
                     columns={columns}
@@ -366,10 +484,47 @@ const InsecticideToLand = () => {
                         if (params.row.isAddNew) return 'add-new-row';
                         return 'child-row';
                     }}
+                    loading={loading}
                     sx={{
-                        '& .parent-row': { backgroundColor: '#f5f5f5', fontWeight: 'bold' },
-                        '& .child-row': { backgroundColor: '#ffffff', paddingLeft: '40px' },
-                        '& .add-new-row': { backgroundColor: '#e8f5e9' }
+                        '& .parent-row': { 
+                            backgroundColor: '#f5f5f5', 
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                backgroundColor: '#e0e0e0'
+                            }
+                        },
+                        '& .child-row': { 
+                            backgroundColor: '#ffffff', 
+                            '&:hover': {
+                                backgroundColor: '#f5f5f5'
+                            }
+                        },
+                        '& .add-new-row': { 
+                            backgroundColor: '#e8f5e9',
+                            '&:hover': {
+                                backgroundColor: '#d0e0d0'
+                            }
+                        },
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f0f0f0',
+                            fontWeight: 'bold',
+                            
+                        },
+                        '& .MuiDataGrid-cell': {
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '0 8px'
+                        },
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                            fontWeight: 'bold',
+                            fontSize: '0.875rem'
+                        },
+                        '& .MuiDataGrid-columnHeader': {
+                            backgroundColor: '#f0f0f0',
+                            '&:hover': {
+                                backgroundColor: '#e0e0e0'
+                            }
+                        }
                     }}
                 />
             </div>
@@ -378,9 +533,9 @@ const InsecticideToLand = () => {
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Add New Application</DialogTitle>
                 <DialogContent>
-                    <Box sx={{ mt: 2 }}>
-                        <FormControl fullWidth margin="normal">
-                            <InputLabel id="lands-label">Lands</InputLabel>
+                    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="lands-label">Land</InputLabel>
                             <Select
                                 labelId="lands-label"
                                 id="lands-select"
@@ -388,13 +543,19 @@ const InsecticideToLand = () => {
                                 value={newData.landIds}
                                 onChange={handleLandChange}
                                 renderValue={(selected) => (
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                    {selected.map((value) => {
-                                    const land = lands.find(l => l.land.id == value);
-                                    return <Chip key={value} label={land?.title || value} />;
-                                    })}
-                                </Box>
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => {
+                                            const land = lands.find(l => l.land.id == value);
+                                            return <Chip key={value} label={land?.title || value} />;
+                                        })}
+                                    </Box>
                                 )}
+                                sx={{
+                                    '& .MuiSelect-select': {
+                                        minHeight: 'auto',
+                                        padding: '10px 14px'
+                                    }
+                                }}
                             >
                                 {lands.map((land) => (
                                     <MenuItem key={land.land.id} value={land.land.id}>
@@ -410,8 +571,12 @@ const InsecticideToLand = () => {
                             value={newData.date}
                             onChange={(e) => setNewData({...newData, date: e.target.value})}
                             fullWidth
-                            margin="normal"
                             InputLabelProps={{ shrink: true }}
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                }
+                            }}
                         />
 
                         <TextField
@@ -419,26 +584,42 @@ const InsecticideToLand = () => {
                             value={newData.note}
                             onChange={(e) => setNewData({...newData, note: e.target.value})}
                             fullWidth
-                            margin="normal"
                             multiline
                             rows={3}
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                }
+                            }}
                         />
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Insecticide Mixes</Typography>
+                        <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Insecticides Mixes</Typography>
                         
                         {newData.mixes.map((mix, index) => (
-                            <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+                            <Box key={index} sx={{ 
+                                display: 'grid',
+                                gridTemplateColumns: '2fr 1fr 1fr auto',
+                                gap: 2,
+                                alignItems: 'center'
+                            }}>
                                 <TextField
                                     select
                                     label="Insecticide"
                                     value={mix.insecticideId}
                                     onChange={(e) => handleMixChange(index, 'insecticideId', e.target.value)}
-                                    sx={{ flex: 2 }}
+                                    fullWidth
                                     SelectProps={{ native: true }}
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            padding: '10px 14px'
+                                        }
+                                    }}
                                 >
                                     <option value=""></option>
                                     {insecticides.map((insect) => (
-                                        <option key={insect.id} value={insect.id}>{insect.title}</option>
+                                        <option key={insect.id} value={insect.id}>
+                                            {insect.title} ({insect.type === 0 ? 'Liquid' : 'Powder'})
+                                        </option>
                                     ))}
                                 </TextField>
 
@@ -447,7 +628,13 @@ const InsecticideToLand = () => {
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value)}
-                                    sx={{ flex: 1 }}
+                                    fullWidth
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            padding: '10px 14px',
+                                            textAlign: 'left'
+                                        }
+                                    }}
                                 />
 
                                 <TextField
@@ -455,13 +642,31 @@ const InsecticideToLand = () => {
                                     type="number"
                                     value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
-                                    sx={{ flex: 1 }}
+                                    fullWidth
+                                    disabled={mix.insecticideType === 0} // Disable if type is 0
+                                    sx={{
+                                        '& .MuiInputBase-input': {
+                                            padding: '10px 14px',
+                                            textAlign: 'left'
+                                        },
+                                        '& .Mui-disabled': {
+                                            backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                                        }
+                                    }}
                                 />
 
                                 <IconButton 
                                     color="error"
                                     onClick={() => handleRemoveMix(index)}
                                     disabled={newData.mixes.length <= 1}
+                                    sx={{
+                                        backgroundColor: 'rgba(244, 67, 54, 0.08)',
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(244, 67, 54, 0.2)'
+                                        },
+                                        alignSelf: 'flex-end',
+                                        marginBottom: '8px'
+                                    }}
                                 >
                                     <BsTrash />
                                 </IconButton>
@@ -472,21 +677,39 @@ const InsecticideToLand = () => {
                             variant="outlined" 
                             onClick={handleAddMix}
                             startIcon={<BsPlus />}
-                            sx={{ mt: 1 }}
+                            sx={{ 
+                                mt: 1,
+                                alignSelf: 'flex-start',
+                                padding: '8px 16px'
+                            }}
                         >
-                            Add New Mix
+                            Add new Mix
                         </MuiButton>
                     </Box>
                 </DialogContent>
-                <DialogActions>
-                    <MuiButton onClick={() => setAddModalOpen(false)}>Cancel</MuiButton>
+                <DialogActions sx={{ padding: '16px 24px' }}>
+                    <MuiButton 
+                        onClick={() => setAddModalOpen(false)}
+                        disabled={loading}
+                        sx={{ 
+                            mr: 1,
+                            padding: '8px 16px',
+                            color: 'text.secondary'
+                        }}
+                    >
+                        Cancel
+                    </MuiButton>
                     <MuiButton 
                         onClick={handleAddSubmit} 
                         color="primary"
                         variant="contained"
-                        disabled={!newData.landIds.length || !newData.mixes.every(m => m.insecticideId && m.liter && m.quantity)}
+                        disabled={loading || !newData.landIds.length || !newData.mixes.every(m => m.insecticideId && m.liter && (m.insecticideType === 1 ? m.quantity : true))}
+                        sx={{
+                            padding: '8px 16px',
+                            boxShadow: 'none'
+                        }}
                     >
-                        Save
+                        {loading ? 'Saving...' : 'Save'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
@@ -514,13 +737,22 @@ const InsecticideToLand = () => {
                             select
                             label="Insecticide"
                             value={tempData.insecticideId || ''}
-                            onChange={(e) => setTempData({...tempData, insecticideId: e.target.value})}
+                            onChange={(e) => {
+                                const selectedInsecticide = insecticides.find(insect => insect.id === parseInt(e.target.value));
+                                setTempData({
+                                    ...tempData, 
+                                    insecticideId: e.target.value,
+                                    insecticideType: selectedInsecticide?.type || 0
+                                });
+                            }}
                             fullWidth
                             margin="normal"
                             SelectProps={{ native: true }}
                         >
                             {insecticides.map((insect) => (
-                                <option key={insect.id} value={insect.id}>{insect.title}</option>
+                                <option key={insect.id} value={insect.id}>
+                                    {insect.title} ({insect.type === 0 ? 'Liquid' : 'Powder'})
+                                </option>
                             ))}
                         </TextField>
 
@@ -550,6 +782,12 @@ const InsecticideToLand = () => {
                             onChange={(e) => setTempData({...tempData, quantity: e.target.value})}
                             fullWidth
                             margin="normal"
+                            disabled={tempData.insecticideType === 0}
+                            sx={{
+                                '& .Mui-disabled': {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                                }
+                            }}
                         />
 
                         <TextField
@@ -564,13 +802,20 @@ const InsecticideToLand = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <MuiButton onClick={handleEditCancel}>Cancel</MuiButton>
+                    <MuiButton 
+                        onClick={handleEditCancel}
+                        disabled={loading}
+                        sx={{ mr: 1 }}
+                    >
+                        Cancel
+                    </MuiButton>
                     <MuiButton 
                         onClick={handleEditSave} 
                         color="primary"
                         variant="contained"
+                        disabled={loading}
                     >
-                        Save
+                        {loading ? 'Saving...' : 'Save'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

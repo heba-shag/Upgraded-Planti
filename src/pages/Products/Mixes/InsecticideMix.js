@@ -22,16 +22,19 @@ import {
   Alert, 
   CircularProgress,
   Menu,
-  ListItemText
+  ListItemText,
+  useTheme
 } from '@mui/material';
 import { Header } from '../../../components';
 import { BsArrowDown, BsArrowUp, BsPencil, BsPlus, BsTrash } from 'react-icons/bs';
+import { BiCheckCircle, BiXCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
 
 const InsecticideDetailsDropdown = ({ mixDetails = [] }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const theme = useTheme();
 
   const handleClick = (event) => {
     event.stopPropagation();
@@ -49,7 +52,15 @@ const InsecticideDetailsDropdown = ({ mixDetails = [] }) => {
         size="small"
         onClick={handleClick}
         endIcon={open ? <BsArrowUp /> : <BsArrowDown />}
-        sx={{ minWidth: '150px' }}
+        sx={{ 
+          minWidth: '150px',
+          borderColor: theme.palette.primary.main,
+          color: theme.palette.primary.main,
+          '&:hover': {
+            borderColor: theme.palette.primary.dark,
+            color: theme.palette.primary.dark,
+          }
+        }}
       >
         {mixDetails.length} Insecticides
       </MuiButton>
@@ -75,7 +86,7 @@ const InsecticideDetailsDropdown = ({ mixDetails = [] }) => {
                   Quantity: {detail.quantity || 'N/A'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Quantity: {detail.liter || 'N/A'}
+                  Liter: {detail.liter || 'N/A'}
                 </Typography>
               </Box>
             </MenuItem>
@@ -100,17 +111,21 @@ const InsecticideMix = () => {
         title: "",
         type: 0,
         note: '',
-        mixes: [{insecticideId: "",liter:0, quantity: 0 }]
+        mixes: [{insecticideId: "", liter: 0, quantity: 0, type: 0 }]
     });
     const [runUseEffect, setRun] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
+    const [notification, setNotification] = useState({
+      show: false,
+      message: '',
+      type: 'success',
+    });
 
     // Context and API config
     const userNow = useStateContext();
     const token = userNow.auth.token;
     const isDev = process.env.NODE_ENV === 'development';
+    const theme = useTheme();
     
     const APIS = {
         baseInsecticideUrl: isDev ? 
@@ -120,7 +135,14 @@ const InsecticideMix = () => {
         getAllInsecticideMix: () => `${APIS.baseInsecticideUrl}/GetAllMixes`,
         addInsecticideMix: () => `${APIS.baseInsecticideUrl}/AddMix`,
         deleteInsecticideMix: (id) => `${APIS.baseInsecticideUrl}/RemoveMix?id=${id}`,
-        updateInsecticideMix: (id) => `${APIS.baseInsecticideUrl}/UpdateMix?id=${id}`,
+        updateInsecticideMix: () => `${APIS.baseInsecticideUrl}/UpdateMix`,
+    };
+
+    const showNotification = (message, type = 'success') => {
+      setNotification({ show: true, message, type });
+      setTimeout(() => {
+        setNotification({ ...notification, show: false });
+      }, 3000);
     };
 
     // Fetch data
@@ -135,9 +157,8 @@ const InsecticideMix = () => {
 
                 setInsecticides(insecticideRes.data.data || insecticideRes.data);
                 setMixes(mixRes.data.data || mixRes.data);
-                setError(null);
             } catch (err) {
-                setError('Failed to load data');
+                showNotification('Failed to load data', 'error');
                 console.error('Error fetching data:', err);
             } finally {
                 setLoading(false);
@@ -162,7 +183,7 @@ const InsecticideMix = () => {
         rows.push({
             id: 'add-new-row',
             isAddNew: true,
-            originalData: { mixDetails: [] } // Ensure originalData exists
+            originalData: { mixDetails: [] }
         });
 
         return rows;
@@ -183,13 +204,23 @@ const InsecticideMix = () => {
 
     // Edit functions
     const handleEdit = (rowData) => {
+        if (!rowData || !rowData.originalData) {
+            console.error('Invalid row data for editing');
+            return;
+        }
+
+        const originalData = rowData.originalData;
         setEditingRow(rowData.id);
         setTempData({
-            ...rowData.originalData,
-            mixes: rowData.originalData.mixDetails?.map(detail => ({
-                insecticideId: detail.insecticide?.id || "",
-                quantity: detail.quantity || 0,
-                liter:detail.liter
+            id: originalData.id,
+            title: originalData.title,
+            note: originalData.note,
+            color: originalData.color,
+            mixes: originalData.mixDetails?.map(detail => ({
+                insecticideId: detail.insecticideId,
+                quantity: detail.quantity,
+                liter: detail.liter,
+                type: detail.insecticide?.type || 0
             })) || []
         });
         setEditModalOpen(true);
@@ -205,20 +236,15 @@ const InsecticideMix = () => {
         try {
             setLoading(true);
             const { id, ...dataToSend } = tempData;
-            await axios.post(APIS.updateInsecticideMix(id), {
-                title: dataToSend.title,
-                note: dataToSend.note,
-                color: dataToSend.color,
-                mixes: dataToSend.mixes
-            }, {
+            await axios.post(`${APIS.updateInsecticideMix()}?id=${id}&title=${dataToSend.title}&note=${dataToSend.note}&color=${dataToSend.color}`, null, {
                 headers: { Authorization: token }
             });
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            setSuccess('Done');
+            showNotification('Insecticide mix updated successfully');
         } catch (err) {
-            setError('Failed');
+            showNotification('Failed to update insecticide mix', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -227,7 +253,6 @@ const InsecticideMix = () => {
 
     // Delete function
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you Sure About Delete It?')) return;
         
         try {
             setLoading(true);
@@ -235,9 +260,9 @@ const InsecticideMix = () => {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            setSuccess('Done!');
+            showNotification('Insecticide mix deleted successfully');
         } catch (err) {
-            setError('Failed');
+            showNotification('Failed to delete insecticide mix', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -257,12 +282,12 @@ const InsecticideMix = () => {
                 title: "",
                 note: '',
                 color: 0,
-                mixes: [{ insecticideId: "",liter:0, quantity: 0 }]
+                mixes: [{ insecticideId: "", liter: 0, quantity: 0, type: 0 }]
             });
             setRun(prev => prev + 1);
-            setSuccess(' Done!');
+            showNotification('Insecticide mix added successfully');
         } catch (err) {
-            setError('Failed');
+            showNotification('Failed to add insecticide mix', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -272,7 +297,7 @@ const InsecticideMix = () => {
     const handleAddMix = () => {
         setNewData(prev => ({
             ...prev,
-            mixes: [...prev.mixes, { insecticideId: "", liter:0,quantity: 0 }]
+            mixes: [...prev.mixes, { insecticideId: "", liter: 0, quantity: 0, type: 0 }]
         }));
     };
 
@@ -296,10 +321,22 @@ const InsecticideMix = () => {
         if (isEdit) {
             const updatedMixes = [...tempData.mixes];
             updatedMixes[index][field] = value;
+            
+            if (field === 'insecticideId') {
+                const selectedInsecticide = insecticides.find(insec => insec.id === value);
+                updatedMixes[index].type = selectedInsecticide?.type || 0;
+            }
+            
             setTempData(prev => ({ ...prev, mixes: updatedMixes }));
         } else {
             const updatedMixes = [...newData.mixes];
             updatedMixes[index][field] = value;
+            
+            if (field === 'insecticideId') {
+                const selectedInsecticide = insecticides.find(insec => insec.id === value);
+                updatedMixes[index].type = selectedInsecticide?.type || 0;
+            }
+            
             setNewData(prev => ({ ...prev, mixes: updatedMixes }));
         }
     };
@@ -324,29 +361,80 @@ const InsecticideMix = () => {
         {
             field: 'actions',
             headerName: 'Actions',
-            width: 150,
+            width: 130,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
                 
                 return (
-                    <Box>
+                    <Box sx={{ 
+                        display: 'flex', 
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        padding: 0,
+                        margin: 0
+                    }}>
                         <IconButton 
-                            color="primary"
-                            onClick={() => handleEdit(params.row)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleEdit(params.row);
+                            }}
                             disabled={loading}
+                            size="small"
+                            sx={{ 
+                                color: theme.palette.primary.main,
+                                '&:hover': { 
+                                    color: theme.palette.primary.dark,
+                                    backgroundColor: 'transparent',
+                                },
+                                '&:disabled': {
+                                    color: theme.palette.action.disabled
+                                },
+                                borderRadius: 0,
+                                padding: '4px',
+                                margin: 0,
+                                minWidth: '28px',
+                                minHeight: '32px',
+                                justifyContent:'start'
+                            }}
                         >
-                            <BsPencil />
+                            <BsPencil size={16} />
                         </IconButton>
                         <IconButton 
-                            color="error"
-                            onClick={() => handleDelete(params.row.originalData.id)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(params.row.originalData.id);
+                            }}
                             disabled={loading}
+                            size="small"
+                            sx={{ 
+                                color: theme.palette.error.main,
+                                '&:hover': { 
+                                    color: theme.palette.error.dark,
+                                    backgroundColor: 'transparent',
+                                },
+                                '&:disabled': {
+                                    color: theme.palette.action.disabled
+                                },
+                                borderRadius: 0,
+                                padding: '4px',
+                                margin: 0,
+                                minWidth: '28px',
+                                minHeight: '32px'
+                            }}
                         >
-                            <BsTrash />
+                            <BsTrash size={16} />
                         </IconButton>
                     </Box>
                 );
-            }
+            },
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            headerAlign: 'center',
+            align: 'center',
+            cellClassName: 'actions-cell'
         },
         {
             field: 'addNew',
@@ -362,33 +450,67 @@ const InsecticideMix = () => {
                         startIcon={<BsPlus />}
                         onClick={() => setAddModalOpen(true)}
                         disabled={loading}
+                        size="small"
+                        sx={{ 
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            borderRadius: '8px',
+                            padding: '6px 12px'
+                        }}
                     >
                         Add New
                     </MuiButton>
                 );
-            }
+            },
+            sortable: false,
+            filterable: false
         }
     ];
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Insecticidesilizer Mixes Managment" />
+            <Header category="Page" title="Insecticide Mixes Management" />
 
-            {loading && <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />}
+            {notification.show && (
+                <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
+                    notification.type === 'success' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                }`}>
+                    {notification.type === 'success' ? (
+                        <BiCheckCircle className="w-6 h-6 mr-2" />
+                    ) : (
+                        <BiXCircle className="w-6 h-6 mr-2" />
+                    )}
+                    <span>{notification.message}</span>
+                </div>
+            )}
 
-            <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)}>
-                <Alert severity="error" onClose={() => setError(null)}>
-                    {error}
-                </Alert>
-            </Snackbar>
+            {loading && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+                    <CircularProgress />
+                </Box>
+            )}
 
-            <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess(null)}>
-                <Alert severity="success" onClose={() => setSuccess(null)}>
-                    {success}
-                </Alert>
-            </Snackbar>
-
-            <div style={{ height: 600, width: '100%' }}>
+            <Box sx={{ 
+                height: '70vh',
+                width: '100%',
+                '& .MuiDataGrid-root': {
+                    border: 'none',
+                },
+                '& .MuiDataGrid-cell': {
+                    borderBottom: 'none',
+                    '&:focus': {
+                        outline: 'none'
+                    }
+                },
+                '& .MuiDataGrid-cell:focus-within': {
+                    outline: 'none'
+                },
+                '& .add-new-row': {
+                    backgroundColor: '#e8f5e9',
+                },
+            }}>
                 <DataGrid
                     rows={prepareRows()}
                     columns={columns}
@@ -402,41 +524,42 @@ const InsecticideMix = () => {
                         if (params.row.isAddNew) return 'add-new-row';
                         return '';
                     }}
-                    sx={{
-                        '& .add-new-row': { backgroundColor: '#e8f5e9' },
-                        '& .MuiDataGrid-cell': {
-                            direction: 'ltr',
-                        },
-                        '& .MuiDataGrid-columnHeaders': {
-                            direction: 'ltr',
-                        }
-                    }}
                     loading={loading}
+                    autoHeight={false}
                 />
-            </div>
+            </Box>
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Add new Insecticide Mix</DialogTitle>
                 <DialogContent>
-                    <Box sx={{ mt: 2 }}>
+                    <Box sx={{ 
+                        mt: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '20px'
+                    }}>
                         <TextField
                             label="Title"
                             value={newData.title}
                             onChange={(e) => setNewData({...newData, title: e.target.value})}
                             fullWidth
                             margin="normal"
+                            sx={{ mb: 2 }}
                         />
 
                         <TextField
-                            label="Notee"
+                            label="Note"
                             value={newData.note}
                             onChange={(e) => setNewData({...newData, note: e.target.value})}
                             fullWidth
                             margin="normal"
+                            sx={{ mb: 2 }}
+                            multiline
+                            rows={2}
                         />
 
-                        <FormControl fullWidth margin="normal">
+                        <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
                             <InputLabel>Color</InputLabel>
                             <Select
                                 value={newData.color}
@@ -451,11 +574,17 @@ const InsecticideMix = () => {
                             </Select>
                         </FormControl>
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Insecticides</Typography>
+                        <Typography variant="h6" sx={{ mb: 2 }}>Insecticides</Typography>
                         
                         {newData.mixes.map((mix, index) => (
-                            <Box key={index} sx={{ display: 'Insecticideslex', gap: 2, mb: 2, alignItems: 'center' }}>
-                                <FormControl sx={{ flex: 2 }}>
+                            <Box key={index} sx={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                mb: 2,
+                                flexWrap: 'wrap'
+                            }}>
+                                <FormControl sx={{ flex: 2, minWidth: '200px' }}>
                                     <InputLabel>Insecticide</InputLabel>
                                     <Select
                                         value={mix.insecticideId}
@@ -464,7 +593,7 @@ const InsecticideMix = () => {
                                     >
                                         {insecticides.map(insec => (
                                             <MenuItem key={insec.id} value={insec.id}>
-                                                {insec.publicTitle}
+                                                {insec.publicTitle} ({insec.type === 0 ? 'Fixed' : 'Editable'})
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -475,7 +604,17 @@ const InsecticideMix = () => {
                                     type="number"
                                     value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
-                                    sx={{ flex: 1 }}
+                                    sx={{ 
+                                        flex: 1, 
+                                        minWidth: '120px',
+                                        '& .MuiInputBase-root': {
+                                            backgroundColor: mix.type === 0 ? '#f5f5f5' : 'inherit'
+                                        }
+                                    }}
+                                    InputProps={{
+                                        readOnly: mix.type === 0,
+                                    }}
+                                    disabled={mix.type === 0}
                                 />
 
                                 <TextField
@@ -483,38 +622,63 @@ const InsecticideMix = () => {
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value)}
-                                    sx={{ flex: 1 }}
+                                    sx={{ flex: 1, minWidth: '120px' }}
                                 />
 
                                 <IconButton 
-                                    color="error"
                                     onClick={() => handleRemoveMix(index)}
                                     disabled={newData.mixes.length <= 1}
+                                    sx={{
+                                        color: theme.palette.error.main,
+                                        '&:hover': {
+                                            color: theme.palette.error.dark,
+                                            backgroundColor: 'transparent',
+                                        }
+                                    }}
                                 >
                                     <BsTrash />
                                 </IconButton>
                             </Box>
                         ))}
 
-                        <MuiButton 
-                            variant="outlined" 
-                            onClick={handleAddMix}
-                            startIcon={<BsPlus />}
-                            sx={{ mt: 2 }}
-                        >
-                            Add Insecticide
-                        </MuiButton>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>
+                            <MuiButton 
+                                variant="outlined" 
+                                onClick={handleAddMix}
+                                startIcon={<BsPlus />}
+                                sx={{ 
+                                    px: 3,
+                                    py: 1,
+                                    fontSize: '0.875rem'
+                                }}
+                            >
+                                Add Insecticide
+                            </MuiButton>
+                        </Box>
                     </Box>
                 </DialogContent>
-                <DialogActions>
-                    <MuiButton onClick={() => setAddModalOpen(false)} disabled={loading}>
+                <DialogActions sx={{ p: 3 }}>
+                    <MuiButton 
+                        onClick={() => setAddModalOpen(false)} 
+                        disabled={loading}
+                        sx={{ 
+                            mr: 2,
+                            px: 3,
+                            py: 1
+                        }}
+                        variant="outlined"
+                    >
                         Cancel
                     </MuiButton>
                     <MuiButton 
                         onClick={handleAddSubmit} 
                         color="primary"
                         variant="contained"
-                        disabled={loading || !newData.title || !newData.mixes.every(m => m.insecticideId && m.quantity&& m.liter)}
+                        disabled={loading || !newData.title || !newData.mixes.every(m => m.insecticideId && m.liter)}
+                        sx={{ 
+                            px: 3,
+                            py: 1
+                        }}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Save'}
                     </MuiButton>
@@ -557,20 +721,26 @@ const InsecticideMix = () => {
                             </Select>
                         </FormControl>
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Insecticidesilizers</Typography>
+                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Insecticides</Typography>
                         
                         {tempData.mixes?.map((mix, index) => (
-                            <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
-                                <FormControl sx={{ flex: 2 }}>
+                            <Box key={index} sx={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                mb: 2,
+                                flexWrap: 'wrap'
+                            }}>
+                                <FormControl sx={{ flex: 2, minWidth: '200px' }}>
                                     <InputLabel>Insecticide</InputLabel>
                                     <Select
-                                        value={mix.insecticideId || ''}
+                                        value={mix.insecticideId}
                                         label="Insecticide"
                                         onChange={(e) => handleMixChange(index, 'insecticideId', e.target.value, true)}
                                     >
                                         {insecticides.map(insec => (
                                             <MenuItem key={insec.id} value={insec.id}>
-                                                {insec.publicTitle}
+                                                {insec.publicTitle} ({insec.type === 0 ? 'Fixed' : 'Editable'})
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -579,50 +749,74 @@ const InsecticideMix = () => {
                                 <TextField
                                     label="Quantity"
                                     type="number"
-                                    value={mix.quantity || 0}
+                                    value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value, true)}
-                                    sx={{ flex: 1 }}
+                                    sx={{ 
+                                        flex: 1, 
+                                        minWidth: '120px',
+                                        '& .MuiInputBase-root': {
+                                            backgroundColor: mix.type === 0 ? '#f5f5f5' : 'inherit'
+                                        }
+                                    }}
+                                    InputProps={{
+                                        readOnly: mix.type === 0,
+                                    }}
+                                    disabled={mix.type === 0}
                                 />
 
                                 <TextField
                                     label="Liter"
                                     type="number"
-                                    value={mix.liter || 0}
+                                    value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value, true)}
-                                    sx={{ flex: 1 }}
+                                    sx={{ flex: 1, minWidth: '120px' }}
                                 />
+
                                 <IconButton 
-                                    color="error"
                                     onClick={() => handleRemoveMix(index, true)}
-                                    disabled={tempData.mixes?.length <= 1}
+                                    disabled={tempData.mixes.length <= 1}
+                                    sx={{
+                                        color: theme.palette.error.main,
+                                        '&:hover': {
+                                            color: theme.palette.error.dark,
+                                            backgroundColor: 'transparent',
+                                        }
+                                    }}
                                 >
                                     <BsTrash />
                                 </IconButton>
                             </Box>
                         ))}
 
-                        <MuiButton 
-                            variant="outlined" 
-                            onClick={() => setTempData({
-                                ...tempData,
-                                mixes: [...tempData.mixes, { insecticideId: "", quantity: 0,liter:0 }]
-                            })}
-                            startIcon={<BsPlus />}
-                            sx={{ mt: 2 }}
-                        >
-                            Add Insecticide
-                        </MuiButton>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>
+                            <MuiButton 
+                                variant="outlined" 
+                                onClick={() => handleAddMix(true)}
+                                startIcon={<BsPlus />}
+                                sx={{ 
+                                    px: 3,
+                                    py: 1,
+                                    fontSize: '0.875rem'
+                                }}
+                            >
+                                Add Insecticide
+                            </MuiButton>
+                        </Box>
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <MuiButton onClick={handleEditCancel} disabled={loading}>
+                    <MuiButton 
+                        onClick={handleEditCancel} 
+                        disabled={loading}
+                        sx={{ mr: 1 }}
+                    >
                         Cancel
                     </MuiButton>
                     <MuiButton 
                         onClick={handleEditSave} 
                         color="primary"
                         variant="contained"
-                        disabled={loading || !tempData.title || !tempData.mixes?.every(m => m.insecticideId && m.quantity && m.liter)}
+                        disabled={loading || !tempData.title || !tempData.note || !tempData.color}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Save'}
                     </MuiButton>

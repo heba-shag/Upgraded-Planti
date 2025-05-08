@@ -614,12 +614,6 @@ export const mainLandsGrid = [
     textAlign: 'Center',
     placeholder:'Location',
   },
-  // { field: 'HireDate',
-  //   headerText: 'Hire Date',
-  //   width: '135',
-  //   format: 'yMd',
-  //   textAlign: 'Center' },
-
   {
     field: 'size',
     headerText: 'Size',
@@ -629,14 +623,6 @@ export const mainLandsGrid = [
     width: '150',
     placeholder:'Size',
   },
-  // { field: 'ReportsTo',
-  //   headerText: 'Reports To',
-  //   width: '120',
-  //   textAlign: 'Center' },
-  // { field: 'EmployeeID',
-  //   headerText: 'Employee ID',
-  //   width: '125',
-  //   textAlign: 'Center' },
 ];
 
 export const links = [
@@ -657,14 +643,14 @@ export const links = [
   {
     title: 'Products',
     links: [
-      {
-        name: 'customer',
-        icon: <GiFertilizerBag />,
-      },
-      {
-        name: 'employees',
-        icon: <GiFertilizerBag />,
-      },
+      // {
+      //   name: 'customer',
+      //   icon: <GiFertilizerBag />,
+      // },
+      // {
+      //   name: 'employees',
+      //   icon: <GiFertilizerBag />,
+      // },
       {
         name: 'fertilizers',
         icon: <GiFertilizerBag />,
@@ -749,6 +735,10 @@ export const links = [
     links: [
       {
         name: 'insecticide-depo',
+        icon: <LuWarehouse />,
+      },
+      {
+        name: 'insecticide-transaction',
         icon: <LuWarehouse />,
       },
       {

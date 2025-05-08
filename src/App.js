@@ -33,6 +33,8 @@ import FlowerDepo from './pages/Products/Flowers/FlowersDepo';
 import FertilizerDepo from './pages/Products/Fertilizer/FertilizersDepo';
 import FertilizerTransaction from './pages/Products/Fertilizer/FertilizerTransaction';
 import AddNewUser from './pages/AuthPages/AddnewUser';
+import InsecticideDepo from './pages/Products/Insecticide/InsecticideDepo';
+import InsecticideTransaction from './pages/Products/Insecticide/InsecticideTransaction';
 
 const Layout = ({ children }) => {
   const { activeMenu, themeSettings, setThemeSettings } = useStateContext();
@@ -183,7 +185,7 @@ const App = () => {
               
               <Route path="/flower" element={
                 <Layout>
-                  <GetAllFlowers />
+                  <Flowers />
                 </Layout>
               } />
               <Route path="/customer" element={
@@ -224,7 +226,12 @@ const App = () => {
               } />
               <Route path="/insecticide-depo" element={
                 <Layout>
-                  <InsecticideMixToLand />
+                  <InsecticideDepo />
+                </Layout>
+              } />
+              <Route path="/insecticide-transaction" element={
+                <Layout>
+                  <InsecticideTransaction />
                 </Layout>
               } />
               <Route path="/flower-depo" element={

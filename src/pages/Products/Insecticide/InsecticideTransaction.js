@@ -4,13 +4,11 @@ import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
 import { MdOutlineAddTask } from 'react-icons/md';
 
-const FertilizerTransaction = () => {
-  const [fertilizerTransaction, setFertilizerTransaction] = useState([]);
-  const [fertilizers, setFertilizers] = useState([]);
+const InsecticideTransaction = () => {
+  const [insecticideTransaction, setInsecticideTransaction] = useState([]);
+  const [insecticides, setInsecticides] = useState([]);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [codeFilter, setCodeFilter] = useState([]);
-  const [selectedCode, setSelectedCode] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [filterConfig, setFilterConfig] = useState({ key: null, value: '' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +18,7 @@ const FertilizerTransaction = () => {
   const [runUseEffect, setRun] = useState(0);
   
   const [formData, setFormData] = useState({
-    fertilizerId: "",
+    insecticideId: "",
     quantity: 0,
     date: new Date().toISOString().split('T')[0],
     isAdd: true
@@ -31,29 +29,29 @@ const FertilizerTransaction = () => {
   const isDev = process.env.NODE_ENV === 'development';
 
   const APIS = {
-    fertilizerStoreBaseUrl: isDev ? process.env.REACT_APP_API_FERTILIZERSTORE_URL : process.env.REACT_APP_API_FERTILIZERSTORE_URL,
-    getAllFertilizerTransaction: () => `${APIS.fertilizerStoreBaseUrl}/GetFertilizerTransaction?pageSize=1000000000&pageNum=0`,
-    getAllFertilizer: () => `${APIS.fertilizerStoreBaseUrl}/GetAllFertilizerStore?pageSize=1000000000&pageNum=0`,
-    updateFertilizerTransaction: (fertilizerId, quantity, date, isAdd) => 
-      `${APIS.fertilizerStoreBaseUrl}/UpdateStore?fertilizerId=${fertilizerId}&quantity=${quantity}&date=${date}&isAdd=${isAdd}`,
+    insecticideStoreBaseUrl: isDev ? process.env.REACT_APP_API_INSECTICIDESTORE_URL : process.env.REACT_APP_API_INSECTICIDESTORE_URL,
+    getAllInsecticideTransaction: () => `${APIS.insecticideStoreBaseUrl}/GetInsecticideTransaction?pageSize=1000000000&pageNum=0`,
+    getAllInsecticide: () => `${APIS.insecticideStoreBaseUrl}/GetAllInsecticideStore?pageSize=1000000000&pageNum=0`,
+    updateInsecticideTransaction: (insecticideId, quantity, date, isAdd) => 
+      `${APIS.insecticideStoreBaseUrl}/UpdateStore?insecticideId=${insecticideId}&quantity=${quantity}&date=${date}&isAdd=${isAdd}`,
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [transactionsRes, fertilizersRes] = await Promise.all([
-          axios.get(APIS.getAllFertilizerTransaction(), { headers: { Authorization: token } }),
-          axios.get(APIS.getAllFertilizer(), { headers: { Authorization: token } })
+        const [transactionsRes, insecticidesRes] = await Promise.all([
+          axios.get(APIS.getAllInsecticideTransaction(), { headers: { Authorization: token } }),
+          axios.get(APIS.getAllInsecticide(), { headers: { Authorization: token } })
         ]);
         
         if (transactionsRes.status === 200) {
-          setFertilizerTransaction(transactionsRes.data.data);
+          setInsecticideTransaction(transactionsRes.data.data);
           setData(transactionsRes.data.data);
           setFilteredData(transactionsRes.data.data);
         }
         
-        if (fertilizersRes.status === 200) {
-          setFertilizers(fertilizersRes.data.data);
+        if (insecticidesRes.status === 200) {
+          setInsecticides(insecticidesRes.data.data);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -65,6 +63,10 @@ const FertilizerTransaction = () => {
   const getNestedValue = (obj, path) => {
     if (!path) return obj;
     return path.split('.').reduce((acc, part) => (acc && acc[part] !== undefined) ? acc[part] : null, obj);
+  };
+
+  const getTypeDisplay = (type) => {
+    return type === 0 ? 'Liquid' : 'Powder';
   };
 
   const handleSort = (key) => {
@@ -99,9 +101,9 @@ const FertilizerTransaction = () => {
 
   const addFunction = async () => {
     try {
-      const { fertilizerId, quantity, date, isAdd } = formData;
+      const { insecticideId, quantity, date, isAdd } = formData;
       const response = await axios.post(
-        APIS.updateFertilizerTransaction(fertilizerId, quantity, date, isAdd), 
+        APIS.updateInsecticideTransaction(insecticideId, quantity, date, isAdd), 
         null, 
         { headers: { Authorization: token } }
       );
@@ -112,7 +114,7 @@ const FertilizerTransaction = () => {
         setShowDoneMessage(true);
         setTimeout(() => setShowDoneMessage(false), 2000);
         setFormData({
-          fertilizerId: "",
+          insecticideId: "",
           quantity: 0,
           date: new Date().toISOString().split('T')[0],
           isAdd: true
@@ -126,7 +128,7 @@ const FertilizerTransaction = () => {
   const cancelFunction = () => {
     setAddConfirmation(false);
     setFormData({
-      fertilizerId: "",
+      insecticideId: "",
       quantity: 0,
       date: new Date().toISOString().split('T')[0],
       isAdd: true
@@ -153,19 +155,18 @@ const FertilizerTransaction = () => {
 
   const columns = [
     { field: 'date', headerText: 'Date', placeholder: 'Date' },
-    { field: 'fertilizer.title', headerText: 'Scientific Name', placeholder: 'Filter Scientific Name' },
-    { field: 'fertilizer.publicTitle', headerText: 'Title', placeholder: 'Filter Title' },
+    { field: 'insecticide.title', headerText: 'Scientific Name', placeholder: 'Filter Scientific Name' },
+    { field: 'insecticide.publicTitle', headerText: 'Title', placeholder: 'Filter Title' },
     { field: 'quantityChange', headerText: 'Changes Count', placeholder: 'Filter Changes count' },
-    { field: 'fertilizer.npk', headerText: 'NPK', placeholder: 'Filter remained NPK' },
-    { field: 'fertilizer.description', headerText: 'Description', placeholder: 'Filter description' },
+    { field: 'insecticide.type', headerText: 'Type', placeholder: 'Filter Type' },
+    { field: 'insecticide.description', headerText: 'Description', placeholder: 'Filter description' },
     { field: 'isAdd', headerText: 'Is Add?', placeholder: 'Filter Is Add' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Fertilizer Transaction" />
+      <Header category="Page" title="Insecticide Transaction" />
       
-      {/* Adjusted "Add Transaction" button with fixed width */}
       <div className="flex justify-end mb-4">
         <button
           onClick={handleAddClick}
@@ -214,6 +215,8 @@ const FertilizerTransaction = () => {
                   
                   if (column.field === 'isAdd') {
                     displayValue = value ? 'Yes' : 'No';
+                  } else if (column.field === 'insecticide.type') {
+                    displayValue = getTypeDisplay(value);
                   }
                   
                   return (
@@ -228,7 +231,6 @@ const FertilizerTransaction = () => {
         </table>
       </div>
 
-      {/* Pagination with smaller, centered buttons */}
       <div className="flex justify-center mt-4 space-x-1">
         {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }, (_, i) => (
           <button
@@ -248,21 +250,21 @@ const FertilizerTransaction = () => {
       {addConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-medium mb-4">Add Fertilizer Transaction</h3>
+            <h3 className="text-lg font-medium mb-4">Add Insecticide Transaction</h3>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fertilizer</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Insecticide</label>
               <select
-                name="fertilizerId"
-                value={formData.fertilizerId}
+                name="insecticideId"
+                value={formData.insecticideId}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 required
               >
-                <option value="">Select Fertilizer</option>
-                {fertilizers.map(fertilizer => (
-                  <option key={fertilizer.fertilizer.id} value={fertilizer.fertilizer.id}>
-                    {fertilizer.fertilizer.publicTitle} ({fertilizer.fertilizer.title})
+                <option value="">Select Insecticide</option>
+                {insecticides.map(insecticide => (
+                  <option key={insecticide.insecticide.id} value={insecticide.insecticide.id}>
+                    {insecticide.insecticide.publicTitle} ({insecticide.insecticide.title})
                   </option>
                 ))}
               </select>
@@ -317,7 +319,7 @@ const FertilizerTransaction = () => {
               <button
                 onClick={addFunction}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                disabled={!formData.fertilizerId}
+                disabled={!formData.insecticideId}
               >
                 Submit
               </button>
@@ -335,4 +337,4 @@ const FertilizerTransaction = () => {
   );
 };
 
-export default FertilizerTransaction;
+export default InsecticideTransaction;

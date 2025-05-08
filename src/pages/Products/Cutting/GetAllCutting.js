@@ -3,9 +3,9 @@ import { Header } from '../../../components';
 import { contextMenuItems, cuttingsGrid } from '../../../data/dummy';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
+import { BiCheckCircle, BiXCircle } from 'react-icons/bi';
 
 const GetAllCutting = () => {
-  // تعريف الـ state
   let [ordersData, setOrdersData] = useState([]);
   const [data, setData] = useState(ordersData);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -19,13 +19,16 @@ const GetAllCutting = () => {
     type: '',
     age: '',
   });
-
+  const [notification, setNotification] = useState({
+    show: false,
+    message: '',
+    type: 'success',
+  });
   let [runUseEffect, setRun] = useState(0);
   let userNow = useStateContext();
   let token = userNow.auth.token;
   let isDev = process.env.NODE_ENV === 'development';
 
-  // تعريف الـ APIs
   const APIS = isDev ? {
     baseCuttingUrl: process.env.REACT_APP_API_CUTTING_URL,
     getAllCutting: () => `${APIS.baseCuttingUrl}/GetAll?pageSize=1000000000&pageNum=0`,
@@ -40,7 +43,13 @@ const GetAllCutting = () => {
     updateCutting: () => `${APIS.baseCuttingUrl}/Update`,
   };
 
-  // جلب البيانات
+  const showNotification = (message, type = 'success') => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ ...notification, show: false });
+    }, 3000);
+  };
+
   useEffect(() => {
     axios.get(APIS.getAllCutting(), {
       headers: {
@@ -56,10 +65,10 @@ const GetAllCutting = () => {
     })
     .catch(err => {
       console.log(err);
+      showNotification('Failed to fetch data', 'error');
     });
   }, [runUseEffect]);
 
-  // وظائف الفرز والتصفية
   const handleSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -84,22 +93,14 @@ const GetAllCutting = () => {
     setData(filteredData);
   };
 
-  // وظائف التصدير
-  const handleExportToExcel = () => {
-    console.log('Exporting to Excel...');
-  };
 
-  const handleExportToPdf = () => {
-    console.log('Exporting to PDF...');
-  };
-  // وظائف CRUD
   const handleAdd = async () => {
     if (!newItem.title || !newItem.type || !newItem.age) {
-        alert("Please fill all required fields");
-        return;
+      showNotification('Please fill all required fields', 'error');
+      return;
     }
     try {
-      let res = await axios.post(`${APIS.addCutting()}?title=${newItem.title}&type=${newItem.type}&age=${newItem.age}`,null, {
+      let res = await axios.post(`${APIS.addCutting()}?title=${newItem.title}&type=${newItem.type}&age=${newItem.age}`, null, {
         headers: {
           Authorization: token,
         },
@@ -112,11 +113,12 @@ const GetAllCutting = () => {
           type: '',
           age: '',
         });
+        showNotification('Item added successfully!');
       }
     } catch(err) {
       console.log(err);
+      showNotification(err.response?.data?.errorMessage || 'Failed to add item', 'error');
     }
-    alert("Item added successfully!");
   };
 
   const handleDelete = async(id) => {
@@ -128,11 +130,12 @@ const GetAllCutting = () => {
       });
       if (res.status === 200) {
         setRun((prev) => prev + 1);
+        showNotification('Item deleted successfully!');
       }
-    } catch {
-      console.log("none");
+    } catch(err) {
+      console.log(err);
+      showNotification(err.response?.data?.errorMessage || 'Failed to delete item', 'error');
     }
-    alert("Item deleted successfully!");
   };
 
   const handleEdit = (row) => {
@@ -141,11 +144,11 @@ const GetAllCutting = () => {
 
   const handleSave = async(item) => {
     if (!editingRow.title || !editingRow.type || !editingRow.age) {
-      alert("Please fill all required fields");
+      showNotification('Please fill all required fields', 'error');
       return;
     }
     try {
-      let res = await axios.post(`${APIS.updateCutting()}?id=${item.id}&title=${editingRow.title}&type=${editingRow.type}&age=${ editingRow.age}`,null, {
+      let res = await axios.post(`${APIS.updateCutting()}?id=${item.id}&title=${editingRow.title}&type=${editingRow.type}&age=${editingRow.age}`, null, {
         headers: {
           Authorization: token,
         },
@@ -153,14 +156,14 @@ const GetAllCutting = () => {
       if (res.status === 200) {
         setRun((prev) => prev + 1);
         setEditingRow(null);
+        showNotification('Item updated successfully!');
       }
     } catch(err) {
-    console.log(err);
+      console.log(err);
+      showNotification(err.response?.data?.errorMessage || 'Failed to update item', 'error');
     }
-    alert("Item edited successfully!");
   };
 
-  // التصفح بين الصفحات
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
@@ -168,79 +171,80 @@ const GetAllCutting = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-      <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-        <Header category="Page" title="Cuttings" />
-        <div className="flex justify-end space-x-4 mb-4">
-          <button
-            onClick={handleExportToExcel}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
-          >
-            Export to Excel
-          </button>
-          <button
-            onClick={handleExportToPdf}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
-          >
-            Export to PDF
-          </button>
+    <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl relative">
+      {notification.show && (
+        <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
+          notification.type === 'success' 
+            ? 'bg-green-100 text-green-800' 
+            : 'bg-red-100 text-red-800'
+        }`}>
+          {notification.type === 'success' ? (
+            <BiCheckCircle className="w-6 h-6 mr-2" />
+          ) : (
+            <BiXCircle className="w-6 h-6 mr-2" />
+          )}
+          <span>{notification.message}</span>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead className="bg-gray-100">
-              <tr>
-                {cuttingsGrid.map((column, index) => (
-                  <th
-                    key={index}
-                    className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span>{column.headerText}</span>
-                      <button
-                        onClick={() => handleSort(column.field)}
-                        className="ml-2 p-1 hover:bg-gray-200 rounded"
-                      >
-                        {sortConfig.key === column.field && sortConfig.direction === 'ascending' ? '↑' : '↓'}
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Filter"
-                      onChange={(e) => handleFilter(column.field, e.target.value)}
-                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </th>
-                ))}
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {currentItems.map((item, index) => (
+      )}
 
-                <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
-                  {console.log(currentItems,item)}
-                  {cuttingsGrid.map((column, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {editingRow?.id === item.id ? (
-                        <input
-                          type="text"
-                          value={editingRow[column.field]}
-                          onChange={(e) =>
-                            setEditingRow({ ...editingRow, [column.field]: e.target.value })
-                          }
-                          className="w-full px-2 py-1 border border-gray-300 rounded-md"
-                        />
-                      ) : (
-                        item[column.field]
-                      )}
-                    </td>
-                  ))}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+      <Header category="Page" title="Cuttings" />
+  
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-200">
+          <thead className="bg-gray-100">
+            <tr>
+              {cuttingsGrid.map((column, index) => (
+                <th
+                  key={index}
+                  className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
+                >
+                  <div className="flex items-center justify-between">
+                    <span>{column.headerText}</span>
+                    <button
+                      onClick={() => handleSort(column.field)}
+                      className="ml-2 p-1 hover:bg-gray-200 rounded w-8"
+                    >
+                      {sortConfig.key === column.field && sortConfig.direction === 'ascending' ? '↑' : '↓'}
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Filter"
+                    onChange={(e) => handleFilter(column.field, e.target.value)}
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </th>
+              ))}
+              <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {currentItems.map((item, index) => (
+              <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
+                {cuttingsGrid.map((column, colIndex) => (
+                  <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {editingRow?.id === item.id ? (
+                      <input
+                        type="text"
+                        value={editingRow[column.field]}
+                        onChange={(e) =>
+                          setEditingRow({ ...editingRow, [column.field]: e.target.value })
+                        }
+                        className="w-full px-2 py-1 border border-gray-300 rounded-md"
+                      />
+                    ) : (
+                      item[column.field]
+                    )}
+                  </td>
+                ))}
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex justify-center space-x-2">
                     {editingRow?.id === item.id ? (
                       <button
-                        onClick={()=>handleSave(item)}
-                        className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
+                        onClick={() => handleSave(item)}
+                        className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 transition-colors"
                       >
                         Save
                       </button>
@@ -248,85 +252,87 @@ const GetAllCutting = () => {
                       <>
                         <button
                           onClick={() => handleEdit(item)}
-                          className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 mr-2"
+                          className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-16 transition-colors"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                          className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 w-16 transition-colors"
                         >
                           Delete
                         </button>
                       </>
                     )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+            
+            {isAdding && (
+              <tr className="hover:bg-gray-50 transition-colors duration-200">
+                {cuttingsGrid.map((column, colIndex) => (
+                  <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <input
+                      type="text"
+                      value={newItem[column.field]}
+                      onChange={(e) =>
+                        setNewItem({ ...newItem, [column.field]: e.target.value })
+                      }
+                      placeholder={column.placeholder} 
+                      className="w-full px-2 py-1 border border-gray-300 rounded-md"
+                    />
                   </td>
-                </tr>
-                
-              ))}
-              {isAdding && (
-                <tr className="hover:bg-gray-50 transition-colors duration-200">
-                  {cuttingsGrid.map((column, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <input
-                        type="text"
-                        value={newItem[column.field]}
-                        onChange={(e) =>
-                          setNewItem({ ...newItem, [column.field]: e.target.value })
-                        }
-                        placeholder={column.placeholder} 
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md"
-                      />
-                    </td>
-                  ))}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ))}
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex justify-center space-x-2">
                     <button
                       onClick={handleAdd}
-                      className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 mr-2"
+                      className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 transition-colors"
                     >
                       Save
                     </button>
                     <button
                       onClick={() => setIsAdding(false)}
-                      className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 w-16 transition-colors"
                     >
                       Cancel
                     </button>
-                  </td>
-                </tr>
-              )}
-    
-              {/* زر إظهار سطر الإضافة */}
-              <tr>
-                <td colSpan={cuttingsGrid.length + 1} className="px-6 py-4 text-center">
-                  {!isAdding && (
-                    <button
-                      onClick={() => setIsAdding(true)}
-                      className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                    >
-                      Add New Item
-                    </button>
-                  )}
+                  </div>
                 </td>
               </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: Math.ceil(data.length / itemsPerPage) }, (_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => paginate(i + 1)}
-              className={`px-4 py-2 mx-1 ${
-                currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-              } rounded-md hover:bg-blue-600 hover:text-white transition-colors duration-200`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
+            )}
+            
+            <tr>
+              <td colSpan={cuttingsGrid.length + 1} className="px-6 py-4 text-center">
+                {!isAdding && (
+                  <button
+                    onClick={() => setIsAdding(true)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-40 transition-colors"
+                  >
+                    Add New Item
+                  </button>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    );
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: Math.ceil(data.length / itemsPerPage) }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => paginate(i + 1)}
+            className={`px-4 py-2 mx-1 w-10 ${
+              currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
+            } rounded-md hover:bg-blue-600 hover:text-white transition-colors duration-200`}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default GetAllCutting;

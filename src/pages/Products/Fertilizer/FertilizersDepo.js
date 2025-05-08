@@ -36,7 +36,7 @@ const FertilizerDepo = () => {
           setFilteredData(res.data.data);
         }
       } catch (err) {
-        console.error("Error fetching flower store:", err);
+        console.error("Error fetching fertilizer store:", err);
       }
     };
     fetchData();
@@ -77,7 +77,6 @@ const FertilizerDepo = () => {
     setFilteredData(filtered);
   };
 
- 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -109,7 +108,7 @@ const FertilizerDepo = () => {
                     <span>{column.headerText}</span>
                     <button
                       onClick={() => handleSort(column.field)}
-                      className="ml-2 p-1 hover:bg-gray-200 rounded"
+                      className="ml-2 p-1 hover:bg-gray-200 rounded w-6 h-6 flex items-center justify-center"
                     >
                       {sortConfig.key === column.field && sortConfig.direction === 'ascending' ? '↑' : '↓'}
                     </button>
@@ -141,21 +140,22 @@ const FertilizerDepo = () => {
         </table>
       </div>
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 space-x-1">
         {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }, (_, i) => (
           <button
             key={i + 1}
             onClick={() => paginate(i + 1)}
-            className={`px-4 py-2 mx-1 ${
-              currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-            } rounded-md hover:bg-blue-600 hover:text-white transition-colors duration-200`}
+            className={`w-8 h-8 flex items-center justify-center text-sm ${
+              currentPage === i + 1 
+                ? 'bg-blue-500 text-white font-medium' 
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            } rounded-md transition-colors duration-200`}
           >
             {i + 1}
           </button>
         ))}
       </div>
     </div>
-      
   );
 };
 
