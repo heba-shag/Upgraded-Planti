@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { FiSettings } from 'react-icons/fi';
-import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 
 import { Navbar, Footer, Sidebar, ThemeSettings } from './components';
-import { Ecommerce, Orders, Calendar, Employees, Stacked, Pyramid, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor } from './pages';
+import { Ecommerce, Calendar, Employees, Stacked, Pyramid, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor } from './pages';
 import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
@@ -18,7 +17,6 @@ import GetAllFertilizer from './pages/Products/Fertilizer/GetAllFertilizers';
 import GetAllInsecticide from './pages/Products/Insecticide/GetAllInsecticide';
 import GetAllCutting from './pages/Products/Cutting/GetAllCutting';
 import GetAllColor from './pages/Products/Color/GetAllColor';
-import GetAllFlowers from './pages/Products/Flowers/GetAllFlowers';
 import MainLands from './pages/Lands/MainLands';
 import SecLands from './pages/Lands/SecLands';
 import ThirdLands from './pages/Lands/ThirdLand';
@@ -37,6 +35,7 @@ import FertilizerTransaction from './pages/Products/Fertilizer/FertilizerTransac
 import AddNewUser from './pages/AuthPages/AddnewUser';
 import InsecticideDepo from './pages/Products/Insecticide/InsecticideDepo';
 import InsecticideTransaction from './pages/Products/Insecticide/InsecticideTransaction';
+import Orders from './pages/StorageThings/Orders';
 
 const Layout = ({ children }) => {
   const { activeMenu, themeSettings, setThemeSettings } = useStateContext();
@@ -101,8 +100,8 @@ const App = () => {
 
   return (
     <div className={currentMode === 'Dark' ? 'dark' : ''}>
-      <BrowserRouter>
         <Routes>
+          
           <Route path="/" element={<AdminLogIn />} />
           <Route element={<PersistLogin />}>
             <Route element={<ProtectedRoute />}>
@@ -183,6 +182,11 @@ const App = () => {
               <Route path="/flower" element={
                 <Layout>
                   <Flowers />
+                </Layout>
+              } />
+              <Route path="/order" element={
+                <Layout>
+                  <Orders />
                 </Layout>
               } />
               <Route path="/customer" element={
@@ -284,7 +288,6 @@ const App = () => {
             </Route>
           </Route>
         </Routes>
-      </BrowserRouter>
     </div>
   );
 };

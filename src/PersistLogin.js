@@ -8,8 +8,6 @@ import Loading from "./components/Loading";
 
 export default function PersistLogin(){
     let UserNow=useStateContext();
-    // let refreshToken=UserNow.auth.userDetails.token.refreshToken;
-    // let expireDate=UserNow.auth.userDetails.token.expireDate;
     let [nowDate,setNowDate]=useState(new Date().toISOString());
     let [loading,setLoading]=useState(true);
 

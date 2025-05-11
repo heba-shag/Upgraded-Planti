@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock } from 'react-icons/ai';
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
-import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
+import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft, BsFlower1 } from 'react-icons/bs';
 import { BiColorFill } from 'react-icons/bi';
 import { IoIosColorPalette, IoMdContacts } from 'react-icons/io';
 import { RiContactsLine, RiCustomerService2Fill, RiStockLine } from 'react-icons/ri';
@@ -25,7 +25,6 @@ import product5 from './product5.jpg';
 import product6 from './product6.jpg';
 import product7 from './product7.jpg';
 import product8 from './product8.jpg';
-
 
 export const gridOrderImage = (props) => (
   <div>
@@ -359,46 +358,6 @@ export const LinePrimaryYAxis = {
 };
 
 
-export const insecticideLandGrid = [
-  { type: 'checkbox', width: '50' },
-  { 
-    field: 'date',
-    headerText: 'Date',
-    width: '150',
-    textAlign: 'Center',
-    format: 'yMd'
-  },
-  { 
-    field: 'insecticideTitle',
-    headerText: 'Insecticide',
-    width: '150',
-    textAlign: 'Center'
-  },
-  { 
-    field: 'landTitle',
-    headerText: 'Land',
-    width: '150',
-    textAlign: 'Center'
-  },
-  { 
-    field: 'liter',
-    headerText: 'Liters',
-    width: '100',
-    textAlign: 'Center'
-  },
-  { 
-    field: 'quantity',
-    headerText: 'Quantity',
-    width: '100',
-    textAlign: 'Center'
-  },
-  { 
-    field: 'note',
-    headerText: 'Notes',
-    width: '200',
-    textAlign: 'Center'
-  }
-];
 
 export const employeesGrid = [
   
@@ -455,7 +414,7 @@ export const links = [
     title: 'Dashboard',
     links: [
       {
-        name: 'ecommerce',
+        name: 'Main Page',
         icon: <FiShoppingBag />,
       },
       {
@@ -468,14 +427,6 @@ export const links = [
   {
     title: 'Products',
     links: [
-      {
-        name: 'customer',
-        icon: <GiFertilizerBag />,
-      },
-      {
-        name: 'employees',
-        icon: <GiFertilizerBag />,
-      },
       {
         name: 'fertilizers',
         icon: <GiFertilizerBag />,
@@ -692,8 +643,6 @@ export const chatData = [
 export const earningData = [
   {
     icon: <MdOutlineSupervisorAccount />,
-    amount: '39,354',
-    percentage: '-4%',
     title: 'Customers',
     iconColor: '#03C9D7',
     iconBg: '#E5FAFB',
@@ -701,32 +650,20 @@ export const earningData = [
   },
   {
     icon: <BsBoxSeam />,
-    amount: '4,396',
-    percentage: '+23%',
-    title: 'Products',
+    title: 'Orders',
     iconColor: 'rgb(255, 244, 229)',
     iconBg: 'rgb(254, 201, 15)',
     pcColor: 'green-600',
   },
   {
-    icon: <FiBarChart />,
-    amount: '423,39',
-    percentage: '+38%',
-    title: 'Sales',
+    icon: <BsFlower1 />,
+    title: 'Flower per Donum',
     iconColor: 'rgb(228, 106, 118)',
     iconBg: 'rgb(255, 244, 229)',
 
     pcColor: 'green-600',
   },
-  {
-    icon: <HiOutlineRefresh />,
-    amount: '39,354',
-    percentage: '-12%',
-    title: 'Refunds',
-    iconColor: 'rgb(0, 194, 146)',
-    iconBg: 'rgb(235, 250, 242)',
-    pcColor: 'red-600',
-  },
+  
 ];
 
 export const recentTransactions = [

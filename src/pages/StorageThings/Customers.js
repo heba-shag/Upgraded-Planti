@@ -18,7 +18,7 @@ const employeesGrid = [
   { 
     field: 'name',
     headerText: 'Name',
-    width: '0',
+    width: '150',
     textAlign: 'Center',
   },
   { 
