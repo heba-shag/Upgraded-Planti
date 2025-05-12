@@ -49,7 +49,7 @@ export default function AdminLogIn() {
             
             cookie.set("authData", userDetails);
             UserNow.setAuth({ token, userDetails });
-            navigation('/ecommerce');
+            navigation('/mainPage');
             
         } catch (err) {
             console.log(err.response?.status);

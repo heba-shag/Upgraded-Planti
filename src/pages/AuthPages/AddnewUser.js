@@ -109,7 +109,7 @@ export default function AddNewUser() {
                 roleIdstoAdd: selectedRoles,
             }, { headers: { Authorization: token } });
 
-            navigation('/ecommerce');
+            navigation('/mainPage');
         } catch(err) {
             setEmailError(err.response?.data?.errorMessage || "An error occurred");
         }

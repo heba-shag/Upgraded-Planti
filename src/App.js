@@ -108,7 +108,7 @@ const App = () => {
               <Route path="/login" element={<AdminLogIn/>} />
               <Route path="/add-new-user" element={<AddNewUser/>} />
 
-              <Route path="/ecommerce" element={
+              <Route path="/mainPage" element={
                 <Layout>
                   <Ecommerce />
                 </Layout>

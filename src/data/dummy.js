@@ -414,7 +414,7 @@ export const links = [
     title: 'Dashboard',
     links: [
       {
-        name: 'Main Page',
+        name: 'mainPage',
         icon: <FiShoppingBag />,
       },
       {
