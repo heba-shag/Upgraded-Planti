@@ -184,7 +184,7 @@ const MainLands = () => {
       return [
         ...baseColumns,
         {
-          header: 'Actions',
+          header: 'işlemler',
           accessorKey: 'actions',
           cell: ({ row }) => {
             return (
@@ -267,7 +267,7 @@ const MainLands = () => {
         </div>
       )}
 
-      <Header category="Page" title="Main Lands" />
+      <Header category="Page" title="Tarlalar" />
 
       <div className="mb-4">
         <input
@@ -285,7 +285,7 @@ const MainLands = () => {
             onClick={() => setIsAdding(true)}
             className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-48 text-center"
           >
-            Add New Item
+            Ekleme
           </button>
         )}
       </div>

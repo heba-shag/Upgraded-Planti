@@ -5,7 +5,7 @@ import { Header } from '../../components';
 import Select from "react-select";
 import axios from 'axios';
 import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { FaCheckSquare, FaRegCheckSquare, FaTimes, FaFilter, FaPlus } from 'react-icons/fa';
+import { FaTimes, FaFilter, FaPlus } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useStateContext } from '../../contexts/ContextProvider';
@@ -487,7 +487,7 @@ const FertilizerMixToLand = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="App" title="Fertilizer Management" />
+      <Header category="App" title="Mix Gübre Management" />
       
       {error && (
         <div style={{
@@ -521,7 +521,7 @@ const FertilizerMixToLand = () => {
             }))}
             value={selectedMix}
             onChange={handleMixSelect}
-            placeholder="Select Fertilizer..."
+            placeholder="Select Gübre..."
             isClearable
             required
           />
@@ -544,7 +544,7 @@ const FertilizerMixToLand = () => {
             }
           }}
         >
-          Add Fertilizer
+          Gübre Ekleme
         </Button>
         
         <Button 
@@ -605,7 +605,7 @@ const FertilizerMixToLand = () => {
               options={uniqueLandNames.map(name => ({ value: name, label: name }))}
               value={landFilter ? { value: landFilter, label: landFilter } : null}
               onChange={(option) => setLandFilter(option?.value || null)}
-              placeholder="Filter by Land..."
+              placeholder="Filter by Tarla..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -615,7 +615,7 @@ const FertilizerMixToLand = () => {
               options={uniqueMixNames.map(name => ({ value: name, label: name }))}
               value={mixFilter ? { value: mixFilter, label: mixFilter } : null}
               onChange={(option) => setMixFilter(option?.value || null)}
-              placeholder="Filter by Fertilizer..."
+              placeholder="Filter by Gübre..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -645,7 +645,7 @@ const FertilizerMixToLand = () => {
       )}
       
       <Dialog open={showAddFertilizerDialog} onClose={!isSubmitting ? handleCloseDialog : null}>
-        <DialogTitle>Add New Fertilizer Application</DialogTitle>
+        <DialogTitle>Gübre Ekleme Application</DialogTitle>
         <DialogContent>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px 0' }}>
             <Select
@@ -663,7 +663,7 @@ const FertilizerMixToLand = () => {
                 ...newFertilizer,
                 mixId: option ? option.value : null
               })}
-              placeholder="Select Fertilizer Mix..."
+              placeholder="Select Gübre Mix..."
               isClearable
               required
               isDisabled={isSubmitting}
@@ -684,7 +684,7 @@ const FertilizerMixToLand = () => {
             
             <div style={{ marginTop: '10px' }}>
               <label style={{ display: 'block', marginBottom: '5px', color: 'rgba(0, 0, 0, 0.6)' }}>
-                Application Date
+                Application Tarih
               </label>
               <DatePicker
                 selected={newFertilizer.date}
@@ -760,7 +760,7 @@ const FertilizerMixToLand = () => {
             actionButton={
               selectedMix && (
                 <div style={{ fontSize: '0.9em', color: '#666' }}>
-                  Select lands to fertilize with: <strong>{selectedMix.label}</strong>
+                  Select Tarlalar to Gübre with: <strong>{selectedMix.label}</strong>
                 </div>
               )
             }

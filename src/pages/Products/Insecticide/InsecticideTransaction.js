@@ -66,7 +66,7 @@ const InsecticideTransaction = () => {
   };
 
   const getTypeDisplay = (type) => {
-    return type === 0 ? 'Liquid' : 'Powder';
+    return type === 0 ? 'Sıvı ilaç' : 'Toz ilaç';
   };
 
   const handleSort = (key) => {
@@ -154,18 +154,18 @@ const InsecticideTransaction = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'date', headerText: 'Date', placeholder: 'Date' },
-    { field: 'insecticide.title', headerText: 'Scientific Name', placeholder: 'Filter Scientific Name' },
-    { field: 'insecticide.publicTitle', headerText: 'Title', placeholder: 'Filter Title' },
-    { field: 'quantityChange', headerText: 'Changes Count', placeholder: 'Filter Changes count' },
-    { field: 'insecticide.type', headerText: 'Type', placeholder: 'Filter Type' },
-    { field: 'insecticide.description', headerText: 'Description', placeholder: 'Filter description' },
+    { field: 'date', headerText: 'Tarih', placeholder: 'Date' },
+    { field: 'insecticide.title', headerText: 'Bilimsel Adı', placeholder: 'Filter Scientific Name' },
+    { field: 'insecticide.publicTitle', headerText: 'Ad', placeholder: 'Filter Title' },
+    { field: 'quantityChange', headerText: 'Adit', placeholder: 'Filter Changes count' },
+    { field: 'insecticide.type', headerText: 'Tür', placeholder: 'Filter Type' },
+    { field: 'insecticide.description', headerText: 'Tanım', placeholder: 'Filter description' },
     { field: 'isAdd', headerText: 'Is Add?', placeholder: 'Filter Is Add' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Insecticide Transaction" />
+      <Header category="Page" title="ilaç Stok işlemler" />
       
       <div className="flex justify-end mb-4">
         <button
@@ -174,7 +174,7 @@ const InsecticideTransaction = () => {
           style={{ width: '170px' }}
         >
           <MdOutlineAddTask className="mr-2" />
-          Add Transaction
+          Stok işlemler Ekleme
         </button>
       </div>
 
@@ -250,10 +250,10 @@ const InsecticideTransaction = () => {
       {addConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-medium mb-4">Add Insecticide Transaction</h3>
+            <h3 className="text-lg font-medium mb-4">Stok işlemler Ekleme</h3>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Insecticide</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">ilaç</label>
               <select
                 name="insecticideId"
                 value={formData.insecticideId}
@@ -261,7 +261,7 @@ const InsecticideTransaction = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 required
               >
-                <option value="">Select Insecticide</option>
+                <option value="">Select ilaç</option>
                 {insecticides.map(insecticide => (
                   <option key={insecticide.insecticide.id} value={insecticide.insecticide.id}>
                     {insecticide.insecticide.publicTitle} ({insecticide.insecticide.title})
@@ -271,7 +271,7 @@ const InsecticideTransaction = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Sayı</label>
               <input
                 type="number"
                 name="quantity"
@@ -284,7 +284,7 @@ const InsecticideTransaction = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tarih</label>
               <input
                 type="date"
                 name="date"

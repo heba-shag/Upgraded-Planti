@@ -227,7 +227,6 @@ const GetAllFlowers = () => {
 
   // Delete flower record
   const handleDelete = async(id) => {
-    if (!window.confirm("Are you sure you want to delete this record?")) return;
     
     try {
       const res = await axios.delete(APIS.deleteFlower(id), {
@@ -247,19 +246,19 @@ const GetAllFlowers = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Flowers Management" />
+      <Header category="Page" title="Çiçek Management" />
       
       {/* Add/Edit Flower Modal */}
       {(isAdding || editingRow) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">
-              {editingRow ? 'Edit Flower Record' : 'Add New Flower Record'}
+              {editingRow ? 'Çiçek Edit' : 'Çiçek Ekleme'}
             </h3>
             <form onSubmit={handleAddFlowerSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Cutting Land</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Fide Tarla</label>
                   <select
                     name="cuttingLandId"
                     value={newFlowerForm.cuttingLandId}
@@ -267,7 +266,7 @@ const GetAllFlowers = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     required
                   >
-                    <option value="">Select a land</option>
+                    <option value="">Tarla</option>
                     {cuttingLands.map(land => (
                       <option key={land.id} value={land.id}>{land.land.title}</option>
                     ))}
@@ -275,7 +274,7 @@ const GetAllFlowers = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Worker Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Worker Ad</label>
                   <input
                     type="text"
                     name="worker"
@@ -287,7 +286,7 @@ const GetAllFlowers = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tarih</label>
                   <input
                     type="date"
                     name="date"
@@ -300,11 +299,11 @@ const GetAllFlowers = () => {
               </div>
 
               <div className="mb-4">
-                <h4 className="font-medium mb-2">Flowers Details</h4>
+                <h4 className="font-medium mb-2">Çiçek Details</h4>
                 {newFlowerForm.flowers.map((flower, index) => (
                   <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 p-3 border rounded">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Count</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Adit</label>
                       <input
                         type="number"
                         name="count"
@@ -317,7 +316,7 @@ const GetAllFlowers = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Length (cm)</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Long (cm)</label>
                       <input
                         type="number"
                         name="long"
@@ -358,7 +357,7 @@ const GetAllFlowers = () => {
                     onClick={handleAddFlowerField}
                     className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-4"
                   >
-                    Add More Flowers
+                    Çiçek Ekleme
                   </button>
                 )}
               </div>
@@ -392,7 +391,7 @@ const GetAllFlowers = () => {
             onClick={() => setIsAdding(true)}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
-            Add New Flower Record
+            Çiçek Ekleme
           </button>
         </div>
       </div>
@@ -424,7 +423,7 @@ const GetAllFlowers = () => {
                 </th>
               ))}
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                Actions
+                işlemler
               </th>
             </tr>
           </thead>
@@ -447,17 +446,16 @@ const GetAllFlowers = () => {
                         {showFlowersDropdown === item.id && (
                           <div className="absolute z-10 left-0 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-lg">
                             <div className="p-2">
-                              <h4 className="font-medium mb-2">Flowers Details</h4>
+                              <h4 className="font-medium mb-2">Çiçek Details</h4>
                               <table className="w-full">
                                 <thead>
                                   <tr>
-                                    <th className="text-left px-2 py-1">Count</th>
-                                    <th className="text-left px-2 py-1">Length</th>
+                                    <th className="text-left px-2 py-1">Adit</th>
+                                    <th className="text-left px-2 py-1">Long</th>
                                     <th className="text-left px-2 py-1">Note</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {console.log(item)}
                                   {/* {item.map((flower, idx) => ( */}
                                     <tr >
                                       <td className="px-2 py-1">{item.count}</td>

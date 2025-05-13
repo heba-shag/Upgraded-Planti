@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../AuthPages/logInStyle.css";
-import { FaCheckSquare, FaRegCheckSquare, FaRegUserCircle } from "react-icons/fa";
+import { FaRegUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Select from "react-dropdown-select";
 import { MdOutlineAddTask } from "react-icons/md";
@@ -40,9 +40,9 @@ export default function AddNewUser() {
 
     const isDev = process.env.NODE_ENV === 'development';
     const addUsersApi = {
-        baseUsersUrl: process.env.REACT_APP_API_USERS_URL,
+        baseUsersUrl:isDev? process.env.REACT_APP_API_USERS_URL:process.env.REACT_APP_API_USERS_URL,
         addNewUser: () => `${addUsersApi.baseUsersUrl}/Add`,
-        baseRoleUrl: process.env.REACT_APP_API_ROLE_URL,
+        baseRoleUrl:isDev? process.env.REACT_APP_API_ROLE_URL: process.env.REACT_APP_API_ROLE_URL,
         getAllRole: () => `${addUsersApi.baseRoleUrl}/GetAll`,
         addRole: () => `${addUsersApi.baseRoleUrl}/add`,
     };
@@ -99,7 +99,7 @@ export default function AddNewUser() {
     async function Submit(e) {
         e.preventDefault();
         try {
-            let res = await axios.post(addUsersApi.addNewUser(), {
+             await axios.post(addUsersApi.addNewUser(), {
                 firstName: fName,
                 lastName: lName,
                 email: email,

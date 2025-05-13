@@ -16,13 +16,9 @@ import {
   FormControl, 
   InputLabel, 
   Select, 
-  MenuItem, 
-  Chip, 
-  Snackbar, 
-  Alert, 
+  MenuItem,
   CircularProgress,
   Menu,
-  ListItemText,
   useTheme
 } from '@mui/material';
 import { Header } from '../../../components';
@@ -62,7 +58,7 @@ const InsecticideDetailsDropdown = ({ mixDetails = [] }) => {
           }
         }}
       >
-        {mixDetails.length} Insecticides
+        {mixDetails.length} ilaç
       </MuiButton>
       <Menu
         anchorEl={anchorEl}
@@ -83,10 +79,10 @@ const InsecticideDetailsDropdown = ({ mixDetails = [] }) => {
                   {detail.insecticide?.publicTitle || 'Unknown Insecticidesilizer'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Quantity: {detail.quantity || 'N/A'}
+                  Sayı: {detail.quantity || 'N/A'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Liter: {detail.liter || 'N/A'}
+                  Litre: {detail.liter || 'N/A'}
                 </Typography>
               </Box>
             </MenuItem>
@@ -343,12 +339,12 @@ const InsecticideMix = () => {
 
     // Columns configuration
     const columns = [
-        { field: 'title', headerName: 'Title', width: 200 },
+        { field: 'title', headerName: 'Ad', width: 200 },
         { field: 'note', headerName: 'Note', width: 200 },
-        { field: 'color', headerName: 'Color', width: 120 },
+        { field: 'color', headerName: 'Renk', width: 120 },
         {
             field: 'details',
-            headerName: 'Insecticides',
+            headerName: 'ilaç',
             width: 180,
             renderCell: (params) => (
                 <InsecticideDetailsDropdown 
@@ -360,7 +356,7 @@ const InsecticideMix = () => {
         },
         {
             field: 'actions',
-            headerName: 'Actions',
+            headerName: 'işlemler',
             width: 130,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
@@ -458,7 +454,7 @@ const InsecticideMix = () => {
                             padding: '6px 12px'
                         }}
                     >
-                        Add New
+                        Ekleme
                     </MuiButton>
                 );
             },
@@ -469,7 +465,7 @@ const InsecticideMix = () => {
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Insecticide Mixes Management" />
+            <Header category="Page" title="ilaç Mixes Management" />
 
             {notification.show && (
                 <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
@@ -531,7 +527,7 @@ const InsecticideMix = () => {
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Add new Insecticide Mix</DialogTitle>
+                <DialogTitle>ilaç Mix Ekleme</DialogTitle>
                 <DialogContent>
                     <Box sx={{ 
                         mt: 2,
@@ -540,7 +536,7 @@ const InsecticideMix = () => {
                         gap: '20px'
                     }}>
                         <TextField
-                            label="Title"
+                            label="Ad"
                             value={newData.title}
                             onChange={(e) => setNewData({...newData, title: e.target.value})}
                             fullWidth
@@ -560,10 +556,10 @@ const InsecticideMix = () => {
                         />
 
                         <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
-                            <InputLabel>Color</InputLabel>
+                            <InputLabel>Renk</InputLabel>
                             <Select
                                 value={newData.color}
-                                label="Color"
+                                label="Renk"
                                 onChange={(e) => setNewData({...newData, color: e.target.value})}
                             >
                                 {[1,2,3,4,5,6].map(color => (
@@ -585,10 +581,10 @@ const InsecticideMix = () => {
                                 flexWrap: 'wrap'
                             }}>
                                 <FormControl sx={{ flex: 2, minWidth: '200px' }}>
-                                    <InputLabel>Insecticide</InputLabel>
+                                    <InputLabel>ilaç</InputLabel>
                                     <Select
                                         value={mix.insecticideId}
-                                        label="Insecticide"
+                                        label="ilaç"
                                         onChange={(e) => handleMixChange(index, 'insecticideId', e.target.value)}
                                     >
                                         {insecticides.map(insec => (
@@ -600,7 +596,7 @@ const InsecticideMix = () => {
                                 </FormControl>
 
                                 <TextField
-                                    label="Quantity"
+                                    label="Sayı"
                                     type="number"
                                     value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -618,7 +614,7 @@ const InsecticideMix = () => {
                                 />
 
                                 <TextField
-                                    label="Liter"
+                                    label="Litre"
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value)}
@@ -652,7 +648,7 @@ const InsecticideMix = () => {
                                     fontSize: '0.875rem'
                                 }}
                             >
-                                Add Insecticide
+                                ilaç Ekleme
                             </MuiButton>
                         </Box>
                     </Box>
@@ -687,11 +683,11 @@ const InsecticideMix = () => {
 
             {/* Edit Modal */}
             <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-                <DialogTitle>Edit Insecticide Mix</DialogTitle>
+                <DialogTitle>Edit ilaç Mix</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
-                            label="Title"
+                            label="Ad"
                             value={tempData.title || ''}
                             onChange={(e) => setTempData({...tempData, title: e.target.value})}
                             fullWidth
@@ -707,7 +703,7 @@ const InsecticideMix = () => {
                         />
 
                         <FormControl fullWidth margin="normal">
-                            <InputLabel>Color</InputLabel>
+                            <InputLabel>Renk</InputLabel>
                             <Select
                                 value={tempData.color || 0}
                                 label="Color"
@@ -721,7 +717,7 @@ const InsecticideMix = () => {
                             </Select>
                         </FormControl>
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Insecticides</Typography>
+                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>ilaç</Typography>
                         
                         {tempData.mixes?.map((mix, index) => (
                             <Box key={index} sx={{ 
@@ -732,10 +728,10 @@ const InsecticideMix = () => {
                                 flexWrap: 'wrap'
                             }}>
                                 <FormControl sx={{ flex: 2, minWidth: '200px' }}>
-                                    <InputLabel>Insecticide</InputLabel>
+                                    <InputLabel>ilaç</InputLabel>
                                     <Select
                                         value={mix.insecticideId}
-                                        label="Insecticide"
+                                        label="ilaç"
                                         onChange={(e) => handleMixChange(index, 'insecticideId', e.target.value, true)}
                                     >
                                         {insecticides.map(insec => (
@@ -747,7 +743,7 @@ const InsecticideMix = () => {
                                 </FormControl>
 
                                 <TextField
-                                    label="Quantity"
+                                    label="Sayı"
                                     type="number"
                                     value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value, true)}
@@ -765,7 +761,7 @@ const InsecticideMix = () => {
                                 />
 
                                 <TextField
-                                    label="Liter"
+                                    label="Litre"
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value, true)}
@@ -799,7 +795,7 @@ const InsecticideMix = () => {
                                     fontSize: '0.875rem'
                                 }}
                             >
-                                Add Insecticide
+                                ilaç Ekleme
                             </MuiButton>
                         </Box>
                     </Box>

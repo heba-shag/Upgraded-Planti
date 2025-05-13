@@ -141,7 +141,7 @@ const FlowerDepo = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Flowers Depot" />
+      <Header category="Page" title="Çiçek Depo" />
       
       <div className="flex justify-end mb-4">
         <button
@@ -150,7 +150,7 @@ const FlowerDepo = () => {
           style={{ width: '150px' }}
         >
           <MdOutlineAddTask className="mr-2" />
-          Add new item
+          Ekleme
         </button>
       </div>
 
@@ -215,7 +215,7 @@ const FlowerDepo = () => {
       {addRoleConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-medium mb-4">Add Flowers</h3>
+            <h3 className="text-lg font-medium mb-4">Çiçek Ekleme</h3>
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">Code</label>
@@ -234,7 +234,7 @@ const FlowerDepo = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Count</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Adit</label>
               <input
                 type="number"
                 value={storedCount}
@@ -255,13 +255,13 @@ const FlowerDepo = () => {
                 onClick={deleteFunction}
                 className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
               >
-                Add Trashed
+                Trashed Ekleme
               </button>
               <button
                 onClick={addFunction}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
               >
-                Add External
+                External Ekleme
               </button>
             </div>
           </div>

@@ -17,8 +17,8 @@ import {
   CircularProgress
 } from '@mui/material';
 import { Header } from '../../components';
-import { BsArrowDown, BsArrowUp, BsPencil, BsPlus, BsTrash } from 'react-icons/bs';
-import { BiDownload, BiCheckCircle, BiXCircle } from 'react-icons/bi';
+import {  BsPencil, BsPlus, BsTrash } from 'react-icons/bs';
+import {  BiCheckCircle, BiXCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { useStateContext } from '../../contexts/ContextProvider';
 
@@ -41,7 +41,6 @@ const CuttingToLand = () => {
       cuttingColorId: ''
     }]
   });
-  const [expandedRows, setExpandedRows] = useState({});
   const [runUseEffect, setRun] = useState(0);
   const [addColorModalOpen, setAddColorModalOpen] = useState(false);
   const [newColorData, setNewColorData] = useState({
@@ -164,10 +163,10 @@ const CuttingToLand = () => {
       
       setRun(prev => prev + 1);
       setEditModalOpen(false);
-      showNotification('Cutting application updated successfully');
+      showNotification('Fide application updated successfully');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to update cutting application', 'error');
+      showNotification('Failed to update Fide application', 'error');
     } finally {
       setLoading(false);
     }
@@ -182,10 +181,10 @@ const CuttingToLand = () => {
         headers: { Authorization: token }
       });
       setRun(prev => prev + 1);
-      showNotification('Cutting application deleted successfully');
+      showNotification('Fide application deleted successfully');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to delete cutting application', 'error');
+      showNotification('Failed to delete Fide application', 'error');
     } finally {
       setLoading(false);
     }
@@ -215,10 +214,10 @@ const CuttingToLand = () => {
         cuttings: [{ quantity: '', cuttingColorId: '' }]
       });
       setRun(prev => prev + 1);
-      showNotification('Cutting application added successfully');
+      showNotification('Fide application added successfully');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to add cutting application', 'error');
+      showNotification('Failed to add Fide application', 'error');
     } finally {
       setLoading(false);
     }
@@ -276,10 +275,10 @@ const CuttingToLand = () => {
         colorId: '',
         code: ''
       });
-      showNotification('Cutting color added successfully');
+      showNotification('Fide renk added successfully');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to add cutting color', 'error');
+      showNotification('Failed to add Fide renk', 'error');
     } finally {
       setLoading(false);
     }
@@ -287,19 +286,19 @@ const CuttingToLand = () => {
 
   // Columns configuration
   const columns = [
-    { field: 'date', headerName: 'Date', width: 150 },
-    { field: 'cuttingColorTitle', headerName: 'Cutting Color', width: 180 },
-    { field: 'landTitle', headerName: 'Land', width: 180 },
+    { field: 'date', headerName: 'Tarih', width: 150 },
+    { field: 'cuttingColorTitle', headerName: 'Fide Renk Code', width: 180 },
+    { field: 'landTitle', headerName: 'Tarla', width: 180 },
     { 
       field: 'quantity', 
-      headerName: 'Quantity', 
+      headerName: 'Sayı', 
       width: 120,
       align: 'center',
       headerAlign: 'center'
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: 'işlemler',
       width: 170,
       renderCell: (params) => {
         if (params.row.isAddNew) return null;
@@ -369,7 +368,7 @@ const CuttingToLand = () => {
               fontSize: '0.8125rem'
             }}
           >
-            Add New
+            Ekleme
           </MuiButton>
         );
       },
@@ -380,7 +379,7 @@ const CuttingToLand = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Page" title="Cutting to Land Applications" />
+      <Header category="Page" title="Fide Tarlalar" />
       
       {/* Notification */}
       {notification.show && (
@@ -445,7 +444,7 @@ const CuttingToLand = () => {
 
       {/* Add Modal */}
       <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Add New Cutting Application</DialogTitle>
+        <DialogTitle>Ekleme Fide Application</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -468,7 +467,7 @@ const CuttingToLand = () => {
             </TextField>
 
             <TextField
-              label="Date"
+              label="Tarih"
               type="date"
               value={newData.date}
               onChange={(e) => setNewData({...newData, date: e.target.value})}
@@ -481,7 +480,7 @@ const CuttingToLand = () => {
               }}
             />
 
-            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Cuttings</Typography>
+            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Fide</Typography>
             
             {newData.cuttings.map((mix, index) => (
               <Box key={index} sx={{ 
@@ -492,7 +491,7 @@ const CuttingToLand = () => {
               }}>
                 <TextField
                   select
-                  label="Cutting Color"
+                  label="Fide Renk"
                   value={mix.cuttingColorId}
                   onChange={(e) => handleMixChange(index, 'cuttingColorId', e.target.value)}
                   fullWidth
@@ -510,7 +509,7 @@ const CuttingToLand = () => {
                 </TextField>
 
                 <TextField
-                  label="Quantity"
+                  label="Sayı"
                   type="number"
                   value={mix.quantity}
                   onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -598,12 +597,12 @@ const CuttingToLand = () => {
 
       {/* Add Color Modal */}
       <Dialog open={addColorModalOpen} onClose={handleAddColorCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>Add New Cutting Color</DialogTitle>
+        <DialogTitle>Ekleme Fide Renk</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               select
-              label="Cutting"
+              label="Fide"
               value={newColorData.cuttingId}
               onChange={(e) => setNewColorData({...newColorData, cuttingId: e.target.value})}
               fullWidth
@@ -622,7 +621,7 @@ const CuttingToLand = () => {
 
             <TextField
               select
-              label="Color"
+              label="Renkler"
               value={newColorData.colorId}
               onChange={(e) => setNewColorData({...newColorData, colorId: e.target.value})}
               fullWidth
@@ -681,12 +680,12 @@ const CuttingToLand = () => {
 
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-        <DialogTitle>Edit Cutting Application</DialogTitle>
+        <DialogTitle>Edit Fide Application</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               select
-              label="Land"
+              label="Tarla"
               value={tempData.landId || ''}
               onChange={(e) => setTempData({...tempData, landId: e.target.value})}
               fullWidth
@@ -704,7 +703,7 @@ const CuttingToLand = () => {
 
             <TextField
               select
-              label="Cutting Color"
+              label="Fide Renk"
               value={tempData.cuttingColorId || ''}
               onChange={(e) => setTempData({...tempData, cuttingColorId: e.target.value})}
               fullWidth
@@ -721,7 +720,7 @@ const CuttingToLand = () => {
             </TextField>
 
             <TextField
-              label="Date"
+              label="Tarih"
               type="date"
               value={tempData.date ? tempData.date.split('T')[0] : ''}
               onChange={(e) => setTempData({...tempData, date: e.target.value})}
@@ -735,7 +734,7 @@ const CuttingToLand = () => {
             />
 
             <TextField
-              label="Quantity"
+              label="Sayı"
               type="number"
               value={tempData.quantity || ''}
               onChange={(e) => setTempData({...tempData, quantity: e.target.value})}

@@ -113,73 +113,73 @@ const App = () => {
                   <Ecommerce />
                 </Layout>
               } />
-              <Route path="/lands" element={
+              <Route path="/Tarlalar" element={
                 <Layout>
                   <MainLands />
                 </Layout>
               } />
-              <Route path="/lands/:id" element={
+              <Route path="/Tarlalar/:id" element={
                 <Layout>
                   <SecLands />
                 </Layout>
               } />
-              <Route path="/lands/:id/:id" element={
+              <Route path="/Tarlalar/:id/:id" element={
                 <Layout>
                   <ThirdLands />
                 </Layout>
               } />
-              <Route path="/lands/:id/:id/:id" element={
+              <Route path="/Tarlalar/:id/:id/:id" element={
                 <Layout>
                   <FourthLands />
                 </Layout>
               } />
-              <Route path="/fertilizers" element={
+              <Route path="/Gübre" element={
                 <Layout>
                   <GetAllFertilizer />
                 </Layout>
               } />
-              <Route path="/insecticide" element={
+              <Route path="/ilaç" element={
                 <Layout>
                   <GetAllInsecticide />
                 </Layout>
               } />
-              <Route path="/cuttings" element={
+              <Route path="/Fide" element={
                 <Layout>
                   <GetAllCutting />
                 </Layout>
               } />
-              <Route path="/color" element={
+              <Route path="/Renkler" element={
                 <Layout>
                   <GetAllColor />
                 </Layout>
               } />
-              <Route path="/fertilizer-mix" element={
+              <Route path="/Gübre-mix" element={
                 <Layout>
                   <FertilizerMix />
                 </Layout>
               } />
-              <Route path="/insecticide-mix" element={
+              <Route path="/ilaç-mix" element={
                 <Layout>
                   <InsecticideMix />
                 </Layout>
               } />
-              <Route path="/insecticide-to-land" element={
+              <Route path="/ilaç-oygulama" element={
                 <Layout>
                   <InsecticideToLand />
                 </Layout>
               } />
-              <Route path="/fertilizer-to-land" element={
+              <Route path="/Gübre-oygulama" element={
                 <Layout>
                   <FertilizrToLand />
                 </Layout>
               } />
-              <Route path="/cutting-to-land" element={
+              <Route path="/Fide-oygulama" element={
                 <Layout>
                   <CuttingToLand />
                 </Layout>
               } />
               
-              <Route path="/flower" element={
+              <Route path="/Çiçek" element={
                 <Layout>
                   <Flowers />
                 </Layout>
@@ -195,37 +195,37 @@ const App = () => {
                 </Layout>
               } />
 
-              <Route path="/fertilizer-mix-to-land" element={
+              <Route path="/mix-Gübre-oygulama" element={
                 <Layout>
                   <FertilizerMixToLand />
                 </Layout>
               } />
-              <Route path="/insecticide-mix-to-land" element={
+              <Route path="/mix-ilaç-oygulama" element={
                 <Layout>
                   <InsecticideMixToLand />
                 </Layout>
               } />
-              <Route path="/fertilizer-depo" element={
+              <Route path="/Gübre-depo" element={
                 <Layout>
                   <FertilizerDepo />
                 </Layout>
               } />
-              <Route path="/fertilizer-transaction" element={
+              <Route path="/Gübre-Stok-işlemleri" element={
                 <Layout>
                   <FertilizerTransaction />
                 </Layout>
               } />
-              <Route path="/insecticide-depo" element={
+              <Route path="/ilaç-depo" element={
                 <Layout>
                   <InsecticideDepo />
                 </Layout>
               } />
-              <Route path="/insecticide-transaction" element={
+              <Route path="/ilaç-Stok-işlemleri" element={
                 <Layout>
                   <InsecticideTransaction />
                 </Layout>
               } />
-              <Route path="/flower-depo" element={
+              <Route path="/Çiçek-depo" element={
                 <Layout>
                   <FlowerDepo />
                 </Layout>

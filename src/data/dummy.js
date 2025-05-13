@@ -385,7 +385,7 @@ export const employeesGrid = [
 ];
 
 export const mainLandsGrid = [
-  { headerText: 'Land Name',
+  { headerText: 'Tarla Ad',
     field: 'title',
     width: '150',
     template: gridEmployeeProfile,
@@ -393,14 +393,14 @@ export const mainLandsGrid = [
     placeholder:'Name',
   },
   { field: 'location',
-    headerText: 'Location',
+    headerText: 'Konum',
     width: '170',
     textAlign: 'Center',
     placeholder:'Location',
   },
   {
     field: 'size',
-    headerText: 'Size',
+    headerText: 'Boyut',
     format: 'C2',
     textAlign: 'Center',
     editType: 'numericedit',
@@ -418,7 +418,7 @@ export const links = [
         icon: <FiShoppingBag />,
       },
       {
-        name: 'lands',
+        name: 'Tarlalar',
         icon: <MdLandslide />,
       },
     ],
@@ -428,29 +428,29 @@ export const links = [
     title: 'Products',
     links: [
       {
-        name: 'fertilizers',
+        name: 'Gübre',
         icon: <GiFertilizerBag />,
       },
       {
-        name: 'insecticide',
+        name: 'ilaç',
         icon: <GiMedicinePills />,
       },
       {
-        name: 'cuttings',
+        name: 'Fide',
         icon: <GiPlantSeed />,
       },
       {
-        name: 'color',
+        name: 'Renkler',
         icon: <IoIosColorPalette />,
       },
 
       {
-        name: 'fertilizer-mix',
+        name: 'Gübre-mix',
         icon: <GiChemicalTank />,
       },
 
       {
-        name: 'insecticide-mix',
+        name: 'ilaç-mix',
         icon: <GiChemicalTank />,
       },
       
@@ -460,19 +460,19 @@ export const links = [
     title: 'Pages',
     links: [
       {
-        name: 'insecticide-to-land',
+        name: 'ilaç-oygulama',
         icon: <GiPlantWatering />,
       },
       {
-        name: 'fertilizer-to-land',
+        name: 'Gübre-oygulama',
         icon: <MdAgriculture />,
       },
       {
-        name: 'cutting-to-land',
+        name: 'Fide-oygulama',
         icon: <GiPlantRoots />,
       },
       {
-        name: 'flower',
+        name: 'Çiçek',
         icon: <TbPlant2 />,
       },
     ],
@@ -480,20 +480,13 @@ export const links = [
   {
     title: 'Apps',
     links: [
-      // {
-      //   name: 'calendar',
-      //   icon: <AiOutlineCalendar />,
-      // },
-      // {
-      //   name: 'kanban',
-      //   icon: <BsKanban />,
-      // },
+      
       {
-        name: 'fertilizer-mix-to-land',
+        name: 'mix-Gübre-oygulama',
         icon: <BsKanban />,
       },
       {
-        name: 'insecticide-mix-to-land',
+        name: 'mix-ilaç-oygulama',
         icon: <BsKanban />,
       },
       // {
@@ -507,26 +500,26 @@ export const links = [
     ],
   },
   {
-    title: 'Depos',
+    title: 'Depots',
     links: [
       {
-        name: 'insecticide-depo',
+        name: 'ilaç-depo',
         icon: <LuWarehouse />,
       },
       {
-        name: 'insecticide-transaction',
+        name: 'ilaç-Stok-işlemleri',
         icon: <LuWarehouse />,
       },
       {
-        name: 'fertilizer-depo',
+        name: 'Gübre-depo',
         icon: <LuWarehouse />,
       },
       {
-        name: 'fertilizer-transaction',
+        name: 'Gübre-Stok-işlemleri',
         icon: <LuWarehouse />,
       },
       {
-        name: 'flower-depo',
+        name: 'Çiçek-depo',
         icon: <LuWarehouse />,
       },
     ],
@@ -886,7 +879,7 @@ export const userProfileData = [
 export const fertilizersGrid = [
   {
     field: 'title',
-    headerText: 'Scientific Name',
+    headerText: 'Bilimsel Adı',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
@@ -894,7 +887,7 @@ export const fertilizersGrid = [
   },
   {
     field: 'publicTitle',
-    headerText: 'Name',
+    headerText: 'Ad',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
@@ -912,7 +905,7 @@ export const fertilizersGrid = [
   },
   {
     field: 'description',
-    headerText: 'description',
+    headerText: 'Tanım',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
@@ -924,7 +917,7 @@ export const fertilizersGrid = [
 export const insecticidesGrid = [
   {
     field: 'title',
-    headerText: 'Scientific Name',
+    headerText: 'Bilimsel Adı',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
@@ -932,7 +925,7 @@ export const insecticidesGrid = [
   },
   {
     field: 'publicTitle',
-    headerText: 'Name',
+    headerText: 'Ad',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
@@ -940,9 +933,9 @@ export const insecticidesGrid = [
   },
   {
     field: 'type',
-    headerText: 'Type',
+    headerText: 'Tür',
     textAlign: 'Center',
-    editType: 'dropdownedit', // تغيير من 'numericedit' إلى 'dropdownedit'
+    editType: 'dropdownedit', 
     width: '150',
     options: [
       {value: 0, label: "Sıvı ilaç"},
@@ -965,7 +958,7 @@ export const insecticidesGrid = [
   } ,
   {
     field: 'description',
-    headerText: 'description',
+    headerText: 'Tanım',
     width: '150',
     editType: 'dropdownedit',
     
@@ -978,7 +971,7 @@ export const insecticidesGrid = [
 export const cuttingsGrid = [
   {
     field: 'title',
-    headerText: 'Name',
+    headerText: 'Ad',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
@@ -986,7 +979,7 @@ export const cuttingsGrid = [
   },
   {
     field: 'type',
-    headerText: 'Type',
+    headerText: 'Tür',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',
@@ -994,7 +987,7 @@ export const cuttingsGrid = [
   },
   {
     field: 'age',
-    headerText: 'Age',
+    headerText: 'Yaş',
     format: 'C2',
     textAlign: 'Center',
     editType: 'numericedit',
@@ -1007,7 +1000,7 @@ export const cuttingsGrid = [
 export const colorsGrid = [
   {
     field: 'title',
-    headerText: 'Name',
+    headerText: 'Ad',
     width: '150',
     editType: 'dropdownedit',
     textAlign: 'Center',

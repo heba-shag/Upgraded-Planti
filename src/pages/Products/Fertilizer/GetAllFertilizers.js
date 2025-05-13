@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Header } from '../../../components';
-import { contextMenuItems, fertilizersGrid } from '../../../data/dummy';
+import { fertilizersGrid } from '../../../data/dummy';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
 import { BiCheckCircle, BiXCircle } from 'react-icons/bi';
@@ -195,7 +195,7 @@ const GetAllFertilizer = () => {
         </div>
       )}
 
-      <Header category="Page" title="Fertilizers" />
+      <Header category="Page" title="Gübre" />
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead className="bg-gray-100">
@@ -223,7 +223,7 @@ const GetAllFertilizer = () => {
                 </th>
               ))}
               <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                Actions
+                işlemler
               </th>
             </tr>
           </thead>
@@ -316,7 +316,7 @@ const GetAllFertilizer = () => {
                     onClick={() => setIsAdding(true)}
                     className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-40 transition-colors"
                   >
-                    Add New Item
+                    Ekleme
                   </button>
                 )}
               </td>

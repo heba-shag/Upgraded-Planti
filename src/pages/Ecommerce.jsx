@@ -160,7 +160,7 @@ const Ecommerce = () => {
                 {item.icon}
               </button>
               <p className="mt-3">
-                <span className="text-lg font-semibold">{item.title==='Customers'?clientAvg:item.title==='Orders'?ordersAvg:flowersAvg}</span>
+                <span className="text-lg font-semibold">{item.title==='Customers'?clientAvg:item.title==='Orders'?ordersAvg:flowersAvg &'Per Donum'}</span>
                 {/* <span className={`text-sm text-${item.pcColor} ml-2`}>
                   {item.percentage}
                 </span> */}
@@ -196,7 +196,7 @@ const Ecommerce = () => {
           </div>
           <div className="flex justify-between items-center mt-5 border-t-1 border-color">
             <div className="mt-3">
-              <Link to='/fertilizer-transaction'>
+              <Link to='/Gübre-Stok-işlemleri'>
                 <Button
                   color="white"
                   bgColor={currentColor}

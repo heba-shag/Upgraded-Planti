@@ -311,15 +311,15 @@ const InsecticideToLand = () => {
                 return null;
             }
         },
-        { field: 'date', headerName: 'Date', width: 120 },
-        { field: 'insecticideTitle', headerName: 'Insecticide', width: 130 },
-        { field: 'landTitle', headerName: 'Land', width: 130 },
-        { field: 'liter', headerName: 'Liters', width: 120, align: 'center', headerAlign: 'center' },
-        { field: 'quantity', headerName: 'Quantity', width: 120, align: 'center', headerAlign: 'center' },
+        { field: 'date', headerName: 'Tarih', width: 120 },
+        { field: 'insecticideTitle', headerName: 'ilaç', width: 130 },
+        { field: 'landTitle', headerName: 'Tarla', width: 130 },
+        { field: 'liter', headerName: 'Litre', width: 120, align: 'center', headerAlign: 'center' },
+        { field: 'quantity', headerName: 'Sayı', width: 120, align: 'center', headerAlign: 'center' },
         { field: 'note', headerName: 'Notes', width: 130 },
         {
             field: 'actions',
-            headerName: 'Actions',
+            headerName: 'işlemler',
             width: 170,
             renderCell: (params) => {
                 if (params.row.isParent || params.row.isAddNew) return null;
@@ -389,7 +389,7 @@ const InsecticideToLand = () => {
                             fontSize: '0.8125rem'
                         }}
                     >
-                        Add New
+                        Ekleme
                     </MuiButton>
                 );
             },
@@ -431,7 +431,7 @@ const InsecticideToLand = () => {
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <Header 
                 category="Page" 
-                title="Insecticide Land Applications" 
+                title="Tarlalar ilaç Applications" 
                 sx={{ width: 'fit-content' }} 
             />
             
@@ -531,11 +531,11 @@ const InsecticideToLand = () => {
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Add New Application</DialogTitle>
+                <DialogTitle>Ekleme</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl fullWidth>
-                            <InputLabel id="lands-label">Land</InputLabel>
+                            <InputLabel id="lands-label">Tarla</InputLabel>
                             <Select
                                 labelId="lands-label"
                                 id="lands-select"
@@ -566,7 +566,7 @@ const InsecticideToLand = () => {
                         </FormControl>
 
                         <TextField
-                            label="Date"
+                            label="Tarih"
                             type="date"
                             value={newData.date}
                             onChange={(e) => setNewData({...newData, date: e.target.value})}
@@ -604,7 +604,7 @@ const InsecticideToLand = () => {
                             }}>
                                 <TextField
                                     select
-                                    label="Insecticide"
+                                    label="ilaç"
                                     value={mix.insecticideId}
                                     onChange={(e) => handleMixChange(index, 'insecticideId', e.target.value)}
                                     fullWidth
@@ -624,7 +624,7 @@ const InsecticideToLand = () => {
                                 </TextField>
 
                                 <TextField
-                                    label="Liters"
+                                    label="Litre"
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value)}
@@ -638,7 +638,7 @@ const InsecticideToLand = () => {
                                 />
 
                                 <TextField
-                                    label="Quantity"
+                                    label="Sayı"
                                     type="number"
                                     value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -683,7 +683,7 @@ const InsecticideToLand = () => {
                                 padding: '8px 16px'
                             }}
                         >
-                            Add new Mix
+                            Mix Ekleme
                         </MuiButton>
                     </Box>
                 </DialogContent>
@@ -716,12 +716,12 @@ const InsecticideToLand = () => {
 
             {/* Edit Modal */}
             <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-                <DialogTitle>Edit Application</DialogTitle>
+                <DialogTitle>Edit </DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
                             select
-                            label="Land"
+                            label="Tarla"
                             value={tempData.landId || ''}
                             onChange={(e) => setTempData({...tempData, landId: e.target.value})}
                             fullWidth
@@ -735,7 +735,7 @@ const InsecticideToLand = () => {
 
                         <TextField
                             select
-                            label="Insecticide"
+                            label="ilaç"
                             value={tempData.insecticideId || ''}
                             onChange={(e) => {
                                 const selectedInsecticide = insecticides.find(insect => insect.id === parseInt(e.target.value));
@@ -757,7 +757,7 @@ const InsecticideToLand = () => {
                         </TextField>
 
                         <TextField
-                            label="Date"
+                            label="Tarih"
                             type="date"
                             value={tempData.date ? tempData.date.split('T')[0] : ''}
                             onChange={(e) => setTempData({...tempData, date: e.target.value})}
@@ -767,7 +767,7 @@ const InsecticideToLand = () => {
                         />
 
                         <TextField
-                            label="Liters"
+                            label="Litre"
                             type="number"
                             value={tempData.liter || ''}
                             onChange={(e) => setTempData({...tempData, liter: e.target.value})}
@@ -776,7 +776,7 @@ const InsecticideToLand = () => {
                         />
 
                         <TextField
-                            label="Quantity"
+                            label="Sayı"
                             type="number"
                             value={tempData.quantity || ''}
                             onChange={(e) => setTempData({...tempData, quantity: e.target.value})}

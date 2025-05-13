@@ -5,7 +5,7 @@ import { Header } from '../../components';
 import Select from "react-select";
 import axios from 'axios';
 import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { FaCheckSquare, FaRegCheckSquare, FaTimes, FaFilter, FaPlus } from 'react-icons/fa';
+import { FaTimes, FaFilter, FaPlus } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useStateContext } from '../../contexts/ContextProvider';
@@ -487,7 +487,7 @@ console.log(showMixLandApi.addMix());
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="App" title="Insecticide Management" />
+      <Header category="App" title="Mix ilaç Management" />
       
       {error && (
         <div style={{
@@ -521,7 +521,7 @@ console.log(showMixLandApi.addMix());
             }))}
             value={selectedMix}
             onChange={handleMixSelect}
-            placeholder="Select Insecticide..."
+            placeholder="Select ilaç..."
             isClearable
             required
           />
@@ -544,7 +544,7 @@ console.log(showMixLandApi.addMix());
             }
           }}
         >
-          Add Insecticide
+          ilaç Ekleme
         </Button>
         
         <Button 
@@ -605,7 +605,7 @@ console.log(showMixLandApi.addMix());
               options={uniqueLandNames.map(name => ({ value: name, label: name }))}
               value={landFilter ? { value: landFilter, label: landFilter } : null}
               onChange={(option) => setLandFilter(option?.value || null)}
-              placeholder="Filter by Land..."
+              placeholder="Filter by Tarla..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -615,7 +615,7 @@ console.log(showMixLandApi.addMix());
               options={uniqueMixNames.map(name => ({ value: name, label: name }))}
               value={mixFilter ? { value: mixFilter, label: mixFilter } : null}
               onChange={(option) => setMixFilter(option?.value || null)}
-              placeholder="Filter by Insecticide..."
+              placeholder="Filter by ilaç..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -645,7 +645,7 @@ console.log(showMixLandApi.addMix());
       )}
       
       <Dialog open={showAddInsecticideDialog} onClose={!isSubmitting ? handleCloseDialog : null}>
-        <DialogTitle>Add New Insecticide Application</DialogTitle>
+        <DialogTitle>ilaç Ekleme Application</DialogTitle>
         <DialogContent>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px 0' }}>
             <Select
@@ -663,7 +663,7 @@ console.log(showMixLandApi.addMix());
                 ...newInsecticide,
                 mixId: option ? option.value : null
               })}
-              placeholder="Select Insecticide Mix..."
+              placeholder="Select ilaç Mix..."
               isClearable
               required
               isDisabled={isSubmitting}
@@ -684,7 +684,7 @@ console.log(showMixLandApi.addMix());
             
             <div style={{ marginTop: '10px' }}>
               <label style={{ display: 'block', marginBottom: '5px', color: 'rgba(0, 0, 0, 0.6)' }}>
-                Application Date
+                Application Tarih
               </label>
               <DatePicker
                 selected={newInsecticide.date}
@@ -760,7 +760,7 @@ console.log(showMixLandApi.addMix());
             actionButton={
               selectedMix && (
                 <div style={{ fontSize: '0.9em', color: '#666' }}>
-                  Select lands to apply with: <strong>{selectedMix.label}</strong>
+                  Select Tarlalar to ilaç with: <strong>{selectedMix.label}</strong>
                 </div>
               )
             }

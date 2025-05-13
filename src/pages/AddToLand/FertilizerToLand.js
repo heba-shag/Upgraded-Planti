@@ -24,8 +24,8 @@ import { useStateContext } from '../../contexts/ContextProvider';
 import Select from 'react-dropdown-select';
 
 const fertilizerTypes = [
-  { value: 0, label: "Foliar Fertilization" },
-  { value: 1, label: "Drip Fertilization" }
+  { value: 0, label: "Yaprak gübreleme" },
+  { value: 1, label: "damlama gübreleme" }
 ];
 
 const FertilizerToLand = () => {
@@ -137,7 +137,7 @@ const FertilizerToLand = () => {
             fertilizerTitle: item.fertilizer?.title || 'Unknown',
             landTitle: item.land?.title || 'Unknown',
             quantity: item.quantity,
-            type: item.type === 0 ? "Foliar" : "Drip",
+            type: item.type === 0 ? "Yaprak gübreleme" : "damlama gübreleme",
             isParent: false,
             originalData: item
           });
@@ -182,10 +182,10 @@ const FertilizerToLand = () => {
       
       setRun(prev => prev + 1);
       setEditModalOpen(false);
-      showNotification('Fertilization updated successfully');
+      showNotification('Gübre updated successfully');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to update fertilization', 'error');
+      showNotification('Failed to update Gübre', 'error');
     } finally {
       setLoading(false);
     }
@@ -193,7 +193,6 @@ const FertilizerToLand = () => {
 
   // Delete function
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this record?')) return;
     
     try {
       setLoading(true);
@@ -201,10 +200,10 @@ const FertilizerToLand = () => {
         headers: { Authorization: token }
       });
       setRun(prev => prev + 1);
-      showNotification('Fertilization deleted successfully');
+      showNotification('Gübre deleted successfully');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to delete fertilization', 'error');
+      showNotification('Failed to delete Gübre', 'error');
     } finally {
       setLoading(false);
     }
@@ -236,10 +235,10 @@ const FertilizerToLand = () => {
         mixes: [{ quantity: '', fertilizerId: '' }]
       });
       setRun(prev => prev + 1);
-      showNotification('Fertilization added successfully');
+      showNotification('Gübre added successfully');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to add fertilization', 'error');
+      showNotification('Failed to add Gübre', 'error');
     } finally {
       setLoading(false);
     }
@@ -304,20 +303,20 @@ const FertilizerToLand = () => {
         return null;
       }
     },
-    { field: 'date', headerName: 'Date', width: 120 },
-    { field: 'fertilizerTitle', headerName: 'Fertilizer', width: 150 },
-    { field: 'landTitle', headerName: 'Land', width: 150 },
-    { field: 'type', headerName: 'Type', width: 120 },
+    { field: 'date', headerName: 'Tarih', width: 120 },
+    { field: 'fertilizerTitle', headerName: 'Gübre', width: 150 },
+    { field: 'landTitle', headerName: 'Tarla', width: 150 },
+    { field: 'type', headerName: 'Tür', width: 120 },
     { 
       field: 'quantity', 
-      headerName: 'Quantity', 
+      headerName: 'Sayı', 
       width: 120,
       align: 'center',
       headerAlign: 'center'
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: 'işlemler',
       width: 170,
       renderCell: (params) => {
         if (params.row.isParent || params.row.isAddNew) return null;
@@ -427,7 +426,7 @@ const FertilizerToLand = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Page" title="Fertilization Management" />
+      <Header category="Page" title="Gübre Tarlalar" />
       
       {/* Notification */}
       {notification.show && (
@@ -525,11 +524,11 @@ const FertilizerToLand = () => {
 
       {/* Add Modal */}
       <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Add New Fertilization</DialogTitle>
+        <DialogTitle>Ekleme Gübre Tarlalar</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl fullWidth>
-              <InputLabel id="lands-label">Lands</InputLabel>
+              <InputLabel id="lands-label">Tarlalar</InputLabel>
               <Select
                 labelId="lands-label"
                 id="lands-select"
@@ -560,7 +559,7 @@ const FertilizerToLand = () => {
             </FormControl>
 
             <TextField
-              label="Date"
+              label="Tarih"
               type="date"
               value={newData.date}
               onChange={(e) => setNewData({...newData, date: e.target.value})}
@@ -575,7 +574,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Fertilization Type"
+              label="Gübre Tür"
               value={newData.type}
               onChange={(e) => setNewData({...newData, type: e.target.value})}
               fullWidth
@@ -602,7 +601,7 @@ const FertilizerToLand = () => {
               }}>
                 <TextField
                   select
-                  label="Fertilizer"
+                  label="Gübre"
                   value={mix.fertilizerId}
                   onChange={(e) => handleMixChange(index, 'fertilizerId', e.target.value)}
                   fullWidth
@@ -620,7 +619,7 @@ const FertilizerToLand = () => {
                 </TextField>
 
                 <TextField
-                  label="Quantity"
+                  label="Sayı"
                   type="number"
                   value={mix.quantity}
                   onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -661,7 +660,7 @@ const FertilizerToLand = () => {
                 padding: '8px 16px'
               }}
             >
-              Add New Mix
+              Mix Ekleme
             </MuiButton>
           </Box>
         </DialogContent>
@@ -694,12 +693,12 @@ const FertilizerToLand = () => {
 
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-        <DialogTitle>Edit Fertilization</DialogTitle>
+        <DialogTitle>Edit Gübre Tarla</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               select
-              label="Land"
+              label="Tarla"
               value={tempData.landId || ''}
               onChange={(e) => setTempData({...tempData, landId: e.target.value})}
               fullWidth
@@ -717,7 +716,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Fertilizer"
+              label="Gübre"
               value={tempData.fertilizerId || ''}
               onChange={(e) => setTempData({...tempData, fertilizerId: e.target.value})}
               fullWidth
@@ -734,7 +733,7 @@ const FertilizerToLand = () => {
             </TextField>
 
             <TextField
-              label="Date"
+              label="Tarih"
               type="date"
               value={tempData.date ? tempData.date.split('T')[0] : ''}
               onChange={(e) => setTempData({...tempData, date: e.target.value})}
@@ -749,7 +748,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Fertilization Type"
+              label="Gübre Tür"
               value={tempData.type || 0}
               onChange={(e) => setTempData({...tempData, type: e.target.value})}
               fullWidth
@@ -766,7 +765,7 @@ const FertilizerToLand = () => {
             </TextField>
 
             <TextField
-              label="Quantity"
+              label="Sayı"
               type="number"
               value={tempData.quantity || ''}
               onChange={(e) => setTempData({...tempData, quantity: e.target.value})}

@@ -168,7 +168,7 @@ const FertilizerMix = () => {
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            showNotification('Fertilizer mix updated successfully');
+            showNotification('Gübre mix updated successfully');
         } catch (err) {
             showNotification(err.response?.data?.errorMessage || 'Failed to update fertilizer mix', 'error');
             console.error(err);
@@ -186,7 +186,7 @@ const FertilizerMix = () => {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            showNotification('Fertilizer mix deleted successfully');
+            showNotification('Gübre mix deleted successfully');
         } catch (err) {
             showNotification(err.response?.data?.errorMessage || 'Failed to delete fertilizer mix', 'error');
             console.error(err);
@@ -211,7 +211,7 @@ const FertilizerMix = () => {
                 mixes: [{ fertilizerId: "", quantity: 0 }]
             });
             setRun(prev => prev + 1);
-            showNotification('Fertilizer mix added successfully');
+            showNotification('Gübre mix added successfully');
         } catch (err) {
             showNotification(err.response?.data?.errorMessage || 'Failed to add fertilizer mix', 'error');
             console.error(err);
@@ -245,24 +245,24 @@ const FertilizerMix = () => {
     const columns = [
         { 
             field: 'title', 
-            headerName: 'Title', 
+            headerName: 'Ad', 
             flex: 1,
             minWidth: 150 
         },
         { 
             field: 'type', 
-            headerName: 'Type', 
+            headerName: 'Tür', 
             flex: 1,
             minWidth: 150 
         },
         { 
             field: 'color', 
-            headerName: 'Color', 
+            headerName: 'Renk', 
             minWidth: 120 
         },
         {
             field: 'actions',
-            headerName: 'Actions',
+            headerName: 'işlemler',
             width: 120,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
@@ -272,7 +272,6 @@ const FertilizerMix = () => {
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        // width: '100%',
                         height: '100%',
                         padding: 0,
                         margin: 0
@@ -351,7 +350,7 @@ const FertilizerMix = () => {
                             padding: '6px 12px'
                         }}
                     >
-                        Add New
+                        Ekleme
                     </MuiButton>
                 );
             },
@@ -362,7 +361,7 @@ const FertilizerMix = () => {
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Fertilizer Mixes Management" />
+            <Header category="Page" title="Gübre Mixes Management" />
 
             {notification.show && (
                 <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
@@ -431,7 +430,7 @@ const FertilizerMix = () => {
                 fullWidth
                 fullScreen={isMobile}
             >
-                <DialogTitle>Add new Fertilizer Mix</DialogTitle>
+                <DialogTitle> Gübre Mix Ekleme</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
@@ -445,7 +444,7 @@ const FertilizerMix = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Type</InputLabel>
+                                    <InputLabel>Tür</InputLabel>
                                     <Select
                                         value={newData.type}
                                         label="Type"
@@ -458,7 +457,7 @@ const FertilizerMix = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Color</InputLabel>
+                                    <InputLabel>Renk</InputLabel>
                                     <Select
                                         value={newData.color}
                                         label="Color"
@@ -474,13 +473,13 @@ const FertilizerMix = () => {
                             </Grid>
                         </Grid>
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Fertilizers</Typography>
+                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Gübre</Typography>
                         
                         {newData.mixes.map((mix, index) => (
                             <Grid container spacing={2} key={index} alignItems="center" sx={{ mb: 2 }}>
                                 <Grid item xs={12} sm={7}>
                                     <FormControl fullWidth>
-                                        <InputLabel>Fertilizer</InputLabel>
+                                        <InputLabel>Gübre</InputLabel>
                                         <Select
                                             value={mix.fertilizerId}
                                             label="Fertilizer"
@@ -496,7 +495,7 @@ const FertilizerMix = () => {
                                 </Grid>
                                 <Grid item xs={8} sm={3}>
                                     <TextField
-                                        label="Quantity"
+                                        label="Sayı"
                                         type="number"
                                         value={mix.quantity}
                                         onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -522,7 +521,7 @@ const FertilizerMix = () => {
                             startIcon={<BsPlus />}
                             sx={{ mt: 2 }}
                         >
-                            Add Fertilizer
+                            Gübre Ekleme
                         </MuiButton>
                     </Box>
                 </DialogContent>
@@ -553,11 +552,11 @@ const FertilizerMix = () => {
                 fullWidth
                 fullScreen={isMobile}
             >
-                <DialogTitle>Edit Fertilizer Mix</DialogTitle>
+                <DialogTitle>Edit Gübre Mix</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
-                            label="Title"
+                            label="Ad"
                             value={tempData.title || ''}
                             onChange={(e) => setTempData({...tempData, title: e.target.value})}
                             fullWidth
@@ -567,7 +566,7 @@ const FertilizerMix = () => {
                         <Grid container spacing={2} sx={{ mt: 1 }}>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Type</InputLabel>
+                                    <InputLabel>Tür</InputLabel>
                                     <Select
                                         value={tempData.type || 0}
                                         label="Type"
@@ -580,7 +579,7 @@ const FertilizerMix = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Color</InputLabel>
+                                    <InputLabel>Renk</InputLabel>
                                     <Select
                                         value={tempData.color || 0}
                                         label="Color"

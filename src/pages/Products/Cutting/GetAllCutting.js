@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Header } from '../../../components';
-import { contextMenuItems, cuttingsGrid } from '../../../data/dummy';
+import { cuttingsGrid } from '../../../data/dummy';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
 import { BiCheckCircle, BiXCircle } from 'react-icons/bi';
@@ -187,7 +187,7 @@ const GetAllCutting = () => {
         </div>
       )}
 
-      <Header category="Page" title="Cuttings" />
+      <Header category="Page" title="Fide" />
   
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
@@ -216,7 +216,7 @@ const GetAllCutting = () => {
                 </th>
               ))}
               <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                Actions
+                işlemler
               </th>
             </tr>
           </thead>
@@ -310,7 +310,7 @@ const GetAllCutting = () => {
                     onClick={() => setIsAdding(true)}
                     className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-40 transition-colors"
                   >
-                    Add New Item
+                    Ekleme
                   </button>
                 )}
               </td>

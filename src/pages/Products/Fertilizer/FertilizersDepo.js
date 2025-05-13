@@ -36,7 +36,7 @@ const FertilizerDepo = () => {
           setFilteredData(res.data.data);
         }
       } catch (err) {
-        console.error("Error fetching fertilizer store:", err);
+        console.error("Error fetching Gübre Depo:", err);
       }
     };
     fetchData();
@@ -84,16 +84,16 @@ const FertilizerDepo = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'fertilizer.title', headerText: 'Scientific Name', placeholder: 'Filter Scientific Name' },
-    { field: 'fertilizer.publicTitle', headerText: 'Title', placeholder: 'Filter Title' },
-    { field: 'totalQuantity', headerText: 'Total Count', placeholder: 'Filter total count' },
+    { field: 'fertilizer.title', headerText: 'Bilimsel Adı', placeholder: 'Filter Scientific Name' },
+    { field: 'fertilizer.publicTitle', headerText: 'Ad', placeholder: 'Filter Title' },
+    { field: 'totalQuantity', headerText: 'Adit', placeholder: 'Filter total count' },
     { field: 'fertilizer.npk', headerText: 'NPK', placeholder: 'Filter remained NPK' },
-    { field: 'fertilizer.description', headerText: 'Description', placeholder: 'Filter description' },
+    { field: 'fertilizer.description', headerText: 'Tanım', placeholder: 'Filter description' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Fertilizer Depot" />
+      <Header category="Page" title="Gübre Depo" />
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">

@@ -1,5 +1,6 @@
 {
   "name": "planti-pro-max",
+  "homepage": "https://heba-shag.github.io/Upgraded-Planti",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -59,7 +60,11 @@
     "build:staging": "set NODE_OPTIONS=--max_old_space_size=4096 && env-cmd -f .env.staging react-scripts build",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+  "predeploy": "npm run build",  
+  "deploy": "gh-pages -d build" ,
+  "predeploy:staging": "npm run build:staging",  
+  "deploy:staging": "gh-pages -d build:staging"
   },
   "eslintConfig": {
     "extends": [
@@ -81,6 +86,7 @@
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
+    "gh-pages": "^6.3.0",
     "web-vitals": "^4.2.4"
   }
 }

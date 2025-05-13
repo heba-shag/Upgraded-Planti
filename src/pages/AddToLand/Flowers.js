@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { 
   Box, 
@@ -238,15 +238,15 @@ const Flowers = () => {
 
     // Columns configuration
     const columns = [
-        { field: 'date', headerName: 'Date', width: 150 },
+        { field: 'date', headerName: 'Tarih', width: 150 },
         { field: 'worker', headerName: 'Worker', width: 150 },
-        { field: 'count', headerName: 'Count', width: 100, align: 'center', headerAlign: 'center' },
-        { field: 'long', headerName: 'Length', width: 100, align: 'center', headerAlign: 'center' },
+        { field: 'count', headerName: 'Adit', width: 100, align: 'center', headerAlign: 'center' },
+        { field: 'long', headerName: 'Long', width: 100, align: 'center', headerAlign: 'center' },
         { field: 'note', headerName: 'Note', width: 200 },
-        { field: 'landTitle', headerName: 'Land', width: 150 },
+        { field: 'landTitle', headerName: 'Tarla', width: 150 },
         {
             field: 'actions',
-            headerName: 'Actions',
+            headerName: 'işlemler',
             width: 120,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
@@ -316,7 +316,7 @@ const Flowers = () => {
                             fontSize: '0.8125rem'
                         }}
                     >
-                        Add New
+                        Ekleme
                     </MuiButton>
                 );
             },
@@ -327,7 +327,7 @@ const Flowers = () => {
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Flowers Management" />
+            <Header category="Page" title="Çiçek Management" />
 
             {/* Notification */}
             {notification.show && (
@@ -399,7 +399,7 @@ const Flowers = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     select
-                                    label="Land"
+                                    label="Tarla"
                                     value={newData.cuttingLandId}
                                     fullWidth
                                     size="medium"
@@ -411,7 +411,7 @@ const Flowers = () => {
                                         }
                                     }}
                                 >
-                                    <MenuItem value="">Select Land</MenuItem>
+                                    <MenuItem value="">Select Tarla</MenuItem>
                                     {cuttingLands.map((land) => (
                                         <MenuItem key={land.id} value={land.id}>
                                             {land.land?.title || `Land ${land.id}`}
@@ -421,7 +421,7 @@ const Flowers = () => {
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    label="Date"
+                                    label="Tarih"
                                     type="date"
                                     value={newData.date}
                                     onChange={(e) => setNewData({...newData, date: e.target.value})}
@@ -453,7 +453,7 @@ const Flowers = () => {
                             </Grid>
                         </Grid>
 
-                        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold', fontSize: '1.1rem' }}>Flowers</Typography>
+                        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold', fontSize: '1.1rem' }}>Çiçek</Typography>
                         
                         {newData.flowers.map((flower, index) => (
                             <Box key={index} sx={{ 
@@ -468,7 +468,7 @@ const Flowers = () => {
                                 <Grid container spacing={2} alignItems="center">
                                     <Grid item xs={12} sm={5}>
                                         <TextField
-                                            label="Count"
+                                            label="Adit"
                                             type="number"
                                             value={flower.count}
                                             onChange={(e) => handleFlowerChange(index, 'count', e.target.value)}
@@ -484,7 +484,7 @@ const Flowers = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={5}>
                                         <TextField
-                                            label="Length"
+                                            label="Long"
                                             type="number"
                                             value={flower.long}
                                             onChange={(e) => handleFlowerChange(index, 'long', e.target.value)}
@@ -551,7 +551,7 @@ const Flowers = () => {
                                 }
                             }}
                         >
-                            Add Another Flower
+                            Çiçek Ekleme
                         </MuiButton>
                     </Box>
                 </DialogContent>
@@ -601,7 +601,7 @@ const Flowers = () => {
                 <DialogContent sx={{ p: 3 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <TextField
-                            label="Date"
+                            label="Tarih"
                             type="date"
                             value={tempData.date || ''}
                             onChange={(e) => setTempData({...tempData, date: e.target.value})}
@@ -633,7 +633,7 @@ const Flowers = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label="Count"
+                                    label="Adit"
                                     type='number'
                                     value={tempData.count || ''}
                                     onChange={(e) => setTempData({...tempData, count: e.target.value})}
@@ -649,7 +649,7 @@ const Flowers = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label="Length"
+                                    label="Long"
                                     type='number'
                                     value={tempData.long || ''}
                                     onChange={(e) => setTempData({...tempData, long: e.target.value})}

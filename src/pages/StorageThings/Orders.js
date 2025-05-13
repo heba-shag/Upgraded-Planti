@@ -390,13 +390,13 @@ const Orders = () => {
         },
         { 
             field: 'orderDate', 
-            headerName: 'Order Date', 
+            headerName: 'Order Tarih', 
             width: 170,
             renderCell: (params) => formatDate(params.value)
         },
         { 
             field: 'boughtDate', 
-            headerName: 'Bought Date', 
+            headerName: 'Bought Tarih', 
             width: 170,
             renderCell: (params) => formatDate(params.value)
         },
@@ -420,7 +420,7 @@ const Orders = () => {
         },
         {
             field: 'actions',
-            headerName: 'Actions',
+            headerName: 'işlemler',
             width: 200,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
@@ -550,7 +550,7 @@ const Orders = () => {
                             padding: '6px 12px'
                         }}
                     >
-                        Add New
+                        Ekleme
                     </MuiButton>
                 );
             },
@@ -623,7 +623,7 @@ const Orders = () => {
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Add New Order</DialogTitle>
+                <DialogTitle> Order Ekleme</DialogTitle>
                 <DialogContent>
                     <Box sx={{ 
                         mt: 2,
@@ -685,7 +685,7 @@ const Orders = () => {
 
                         {newData.isBought && (
                             <TextField
-                                label="Bought Date"
+                                label="Bought Tarih"
                                 type="datetime-local"
                                 value={newData.boughtDate}
                                 onChange={(e) => setNewData({...newData, boughtDate: e.target.value})}
@@ -697,7 +697,7 @@ const Orders = () => {
                             />
                         )}
 
-                        <Typography variant="h6" sx={{ mb: 2 }}>Flower Details</Typography>
+                        <Typography variant="h6" sx={{ mb: 2 }}>Çiçek Details</Typography>
                         
                         {newData.flowerOrderDetails.map((detail, index) => (
                             <Box key={index} sx={{ 
@@ -708,13 +708,13 @@ const Orders = () => {
                                 flexWrap: 'wrap'
                             }}>
                                 <FormControl sx={{ flex: 2, minWidth: '200px' }}>
-                                    <InputLabel>Flower</InputLabel>
+                                    <InputLabel>Çiçek</InputLabel>
                                     <Select
                                         value={detail.code}
-                                        label="Flower"
+                                        label="Çiçek"
                                         onChange={(e) => handleFlowerDetailChange(index, 'code', e.target.value)}
                                     >
-                                        <MenuItem value="">Select Flower</MenuItem>
+                                        <MenuItem value="">Select Çiçek</MenuItem>
                                         {flowers.map(flower => (
                                             <MenuItem key={flower.id} value={flower.code}>
                                                 {flower.code} - {flower.name}
@@ -724,7 +724,7 @@ const Orders = () => {
                                 </FormControl>
 
                                 <TextField
-                                    label="Count"
+                                    label="Adit"
                                     type="number"
                                     value={detail.count}
                                     onChange={(e) => handleFlowerDetailChange(index, 'count', e.target.value)}
@@ -733,7 +733,7 @@ const Orders = () => {
                                 />
 
                                 <TextField
-                                    label="Length"
+                                    label="Long"
                                     type="number"
                                     value={detail.long}
                                     onChange={(e) => handleFlowerDetailChange(index, 'long', e.target.value)}
@@ -768,7 +768,7 @@ const Orders = () => {
                                     fontSize: '0.875rem'
                                 }}
                             >
-                                Add Flower
+                                Çiçek Ekleme
                             </MuiButton>
                         </Box>
                     </Box>
@@ -825,7 +825,7 @@ const Orders = () => {
                         </FormControl>
 
                         <TextField
-                            label="Order Date"
+                            label="Order Tarih"
                             type="datetime-local"
                             value={tempData.orderDate || ''}
                             onChange={(e) => setTempData({...tempData, orderDate: e.target.value})}
@@ -878,7 +878,7 @@ const Orders = () => {
 
                         {tempStatusData.isBought && (
                             <TextField
-                                label="Bought Date"
+                                label="Bought Tarih"
                                 type="datetime-local"
                                 value={tempStatusData.boughtDate || ''}
                                 onChange={(e) => setTempStatusData({...tempStatusData, boughtDate: e.target.value})}

@@ -152,18 +152,18 @@ const FertilizerTransaction = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'date', headerText: 'Date', placeholder: 'Date' },
-    { field: 'fertilizer.title', headerText: 'Scientific Name', placeholder: 'Filter Scientific Name' },
-    { field: 'fertilizer.publicTitle', headerText: 'Title', placeholder: 'Filter Title' },
-    { field: 'quantityChange', headerText: 'Changes Count', placeholder: 'Filter Changes count' },
+    { field: 'date', headerText: 'Tarih', placeholder: 'Date' },
+    { field: 'fertilizer.title', headerText: 'Bilimsel Adı', placeholder: 'Filter Scientific Name' },
+    { field: 'fertilizer.publicTitle', headerText: 'Ad', placeholder: 'Filter Title' },
+    { field: 'quantityChange', headerText: 'Adit', placeholder: 'Filter Changes count' },
     { field: 'fertilizer.npk', headerText: 'NPK', placeholder: 'Filter remained NPK' },
-    { field: 'fertilizer.description', headerText: 'Description', placeholder: 'Filter description' },
+    { field: 'fertilizer.description', headerText: 'Tanım', placeholder: 'Filter description' },
     { field: 'isAdd', headerText: 'Is Add?', placeholder: 'Filter Is Add' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Fertilizer Transaction" />
+      <Header category="Page" title="Gübre Stok işlemler" />
       
       {/* Adjusted "Add Transaction" button with fixed width */}
       <div className="flex justify-end mb-4">
@@ -173,7 +173,7 @@ const FertilizerTransaction = () => {
           style={{ width: '170px' }}
         >
           <MdOutlineAddTask className="mr-2" />
-          Add Transaction
+          Stok işlemler Ekleme
         </button>
       </div>
 
@@ -248,10 +248,10 @@ const FertilizerTransaction = () => {
       {addConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-medium mb-4">Add Fertilizer Transaction</h3>
+            <h3 className="text-lg font-medium mb-4">Stok işlemler Ekleme</h3>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fertilizer</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Gübre</label>
               <select
                 name="fertilizerId"
                 value={formData.fertilizerId}
@@ -259,7 +259,7 @@ const FertilizerTransaction = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 required
               >
-                <option value="">Select Fertilizer</option>
+                <option value="">Select Gübre</option>
                 {fertilizers.map(fertilizer => (
                   <option key={fertilizer.fertilizer.id} value={fertilizer.fertilizer.id}>
                     {fertilizer.fertilizer.publicTitle} ({fertilizer.fertilizer.title})
@@ -269,7 +269,7 @@ const FertilizerTransaction = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Sayı</label>
               <input
                 type="number"
                 name="quantity"
@@ -282,7 +282,7 @@ const FertilizerTransaction = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tarih</label>
               <input
                 type="date"
                 name="date"

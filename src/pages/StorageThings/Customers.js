@@ -17,7 +17,7 @@ import 'react-phone-number-input/style.css';
 const employeesGrid = [
   { 
     field: 'name',
-    headerText: 'Name',
+    headerText: 'Ad',
     width: '150',
     textAlign: 'Center',
   },
@@ -168,7 +168,6 @@ const Customers = () => {
 
   // Delete customer
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this customer?")) return;
     
     try {
       const res = await axios.delete(clientApi.deleteClient(id), {
@@ -286,7 +285,7 @@ const Customers = () => {
     return [
       ...baseColumns,
       {
-        header: 'Actions',
+        header: 'işlemler',
         cell: ({ row }) => (
           <div className="flex space-x-2">
             {editingRow?.id === row.original.id ? (
@@ -362,7 +361,7 @@ const Customers = () => {
             onClick={() => setIsAdding(true)}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
-            Add New Customer
+             Customer Ekleme
           </button>
         )}
       </div>
