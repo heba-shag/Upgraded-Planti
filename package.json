@@ -61,10 +61,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-  "predeploy": "npm run build",  
-  "deploy": "gh-pages -d build" ,
-  "predeploy:staging": "npm run build:staging",  
-  "deploy:staging": "gh-pages -d build:staging"
+    "deploy": "gh-pages -d build" 
   },
   "eslintConfig": {
     "extends": [
