@@ -211,7 +211,7 @@ const Ecommerce = () => {
 
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-6 rounded-2xl">
           <div className="flex justify-between items-center gap-2">
-            <p className="text-xl font-semibold">Recent Insecticide Transactions</p>
+            <p className="text-xl font-semibold">Son Gübre Stok işlemleri </p>
             <DropDown 
               currentMode={currentMode} 
               items={[2, 4, 6, 8]} 
@@ -233,7 +233,7 @@ const Ecommerce = () => {
           </div>
           <div className="flex justify-between items-center mt-5 border-t-1 border-color">
             <div className="mt-3">
-              <Link to='/icsecticide-transaction'>
+              <Link to='/ilaç-Stok-işlemleri'>
                 <Button
                   color="white"
                   bgColor={currentColor}
@@ -242,7 +242,7 @@ const Ecommerce = () => {
                 /> 
               </Link>
             </div>
-            <p className="text-gray-400 text-sm">{displayCount || 8} Recent Transactions</p>
+            <p className="text-gray-400 text-sm">{displayCount || 8} Son  ilaç Stok işlemleri</p>
           </div>
         </div>
         
