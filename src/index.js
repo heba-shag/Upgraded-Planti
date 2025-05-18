@@ -7,9 +7,9 @@ import { ContextProvider } from './contexts/ContextProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter basename="/Upgraded-Planti"> 
+  <BrowserRouter > 
     <ContextProvider>
       <App />
     </ContextProvider>
   </BrowserRouter>
-);
+); 

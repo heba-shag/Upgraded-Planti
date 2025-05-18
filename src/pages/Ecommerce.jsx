@@ -9,7 +9,6 @@ import product9 from '../data/product9.jpg';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { FiChevronDown } from 'react-icons/fi';
-const { Option } = Select
 const DropDown = ({ currentMode, items = [], onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);

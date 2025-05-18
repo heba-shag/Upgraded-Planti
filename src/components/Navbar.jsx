@@ -3,10 +3,8 @@ import { AiOutlineMenu } from 'react-icons/ai';
 import { FiLogIn, FiShoppingCart } from 'react-icons/fi';
 import { BsChatLeft } from 'react-icons/bs';
 import { RiNotification3Line } from 'react-icons/ri';
-import { MdKeyboardArrowDown } from 'react-icons/md';
-
 import { useStateContext } from '../contexts/ContextProvider';
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import { Popover } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import { FaUserPlus } from 'react-icons/fa';
 
@@ -29,7 +27,7 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 const Navbar = () => {
-  const { currentColor, activeMenu, setActiveMenu, handleClick, isClicked, setScreenSize, screenSize } = useStateContext();
+  const { currentColor, activeMenu, setActiveMenu, handleClick, setScreenSize, screenSize } = useStateContext();
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);

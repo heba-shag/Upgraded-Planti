@@ -1,9 +1,8 @@
-import { FiShoppingBag, FiCreditCard, FiStar, FiShoppingCart } from 'react-icons/fi';
-import { BsKanban, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft, BsFlower1 } from 'react-icons/bs';
+import { FiShoppingBag, FiShoppingCart } from 'react-icons/fi';
+import { BsKanban, BsBoxSeam, BsFlower1 } from 'react-icons/bs';
 import { IoIosColorPalette } from 'react-icons/io';
 import {  RiCustomerService2Fill } from 'react-icons/ri';
 import { MdAgriculture, MdLandslide, MdOutlineSupervisorAccount } from 'react-icons/md';
-import { TiTick } from 'react-icons/ti';
 import { GiChemicalTank, GiFertilizerBag, GiMedicinePills, GiPlantRoots, GiPlantSeed, GiPlantWatering } from 'react-icons/gi';
 import { TbPlant2 } from "react-icons/tb";
 import { LuWarehouse } from "react-icons/lu";

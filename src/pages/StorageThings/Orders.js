@@ -17,12 +17,8 @@ import {
   InputLabel, 
   Select, 
   MenuItem, 
-  Chip, 
-  Snackbar, 
-  Alert, 
   CircularProgress,
   Menu,
-  ListItemText,
   useTheme,
   Checkbox,
   FormControlLabel,
@@ -251,7 +247,6 @@ const Orders = () => {
         try {
             setLoading(true);
             const { id, clientId,orderDate } = tempData;
-            console.log(tempData);
             await axios.post(APIS.updateOrder(), tempData, {
                 headers: { Authorization: token }
             });
