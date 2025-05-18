@@ -250,8 +250,9 @@ const Orders = () => {
     const handleEditOrderSave = async () => {
         try {
             setLoading(true);
-            const { id, ...dataToSend } = tempData;
-            await axios.post(APIS.updateOrder(), dataToSend, {
+            const { id, clientId,orderDate } = tempData;
+            console.log(tempData);
+            await axios.post(APIS.updateOrder(), tempData, {
                 headers: { Authorization: token }
             });
             
@@ -312,7 +313,7 @@ const Orders = () => {
     const handleDelete = async (id) => {
         try {
             setLoading(true);
-            await axios.delete(APIS.deleteOrder(id), {
+            await axios.post(APIS.deleteOrder(id), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
@@ -431,10 +432,11 @@ const Orders = () => {
                         height: '100%',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        width: '100%',
                         padding: 0,
                         margin: 0
                     }}>
-                        <Tooltip title="Edit Order Details">
+                        <Tooltip style={{width:"20%"}} title="Edit Order Details">
                             <IconButton 
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -462,7 +464,7 @@ const Orders = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Update Order Status">
+                        <Tooltip style={{width:"20%"}} title="Update Order Status">
                             <IconButton 
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -490,7 +492,7 @@ const Orders = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Delete Order">
+                        <Tooltip style={{width:"20%"}} title="Delete Order">
                             <IconButton 
                                 onClick={(e) => {
                                     e.stopPropagation();

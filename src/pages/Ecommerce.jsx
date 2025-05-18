@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { BsCurrencyDollar } from 'react-icons/bs';
-import { GoDot } from 'react-icons/go';
-import { IoIosMore } from 'react-icons/io';
-import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { Select } from 'antd';
 
-import { Stacked, Pie, Button, LineChart, SparkLine } from '../components';
-import { earningData, medicalproBranding, recentTransactions, weeklyStats, dropdownData, SparklineAreaData, ecomPieChartData } from '../data/dummy';
+import { Button} from '../components';
+import { earningData} from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
 import product9 from '../data/product9.jpg';
 import axios from 'axios';
@@ -134,7 +131,15 @@ const Ecommerce = () => {
             </div>   
             <button
               type="button"
-              style={{ backgroundColor: currentColor }}
+              // style={{ backgroundColor: currentColor }}
+              style={{ 
+              backgroundColor: currentColor,
+              width: '3rem',    // تحديد العرض
+              height: '3rem',   // تحديد الارتفاع
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
               className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
             >
               <BsCurrencyDollar />
@@ -145,13 +150,15 @@ const Ecommerce = () => {
               color="white"
               bgColor={currentColor}
               text="Download"
-              borderRadius="10px"
+              size="md" // يمكنك تحديد حجم متوسط
+              style={{ height: '36px' }} 
+              // borderRadius="10px"
             />
           </div>
         </div>
         <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
           {earningData.map((item) => (
-            <div key={item.title} className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-9 rounded-2xl ">
+            <div key={item.title} className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg w-full md:w-56 p-4 pt-9 rounded-2xl flex-1 min-w-[200px] max-w-[280px]">
               <button
                 type="button"
                 style={{ color: item.iconColor, backgroundColor: item.iconBg }}
@@ -252,9 +259,7 @@ const Ecommerce = () => {
         <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
           <div className="flex justify-between">
             <p className="text-xl font-semibold">Our Activities</p>
-            <button type="button" className="text-xl font-semibold text-gray-500">
-              <IoIosMore />
-            </button>
+            
           </div>
           <div className="mt-10">
             <img

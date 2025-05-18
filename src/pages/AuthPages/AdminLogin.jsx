@@ -42,6 +42,11 @@ export default function AdminLogIn() {
             const res = await axios.post(adminLoginApi.addLogin(), {
                 email: email,
                 password: password,
+            }, {
+            withCredentials: true, // لإرسال الكوكيز إذا كانت مطلوبة
+            headers: {
+                'Content-Type': 'application/json'
+            }
             });
 
             const token = res.data.token.token;
@@ -52,7 +57,7 @@ export default function AdminLogIn() {
             navigation('/mainPage');
             
         } catch (err) {
-            console.log(err.response?.status);
+            console.log(err);
             if (err.response?.status === 404) {
                 setEmailError("Email does not exist");
             } else if (err.response?.status === 400) {

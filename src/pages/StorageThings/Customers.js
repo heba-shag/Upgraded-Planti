@@ -359,9 +359,10 @@ const Customers = () => {
         {!isAdding && (
           <button
             onClick={() => setIsAdding(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-4 flex justify-end"
+            style={{ width: '200px' }}
           >
-             Customer Ekleme
+            Customer Ekleme
           </button>
         )}
       </div>

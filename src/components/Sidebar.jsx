@@ -17,11 +17,11 @@ const Sidebar = () => {
     }
   };
 
-  const activeLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg  text-white  text-md m-2';
+  const activeLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-white text-md m-2';
   const normalLink = 'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-2';
 
   return (
-    <div className="ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10">
+    <div className="ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 fixed z-[9999] bg-white dark:bg-secondary-dark-bg shadow-xl">
       {activeMenu && (
         <>
           <div className="flex justify-between items-center">
@@ -29,19 +29,21 @@ const Sidebar = () => {
               <SiShopware /> <span>Planti</span>
             </Link>
 
-            <Popover content="Menu" position="BottomCenter">
-              <PopoverButton type="button" onClick={() => setActiveMenu(!activeMenu)} 
+            <Popover className="relative z-[9999]">
+              <PopoverButton 
+                type="button" 
+                onClick={() => setActiveMenu(!activeMenu)} 
                 style={{ color: currentColor }}
                 className="text-xl rounded-full p-3 hover:bg-light-gray mt-4 block hide-below-500"
               >
                 <MdOutlineCancel />
               </PopoverButton>
-              <PopoverPanel className="absolute z-10 bg-black text-white text-sm px-2 py-1 rounded">
+              <PopoverPanel className="absolute z-[9999] bg-black text-white text-sm px-2 py-1 rounded">
                 Close
               </PopoverPanel>
             </Popover>
           </div>
-          <div className="mt-10 ">
+          <div className="mt-10">
             {links.map((item) => (
               <div key={item.title}>
                 <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
@@ -58,7 +60,7 @@ const Sidebar = () => {
                     className={({ isActive }) => (isActive ? activeLink : normalLink)}
                   >
                     {link.icon}
-                    <span className="capitalize ">{link.name}</span>
+                    <span className="capitalize">{link.name}</span>
                   </NavLink>
                 ))}
               </div>
@@ -71,7 +73,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-
-
-

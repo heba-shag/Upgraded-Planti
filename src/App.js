@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import  { useEffect } from 'react';
+import {  Routes, Route } from 'react-router-dom';
 import { FiSettings } from 'react-icons/fi';
 
 import { Navbar, Footer, Sidebar, ThemeSettings } from './components';
-import { Ecommerce, Calendar, Employees, Stacked, Pyramid, Kanban, Line, Area, Bar, Pie, Financial, ColorPicker, ColorMapping, Editor } from './pages';
+import { Ecommerce} from './pages';
 import './App.css';
 
 import { useStateContext } from './contexts/ContextProvider';
@@ -230,61 +230,8 @@ const App = () => {
                   <FlowerDepo />
                 </Layout>
               } />
-              <Route path="/editor" element={
-                <Layout>
-                  <Editor />
-                </Layout>
-              } />
-              <Route path="/calendar" element={
-                <Layout>
-                  <Calendar />
-                </Layout>
-              } />
-              <Route path="/color-picker" element={
-                <Layout>
-                  <ColorPicker />
-                </Layout>
-              } />
-              <Route path="/line" element={
-                <Layout>
-                  <Line />
-                </Layout>
-              } />
-              <Route path="/area" element={
-                <Layout>
-                  <Area />
-                </Layout>
-              } />
-              <Route path="/bar" element={
-                <Layout>
-                  <Bar />
-                </Layout>
-              } />
-              <Route path="/pie" element={
-                <Layout>
-                  <Pie />
-                </Layout>
-              } />
-              <Route path="/financial" element={
-                <Layout>
-                  <Financial />
-                </Layout>
-              } />
-              <Route path="/color-mapping" element={
-                <Layout>
-                  <ColorMapping />
-                </Layout>
-              } />
-              <Route path="/pyramid" element={
-                <Layout>
-                  <Pyramid />
-                </Layout>
-              } />
-              <Route path="/stacked" element={
-                <Layout>
-                  <Stacked />
-                </Layout>
-              } />
+              
+              
             </Route>
           </Route>
         </Routes>
