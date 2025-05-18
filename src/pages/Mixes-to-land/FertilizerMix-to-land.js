@@ -223,8 +223,8 @@ const FertilizerMixToLand = () => {
       setLands(res.data);
       updateTasks(res.data);
     } catch (err) {
-      console.error('Error fetching lands:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to load lands');
+      console.error('Tarlalar alınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Tarlalar yüklenemedi');
     }
   };
 
@@ -235,8 +235,8 @@ const FertilizerMixToLand = () => {
       });
       setMixes(res.data);
     } catch (err) {
-      console.error('Error fetching applicable mixes:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to load applicable mixes');
+      console.error('Uygulanabilir gübre karışımları alınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Uygulanabilir gübre karışımları yüklenemedi');
     }
   };
 
@@ -247,8 +247,8 @@ const FertilizerMixToLand = () => {
       });
       setAllMixes(res.data.data);
     } catch (err) {
-      console.error('Error fetching all mixes:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to load all mixes');
+      console.error('Tüm gübre karışımları alınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Tüm gübre karışımları yüklenemedi');
     }
   };
 
@@ -303,11 +303,11 @@ const FertilizerMixToLand = () => {
 
   const moveToDone = async () => {
     if (!selectedMix) {
-      setError('Please select a fertilizer first');
+      setError('Lütfen önce bir gübre seçin');
       return;
     }
     if (selectedLands.length === 0) {
-      setError('Please select at least one land');
+      setError('Lütfen en az bir tarla seçin');
       return;
     }
     
@@ -345,8 +345,8 @@ const FertilizerMixToLand = () => {
       setError(null);
       fetchLands();
     } catch (err) {
-      console.error('Error moving to done:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to assign fertilizer to lands');
+      console.error('Tamamlananlara taşınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Gübre tarlalara atanamadı');
       fetchLands();
     } finally {
       setIsSubmitting(false);
@@ -380,8 +380,8 @@ const FertilizerMixToLand = () => {
 
       fetchLands();
     } catch (err) {
-      console.error('Error removing from done:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to remove fertilizer assignment');
+      console.error('Tamamlananlardan kaldırılırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Gübre ataması kaldırılamadı');
       fetchLands();
     } finally {
       setIsSubmitting(false);
@@ -450,11 +450,11 @@ const FertilizerMixToLand = () => {
 
   const handleSaveFertilizer = async () => {
     if (!newFertilizer.mixId) {
-      setError('Please select a fertilizer mix');
+      setError('Lütfen bir gübre karışımı seçin');
       return;
     }
     if (!newFertilizer.donumNum || newFertilizer.donumNum <= 0) {
-      setError('Please enter a valid donum number (greater than 0)');
+      setError('Lütfen geçerli bir dönüm sayısı girin (0\'dan büyük)');
       return;
     }
 
@@ -478,8 +478,8 @@ const FertilizerMixToLand = () => {
       handleCloseDialog();
       setError(null);
     } catch (err) {
-      console.error('Error saving fertilizer:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to save fertilizer');
+      console.error('Gübre kaydedilirken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Gübre kaydedilemedi');
     } finally {
       setIsSubmitting(false);
     }
@@ -487,7 +487,7 @@ const FertilizerMixToLand = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="App" title="Mix Gübre Management" />
+      <Header category="Uygulama" title="Gübre Karışım Yönetimi" />
       
       {error && (
         <div style={{
@@ -521,7 +521,7 @@ const FertilizerMixToLand = () => {
             }))}
             value={selectedMix}
             onChange={handleMixSelect}
-            placeholder="Select Gübre..."
+            placeholder="Gübre seçin..."
             isClearable
             required
           />
@@ -544,7 +544,7 @@ const FertilizerMixToLand = () => {
             }
           }}
         >
-          Gübre Ekleme
+          Gübre Ekle
         </Button>
         
         <Button 
@@ -564,7 +564,7 @@ const FertilizerMixToLand = () => {
             }
           }}
         >
-          Filters
+          Filtreler
         </Button>
         
         {selectedMix && (
@@ -585,7 +585,7 @@ const FertilizerMixToLand = () => {
               }
             }}
           >
-            {isSubmitting ? 'Processing...' : `Mark as Done (${selectedLands.length})`}
+            {isSubmitting ? 'İşleniyor...' : `Tamamlandı olarak işaretle (${selectedLands.length})`}
           </Button>
         )}
       </div>
@@ -605,7 +605,7 @@ const FertilizerMixToLand = () => {
               options={uniqueLandNames.map(name => ({ value: name, label: name }))}
               value={landFilter ? { value: landFilter, label: landFilter } : null}
               onChange={(option) => setLandFilter(option?.value || null)}
-              placeholder="Filter by Tarla..."
+              placeholder="Tarlaya göre filtrele..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -615,7 +615,7 @@ const FertilizerMixToLand = () => {
               options={uniqueMixNames.map(name => ({ value: name, label: name }))}
               value={mixFilter ? { value: mixFilter, label: mixFilter } : null}
               onChange={(option) => setMixFilter(option?.value || null)}
-              placeholder="Filter by Gübre..."
+              placeholder="Gübreye göre filtrele..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -639,13 +639,13 @@ const FertilizerMixToLand = () => {
               }
             }}
           >
-            Clear Filters
+            Filtreleri Temizle
           </Button>
         </div>
       )}
       
       <Dialog open={showAddFertilizerDialog} onClose={!isSubmitting ? handleCloseDialog : null}>
-        <DialogTitle>Gübre Ekleme Application</DialogTitle>
+        <DialogTitle>Gübre Uygulama Ekleme</DialogTitle>
         <DialogContent>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px 0' }}>
             <Select
@@ -663,14 +663,14 @@ const FertilizerMixToLand = () => {
                 ...newFertilizer,
                 mixId: option ? option.value : null
               })}
-              placeholder="Select Gübre Mix..."
+              placeholder="Gübre karışımı seçin..."
               isClearable
               required
               isDisabled={isSubmitting}
             />
             
             <TextField
-              label="Donums"
+              label="Dönüm"
               type="number"
               value={newFertilizer.donumNum}
               onChange={(e) => setNewFertilizer({
@@ -684,7 +684,7 @@ const FertilizerMixToLand = () => {
             
             <div style={{ marginTop: '10px' }}>
               <label style={{ display: 'block', marginBottom: '5px', color: 'rgba(0, 0, 0, 0.6)' }}>
-                Application Tarih
+                Uygulama Tarihi
               </label>
               <DatePicker
                 selected={newFertilizer.date}
@@ -715,7 +715,7 @@ const FertilizerMixToLand = () => {
               }
             }}
           >
-            Cancel
+            İptal
           </Button>
           <Button 
             onClick={handleSaveFertilizer} 
@@ -735,7 +735,7 @@ const FertilizerMixToLand = () => {
               }
             }}
           >
-            {isSubmitting ? 'Saving...' : 'Save'}
+            {isSubmitting ? 'Kaydediliyor...' : 'Kaydet'}
           </Button>
         </DialogActions>
       </Dialog>
@@ -743,7 +743,7 @@ const FertilizerMixToLand = () => {
       <DndProvider backend={HTML5Backend}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           <Column
-            title="To Do"
+            title="Yapılacaklar"
             tasks={selectedMix ? filteredLandsByMix.todo : filteredTasks.todo}
             moveTask={(fromIndex, toIndex) => {
               const sourceArray = selectedMix ? filteredLandsByMix.todo : filteredTasks.todo;
@@ -760,19 +760,19 @@ const FertilizerMixToLand = () => {
             actionButton={
               selectedMix && (
                 <div style={{ fontSize: '0.9em', color: '#666' }}>
-                  Select Tarlalar to Gübre with: <strong>{selectedMix.label}</strong>
+                  Şu gübreyle uygulanacak tarlalar: <strong>{selectedMix.label}</strong>
                 </div>
               )
             }
             filterComponent={
               <span style={{ fontSize: '0.8em', color: '#666' }}>
-                {selectedMix ? filteredLandsByMix.todo.length : filteredTasks.todo.length} of {tasks.todo.length}
+                {selectedMix ? filteredLandsByMix.todo.length : filteredTasks.todo.length} / {tasks.todo.length}
               </span>
             }
           />
           
           <Column
-            title="Done"
+            title="Tamamlananlar"
             tasks={selectedMix ? filteredLandsByMix.done : filteredTasks.done}
             moveTask={(fromIndex, toIndex) => {
               const sourceArray = selectedMix ? filteredLandsByMix.done : filteredTasks.done;
@@ -786,7 +786,7 @@ const FertilizerMixToLand = () => {
             onRemove={handleRemoveFromDone}
             filterComponent={
               <span style={{ fontSize: '0.8em', color: '#666' }}>
-                {selectedMix ? filteredLandsByMix.done.length : filteredTasks.done.length} of {tasks.done.length}
+                {selectedMix ? filteredLandsByMix.done.length : filteredTasks.done.length} / {tasks.done.length}
               </span>
             }
           />

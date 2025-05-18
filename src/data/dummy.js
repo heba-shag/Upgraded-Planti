@@ -7,53 +7,278 @@ import { GiChemicalTank, GiFertilizerBag, GiMedicinePills, GiPlantRoots, GiPlant
 import { TbPlant2 } from "react-icons/tb";
 import { LuWarehouse } from "react-icons/lu";
 
-
 export const employeesGrid = [
-  
-  { field: 'name',
-    headerText: 'Name',
+  { 
+    field: 'name',
+    headerText: 'Ad',
     width: '0',
     textAlign: 'Center',
   },
-  { field: 'isLocal',
-    headerText: 'Is Local?',
+  { 
+    field: 'isLocal',
+    headerText: 'Yerel Mi?',
     width: '170',
     textAlign: 'Center',
   },
-  { field: 'codePhoneNumber',
-    headerText: 'Code',
+  { 
+    field: 'codePhoneNumber',
+    headerText: 'Kod',
     width: '125',
-    textAlign: 'Center' },
-  {field: 'phoneNumber',
-    headerText: 'Phone Number',
+    textAlign: 'Center' 
+  },
+  {
+    field: 'phoneNumber',
+    headerText: 'Telefon Numarası',
     width: '150',
     textAlign: 'Center',
   },
-
-  
 ];
 
 export const mainLandsGrid = [
-  { headerText: 'Tarla Ad',
+  { 
+    headerText: 'Tarla Adı',
     field: 'title',
     width: '150',
     textAlign: 'Center',
-    placeholder:'Name',
+    placeholder: 'Ad',
   },
-  { field: 'location',
+  { 
+    field: 'location',
     headerText: 'Konum',
     width: '170',
     textAlign: 'Center',
-    placeholder:'Location',
+    placeholder: 'Konum',
   },
   {
     field: 'size',
-    headerText: 'Boyut',
+    headerText: 'Büyüklük',
     format: 'C2',
     textAlign: 'Center',
     editType: 'numericedit',
     width: '150',
-    placeholder:'Size',
+    placeholder: 'Büyüklük',
+  },
+];
+
+export const earningData = [
+  {
+    icon: <MdOutlineSupervisorAccount />,
+    title: 'Müşteriler',
+    iconColor: '#03C9D7',
+    iconBg: '#E5FAFB',
+    pcColor: 'red-600',
+  },
+  {
+    icon: <BsBoxSeam />,
+    title: 'Siparişler',
+    iconColor: 'rgb(255, 244, 229)',
+    iconBg: 'rgb(254, 201, 15)',
+    pcColor: 'green-600',
+  },
+  {
+    icon: <BsFlower1 />,
+    title: 'Dönüm Başına Çiçek',
+    iconColor: 'rgb(228, 106, 118)',
+    iconBg: 'rgb(255, 244, 229)',
+    pcColor: 'green-600',
+  },
+];
+
+export const themeColors = [
+  {
+    name: 'mavi-tema',
+    color: '#1A97F5',
+  },
+  {
+    name: 'yeşil-tema',
+    color: '#03C9D7',
+  },
+  {
+    name: 'mor-tema',
+    color: '#7352FF',
+  },
+  {
+    name: 'kırmızı-tema',
+    color: '#FF5C8E',
+  },
+  {
+    name: 'çivit-tema',
+    color: '#1E4DB7',
+  },
+  {
+    color: '#FB9678',
+    name: 'turuncu-tema',
+  },
+];
+
+export const fertilizersGrid = [
+  {
+    field: 'title',
+    headerText: 'Bilimsel Adı',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Bilimsel Ad'
+  },
+  {
+    field: 'publicTitle',
+    headerText: 'Ad',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Ad'
+  },
+  {
+    field: 'npk',
+    headerText: 'NPK',
+    format: 'C2',
+    textAlign: 'Center',
+    editType: 'numericedit',
+    width: '150',
+    placeholder: '00-00-00'
+  },
+  {
+    field: 'description',
+    headerText: 'Açıklama',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Açıklama'
+  },
+];
+
+export const insecticidesGrid = [
+  {
+    field: 'title',
+    headerText: 'Bilimsel Adı',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Bilimsel Ad'
+  },
+  {
+    field: 'publicTitle',
+    headerText: 'Ad',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Ad'
+  },
+  {
+    field: 'type',
+    headerText: 'Tür',
+    textAlign: 'Center',
+    editType: 'dropdownedit', 
+    width: '150',
+    options: [
+      {value: 0, label: "Sıvı ilaç"},
+      {value: 1, label: "Toz ilaç"}
+    ],
+    editParams: {
+      params: {
+        dataSource: [
+          {value: 0, text: "Sıvı ilaç"},
+          {value: 1, text: "Toz ilaç"}
+        ],
+        fields: { text: 'text', value: 'value' }
+      }
+    },
+    template: (data) => {
+      const selectedOption = insecticidesGrid.find(col => col.field === 'type')
+      ?.options.find(opt => opt.value === data.type);
+      return selectedOption ? selectedOption.label : data.type;
+    }
+  },
+  {
+    field: 'description',
+    headerText: 'Açıklama',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Açıklama'
+  },
+];
+
+export const cuttingsGrid = [
+  {
+    field: 'title',
+    headerText: 'Ad',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Ad'
+  },
+  {
+    field: 'type',
+    headerText: 'Tür',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Tür'
+  },
+  {
+    field: 'age',
+    headerText: 'Yaş',
+    format: 'C2',
+    textAlign: 'Center',
+    editType: 'numericedit',
+    width: '150',
+    placeholder: 'Yaş'
+  },
+];
+
+export const colorsGrid = [
+  {
+    field: 'title',
+    headerText: 'Ad',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Ad'
+  },
+  {
+    field: 'code',
+    headerText: 'Kod',
+    width: '150',
+    editType: 'dropdownedit',
+    textAlign: 'Center',
+    placeholder: 'Kod'
+  },
+];
+
+export const flowersGrid = [
+  {
+    headerText: 'ID',
+    field: 'id',
+    width: '50',
+    textAlign: 'Center',
+    type: 'number'
+  },
+  {
+    headerText: 'Başlık',
+    field: 'id',
+    width: '150',
+    textAlign: 'Center',
+  },
+  {
+    headerText: 'İşçi',
+    field: 'worker',
+    width: '150',
+    textAlign: 'Center'
+  },
+  {
+    headerText: 'Tarih',
+    field: 'date',
+    width: '150',
+    format: 'yMd',
+    textAlign: 'Center',
+    type: 'date'
+  },
+  {
+    headerText: 'Çiçek Verileri',
+    field: 'flowers',
+    width: '200',
+    textAlign: 'Center'
   },
 ];
 
@@ -181,244 +406,3 @@ export const links = [
   },
   
 ];
-
-
-
-
-export const earningData = [
-  {
-    icon: <MdOutlineSupervisorAccount />,
-    title: 'Customers',
-    iconColor: '#03C9D7',
-    iconBg: '#E5FAFB',
-    pcColor: 'red-600',
-  },
-  {
-    icon: <BsBoxSeam />,
-    title: 'Orders',
-    iconColor: 'rgb(255, 244, 229)',
-    iconBg: 'rgb(254, 201, 15)',
-    pcColor: 'green-600',
-  },
-  {
-    icon: <BsFlower1 />,
-    title: 'Flower per Donum',
-    iconColor: 'rgb(228, 106, 118)',
-    iconBg: 'rgb(255, 244, 229)',
-
-    pcColor: 'green-600',
-  },
-  
-];
-
-
-
-export const themeColors = [
-  {
-    name: 'blue-theme',
-    color: '#1A97F5',
-  },
-  {
-    name: 'green-theme',
-    color: '#03C9D7',
-  },
-  {
-    name: 'purple-theme',
-    color: '#7352FF',
-  },
-  {
-    name: 'red-theme',
-    color: '#FF5C8E',
-  },
-  {
-    name: 'indigo-theme',
-    color: '#1E4DB7',
-  },
-  {
-    color: '#FB9678',
-    name: 'orange-theme',
-  },
-];
-
-
-
-export const fertilizersGrid = [
-  {
-    field: 'title',
-    headerText: 'Bilimsel Adı',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Scientific Name'
-  },
-  {
-    field: 'publicTitle',
-    headerText: 'Ad',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Name'
-  },
-  {
-    field: 'npk',
-    headerText: 'NPK',
-    format: 'C2',
-    textAlign: 'Center',
-    editType: 'numericedit',
-    width: '150',
-    placeholder:'00-00-00'
-
-  },
-  {
-    field: 'description',
-    headerText: 'Tanım',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'About'
-
-  },
-];
-
-export const insecticidesGrid = [
-  {
-    field: 'title',
-    headerText: 'Bilimsel Adı',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Scientific Name'
-  },
-  {
-    field: 'publicTitle',
-    headerText: 'Ad',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Name'
-  },
-  {
-    field: 'type',
-    headerText: 'Tür',
-    textAlign: 'Center',
-    editType: 'dropdownedit', 
-    width: '150',
-    options: [
-      {value: 0, label: "Sıvı ilaç"},
-      {value: 1, label: "Toz ilaç"}
-    ],
-    editParams: {
-      params: {
-        dataSource: [
-          {value: 0, text: "Sıvı ilaç"},
-          {value: 1, text: "Toz ilaç"}
-        ],
-        fields: { text: 'text', value: 'value' }
-      }
-    },
-    template: (data) => {
-      const selectedOption = insecticidesGrid.find(col => col.field === 'type')
-      ?.options.find(opt => opt.value === data.type);
-      return selectedOption ? selectedOption.label : data.type;
-    }
-  } ,
-  {
-    field: 'description',
-    headerText: 'Tanım',
-    width: '150',
-    editType: 'dropdownedit',
-    
-    textAlign: 'Center',
-    placeholder:'About'
-
-  },
-];
-
-export const cuttingsGrid = [
-  {
-    field: 'title',
-    headerText: 'Ad',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Name'
-  },
-  {
-    field: 'type',
-    headerText: 'Tür',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Type'
-  },
-  {
-    field: 'age',
-    headerText: 'Yaş',
-    format: 'C2',
-    textAlign: 'Center',
-    editType: 'numericedit',
-    width: '150',
-    placeholder:'Age'
-
-  },
-];
-
-export const colorsGrid = [
-  {
-    field: 'title',
-    headerText: 'Ad',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Name'
-  },
-  {
-    field: 'code',
-    headerText: 'Code',
-    width: '150',
-    editType: 'dropdownedit',
-    textAlign: 'Center',
-    placeholder:'Code'
-  },
-  
-];
-
-export const flowersGrid = [
-  {
-    headerText: 'ID',
-    field: 'id',
-    width: '50',
-    textAlign: 'Center',
-    type: 'number'
-  },
-  {
-    headerText: 'Title',
-    field: 'id',
-    width: '150',
-    textAlign: 'Center',
-  },
-  {
-    headerText: 'Worker',
-    field: 'worker',
-    width: '150',
-    textAlign: 'Center'
-  },
-  {
-    headerText: 'Date',
-    field: 'date',
-    width: '150',
-    format: 'yMd',
-    textAlign: 'Center',
-    type: 'date'
-  },
-  {
-    headerText: 'Flowers Data',
-    field: 'flowers',
-    width: '200',
-    textAlign: 'Center'
-  },
-  
-  
-];
-
-

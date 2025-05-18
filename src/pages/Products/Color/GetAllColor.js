@@ -57,14 +57,14 @@ const GetAllColor = () => {
     })
     .then((res) => {
       if (res.status !== 200) {
-        throw Error("Couldn't fetch data for that resource");
+        throw Error("Veriler alınamadı");
       }
       setOrdersData(res.data.data);
       setData(res.data.data);
     })
     .catch(err => {
       console.log(err);
-      showNotification('Failed to fetch data', 'error');
+      showNotification('Veri alınamadı', 'error');
     });
   }, [runUseEffect]);
 
@@ -94,7 +94,7 @@ const GetAllColor = () => {
 
   const handleAdd = async () => {
     if (!newItem.title || !newItem.code) {
-      showNotification('Please fill all required fields', 'error');
+      showNotification('Lütfen tüm zorunlu alanları doldurun', 'error');
       return;
     }
     try {
@@ -110,11 +110,11 @@ const GetAllColor = () => {
           title: '',
           code: '',
         });
-        showNotification('Item added successfully!');
+        showNotification('Renk başarıyla eklendi!');
       }
     } catch(err) {
       console.log(err);
-      showNotification(err.response?.data?.errorMessage || 'Failed to add item', 'error');
+      showNotification(err.response?.data?.errorMessage || 'Renk eklenemedi', 'error');
     }
   };
 
@@ -127,11 +127,11 @@ const GetAllColor = () => {
       });
       if (res.status === 200) {
         setRun((prev) => prev + 1);
-        showNotification('Item deleted successfully!');
+        showNotification('Renk başarıyla silindi!');
       }
     } catch(err) {
       console.log(err);
-      showNotification(err.response?.data?.errorMessage || 'Failed to delete item', 'error');
+      showNotification(err.response?.data?.errorMessage || 'Renk silinemedi', 'error');
     }
   };
 
@@ -141,7 +141,7 @@ const GetAllColor = () => {
 
   const handleSave = async(item) => {
     if (!editingRow.title || !editingRow.code) {
-      showNotification('Please fill all required fields', 'error');
+      showNotification('Lütfen tüm zorunlu alanları doldurun', 'error');
       return;
     }
     try {
@@ -153,11 +153,11 @@ const GetAllColor = () => {
       if (res.status === 200) {
         setRun((prev) => prev + 1);
         setEditingRow(null);
-        showNotification('Item updated successfully!');
+        showNotification('Renk başarıyla güncellendi!');
       }
     } catch(err) {
       console.log(err);
-      showNotification(err.response?.data?.errorMessage || 'Failed to update item', 'error');
+      showNotification(err.response?.data?.errorMessage || 'Renk güncellenemedi', 'error');
     }
   };
 
@@ -184,7 +184,8 @@ const GetAllColor = () => {
         </div>
       )}
 
-      <Header category="Page" title="Renklar" />
+      <Header title="Renkler" />
+  
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead className="bg-gray-100">
@@ -205,14 +206,14 @@ const GetAllColor = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Filter"
+                    placeholder="Filtrele"
                     onChange={(e) => handleFilter(column.field, e.target.value)}
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 </th>
               ))}
               <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                işlemler
+                İşlemler
               </th>
             </tr>
           </thead>
@@ -242,7 +243,7 @@ const GetAllColor = () => {
                         onClick={() => handleSave(item)}
                         className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 transition-colors"
                       >
-                        Save
+                        Kaydet
                       </button>
                     ) : (
                       <>
@@ -250,13 +251,13 @@ const GetAllColor = () => {
                           onClick={() => handleEdit(item)}
                           className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-16 transition-colors"
                         >
-                          Edit
+                          Düzenle
                         </button>
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 w-16 transition-colors"
+                          className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 w-16 flex justify-center transition-colors"
                         >
-                          Delete
+                          Sil
                         </button>
                       </>
                     )}
@@ -286,13 +287,13 @@ const GetAllColor = () => {
                       onClick={handleAdd}
                       className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 transition-colors"
                     >
-                      Save
+                      Kaydet
                     </button>
                     <button
                       onClick={() => setIsAdding(false)}
-                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 w-16 transition-colors"
+                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 w-16 flex justify-center transition-colors"
                     >
-                      Cancel
+                      İptal
                     </button>
                   </div>
                 </td>
@@ -306,7 +307,7 @@ const GetAllColor = () => {
                     onClick={() => setIsAdding(true)}
                     className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-40 transition-colors"
                   >
-                    Ekleme
+                    Yeni Ekle
                   </button>
                 )}
               </td>

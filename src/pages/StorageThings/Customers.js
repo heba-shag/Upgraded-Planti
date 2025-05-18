@@ -13,6 +13,16 @@ import axios from 'axios';
 import { BiArrowFromBottom, BiArrowFromTop } from 'react-icons/bi';
 import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button as MuiButton,
+  Typography,
+  Snackbar,
+  Alert
+} from '@mui/material';
 
 const employeesGrid = [
   { 
@@ -23,13 +33,13 @@ const employeesGrid = [
   },
   { 
     field: 'isLocal',
-    headerText: 'Is Local?',
+    headerText: 'Yerel Mi?',
     width: '170',
     textAlign: 'Center',
   },
   {
     field: 'fullPhoneNumber',
-    headerText: 'Phone Number',
+    headerText: 'Telefon Numarası',
     width: '200',
     textAlign: 'Center',
   },
@@ -46,6 +56,15 @@ const Customers = () => {
     phoneNumber: "",
     codePhoneNumber: "",
     fullPhoneNumber: ""
+  });
+  const [deleteConfirm, setDeleteConfirm] = useState({
+    open: false,
+    id: null
+  });
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
   });
   
   const userNow = useStateContext();
@@ -67,6 +86,21 @@ const Customers = () => {
     addClient: () => `${clientApi.baseUrl}/Add`,
   };
 
+  const showNotification = (message, severity = 'success') => {
+    setNotification({
+      open: true,
+      message,
+      severity
+    });
+  };
+
+  const handleCloseNotification = () => {
+    setNotification({
+      ...notification,
+      open: false
+    });
+  };
+
   // Fetch customers data
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -81,7 +115,8 @@ const Customers = () => {
         }));
         setCustomers(formattedCustomers);
       } catch (err) {
-        console.error("Error fetching customers:", err);
+        showNotification("Müşteriler getirilirken hata oluştu", 'error');
+        console.error("Müşteriler getirilirken hata oluştu:", err);
       }
     };
     fetchCustomers();
@@ -134,7 +169,7 @@ const Customers = () => {
   // Add new customer
   const handleAdd = async () => {
     if (!newItem.name) {
-      alert("Please enter customer name");
+      showNotification("Lütfen müşteri adını giriniz", 'warning');
       return;
     }
     
@@ -158,28 +193,42 @@ const Customers = () => {
           codePhoneNumber: '',
           fullPhoneNumber: ''
         });
-        alert("Customer added successfully!");
+        showNotification("Müşteri başarıyla eklendi!", 'success');
       }
     } catch(err) {
-      console.error("Error adding customer:", err);
-      alert("Error adding customer");
+      showNotification("Müşteri eklenirken hata oluştu", 'error');
+      console.error("Müşteri eklenirken hata oluştu:", err);
     }
   };
 
+  // Delete customer confirmation
+  const confirmDelete = (id) => {
+    setDeleteConfirm({
+      open: true,
+      id: id
+    });
+  };
+
   // Delete customer
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!deleteConfirm.id) return;
     
     try {
-      const res = await axios.delete(clientApi.deleteClient(id), {
+      const res = await axios.delete(clientApi.deleteClient(deleteConfirm.id), {
         headers: { Authorization: token },
       });
       if (res.status === 200) {
         setRefreshTrigger(prev => prev + 1);
-        alert("Customer deleted successfully");
+        showNotification("Müşteri başarıyla silindi", 'success');
       }
     } catch (err) {
-      console.error("Error deleting customer:", err);
-      alert("Error deleting customer");
+      showNotification("Müşteri silinirken hata oluştu", 'error');
+      console.error("Müşteri silinirken hata oluştu:", err);
+    } finally {
+      setDeleteConfirm({
+        open: false,
+        id: null
+      });
     }
   };
 
@@ -199,7 +248,7 @@ const Customers = () => {
   // Save edits
   const handleSave = async (item) => {
     if (!editingRow.name) {
-      alert("Please enter customer name");
+      showNotification("Lütfen müşteri adını giriniz", 'warning');
       return;
     }
     
@@ -216,11 +265,11 @@ const Customers = () => {
       if (res.status === 200) {
         setRefreshTrigger(prev => prev + 1);
         setEditingRow(null);
-        alert("Customer updated successfully");
+        showNotification("Müşteri başarıyla güncellendi", 'success');
       }
     } catch (err) {
-      console.error("Error updating customer:", err);
-      alert("Error updating customer");
+      showNotification("Müşteri güncellenirken hata oluştu", 'error');
+      console.error("Müşteri güncellenirken hata oluştu:", err);
     }
   };
 
@@ -234,7 +283,7 @@ const Customers = () => {
           if (item.field === 'fullPhoneNumber') {
             return (
               <PhoneInput
-                placeholder="Enter phone number"
+                placeholder="Telefon numarası giriniz"
                 defaultCountry="TR"
                 value={editingRow.fullPhoneNumber}
                 onChange={(value) => handlePhoneNumberChange(value, true)}
@@ -276,7 +325,7 @@ const Customers = () => {
         
         // Display values for non-editing rows
         if (item.field === 'isLocal') {
-          return row.original.isLocal ? 'true' : 'false';
+          return row.original.isLocal ? 'Evet' : 'Hayır';
         }
         return getValue();
       },
@@ -285,7 +334,7 @@ const Customers = () => {
     return [
       ...baseColumns,
       {
-        header: 'işlemler',
+        header: 'İşlemler',
         cell: ({ row }) => (
           <div className="flex space-x-2">
             {editingRow?.id === row.original.id ? (
@@ -294,13 +343,13 @@ const Customers = () => {
                   onClick={() => handleSave(row.original)} 
                   className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
                 >
-                  Save
+                  Kaydet
                 </button>
                 <button 
                   onClick={handleCancelEdit} 
                   className="px-2 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 ml-2"
                 >
-                  Cancel
+                  İptal
                 </button>
               </>
             ) : (
@@ -309,13 +358,13 @@ const Customers = () => {
                   onClick={() => handleEdit(row)} 
                   className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
-                  Edit
+                  Düzenle
                 </button>
                 <button 
-                  onClick={() => handleDelete(row.original.id)} 
+                  onClick={() => confirmDelete(row.original.id)} 
                   className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2"
                 >
-                  Delete
+                  Sil
                 </button>
               </>
             )}
@@ -343,14 +392,14 @@ const Customers = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Page" title="Customers" />
+      <Header title="Müşteriler" />
 
       <div className="mb-4">
         <input
           type="text"
           value={table.getState().globalFilter || ''}
           onChange={(e) => table.setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Ara..."
           className="p-2 border rounded w-full md:w-1/3"
         />
       </div>
@@ -359,10 +408,10 @@ const Customers = () => {
         {!isAdding && (
           <button
             onClick={() => setIsAdding(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-4 flex justify-end"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-4 flex justify-center"
             style={{ width: '200px' }}
           >
-            Customer Ekleme
+            Müşteri Ekle
           </button>
         )}
       </div>
@@ -403,7 +452,7 @@ const Customers = () => {
                 <td key={colIndex} className="p-2 border-b">
                   {column.field === 'fullPhoneNumber' ? (
                     <PhoneInput
-                      placeholder="Enter phone number"
+                      placeholder="Telefon numarası giriniz"
                       defaultCountry="TR"
                       value={newItem.fullPhoneNumber}
                       onChange={handlePhoneNumberChange}
@@ -444,13 +493,13 @@ const Customers = () => {
                   onClick={handleAdd}
                   className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 mr-2"
                 >
-                  Save
+                  Kaydet
                 </button>
                 <button
                   onClick={() => setIsAdding(false)}
                   className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
                 >
-                  Cancel
+                  İptal
                 </button>
               </td>
             </tr>
@@ -475,21 +524,21 @@ const Customers = () => {
             disabled={!table.getCanPreviousPage()}
             className="p-2 bg-gray-200 rounded disabled:opacity-50"
           >
-            Previous
+            Önceki
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             className="p-2 bg-gray-200 rounded disabled:opacity-50"
           >
-            Next
+            Sonraki
           </button>
         </div>
         <div className="flex flex-col md:flex-row items-center gap-2">
           <span>
-            Page{' '}
+            Sayfa{' '}
             <strong>
-              {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
             </strong>
           </span>
           <select
@@ -499,12 +548,54 @@ const Customers = () => {
           >
             {[5, 10, 20].map((size) => (
               <option key={size} value={size}>
-                Show {size}
+                Göster {size}
               </option>
             ))}
           </select>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog 
+        open={deleteConfirm.open} 
+        onClose={() => setDeleteConfirm({ open: false, id: null })}
+      >
+        <DialogTitle>Silme Onayı</DialogTitle>
+        <DialogContent>
+          <Typography>Bu müşteriyi silmek istediğinizden emin misiniz?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton 
+            onClick={() => setDeleteConfirm({ open: false, id: null })}
+            color="primary"
+          >
+            İptal
+          </MuiButton>
+          <MuiButton 
+            onClick={handleDelete}
+            color="error"
+            variant="contained"
+          >
+            Sil
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
+
+      {/* Notification Snackbar */}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity}
+          sx={{ width: '100%' }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

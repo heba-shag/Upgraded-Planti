@@ -43,7 +43,7 @@ export default function AdminLogIn() {
                 email: email,
                 password: password,
             }, {
-            withCredentials: true, // لإرسال الكوكيز إذا كانت مطلوبة
+            withCredentials: true, 
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -59,9 +59,9 @@ export default function AdminLogIn() {
         } catch (err) {
             console.log(err);
             if (err.response?.status === 404) {
-                setEmailError("Email does not exist");
+                setEmailError("Bu email adresi bulunamadı");
             } else if (err.response?.status === 400) {
-                setPasswordError("Wrong Password");
+                setPasswordError("Yanlış şifre");
             }
         }
     }
@@ -78,7 +78,7 @@ export default function AdminLogIn() {
                         <label htmlFor="email">Email:</label>
                         <input 
                             id="email" 
-                            placeholder="Email.." 
+                            placeholder="Email adresiniz.." 
                             type="email" 
                             required 
                             value={email} 
@@ -90,10 +90,10 @@ export default function AdminLogIn() {
                     </div>
 
                     <div className="inputInfo adminInfo">
-                        <label htmlFor="password">Password:</label>
+                        <label htmlFor="password">Şifre:</label>
                         <input 
                             id="password" 
-                            placeholder="Enter password.." 
+                            placeholder="Şifrenizi girin.." 
                             type="password" 
                             value={password} 
                             onChange={handlePasswordChange} 
@@ -104,7 +104,7 @@ export default function AdminLogIn() {
                     </div>
 
                     <div className="done-btn" style={{ textAlign: "center" }}>
-                        <button type="submit">Login</button>
+                        <button type="submit">Giriş Yap</button>
                     </div>
                 </form>
             </div>

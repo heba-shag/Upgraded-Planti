@@ -29,6 +29,9 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 const Navbar = () => {
   const { currentColor, activeMenu, setActiveMenu, handleClick, setScreenSize, screenSize } = useStateContext();
 
+  const UserNow = useStateContext();
+  const role = UserNow.auth.userDetails.roles.flatMap((role)=>(role.role.id));
+
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
 
@@ -54,11 +57,13 @@ const Navbar = () => {
 
       <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
       <div className="flex">
-        <NavButton title="Cart" customFunc={() => handleClick('cart')} color={currentColor} icon={<FiShoppingCart />} />
-        <NavButton title="Chat" dotColor="#03C9D7" customFunc={() => handleClick('chat')} color={currentColor} icon={<BsChatLeft />} />
-        <NavButton title="Notification" dotColor="rgb(254, 201, 15)" customFunc={() => handleClick('notification')} color={currentColor} icon={<RiNotification3Line />} />
+        {/* <NavButton title="Chat" dotColor="#03C9D7" customFunc={() => handleClick('chat')} color={currentColor} icon={<BsChatLeft />} />
+        <NavButton title="Notification" dotColor="rgb(254, 201, 15)" customFunc={() => handleClick('notification')} color={currentColor} icon={<RiNotification3Line />} /> */}
 
-        <Link to="/add-new-user" > <NavButton customFunc={() => handleClick('add-new-user')} color={currentColor} icon={<FaUserPlus />} /></Link>
+        {role[0]===1&&
+          <Link to="/add-new-user" >
+            <NavButton customFunc={() => handleClick('add-new-user')} color={currentColor} icon={<FaUserPlus />} />
+          </Link>}
         <Link to="/login" > <NavButton color={currentColor} icon={<FiLogIn />} /></Link>
 
         {/* <Link to="/login"><FiLogIn className='icon'/></Link> */}

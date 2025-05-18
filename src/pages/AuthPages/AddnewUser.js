@@ -9,11 +9,11 @@ import Cookies from "universal-cookie";
 import { useStateContext } from "../../contexts/ContextProvider";
 
 let UserType = [
-    {value: 0, label: "Admin"},
-    {value: 1, label: "Worker"},
-    {value: 2, label: "Engineer"},
-    {value: 3, label: "Accountant"},
-    {value: 4, label: "SuperAdmin"}, 
+    {value: 0, label: "Yönetici"},
+    {value: 1, label: "Çalışan"},
+    {value: 2, label: "Mühendis"},
+    {value: 3, label: "Muhasebeci"},
+    {value: 4, label: "Süper Yönetici"}, 
 ];
 
 export default function AddNewUser() {
@@ -53,7 +53,7 @@ export default function AddNewUser() {
         })
         .then((res) => {
             if(res.status !== 200) {
-                throw Error("Couldn't fetch data for that resource");
+                throw Error("Veri alınamadı");
             }
             setRoleIds(res.data);
         })
@@ -79,10 +79,10 @@ export default function AddNewUser() {
                 setShowDoneMessage(true); 
                 setTimeout(() => setShowDoneMessage(false), 2000); 
             } else {
-                console.error(`Failed to add role:`, response.status);
+                console.error(`Rol eklenemedi:`, response.status);
             }
         } catch(error) {
-            console.error("Error adding role:", error.message);
+            console.error("Rol eklenirken hata:", error.message);
         }
     };
 
@@ -98,6 +98,7 @@ export default function AddNewUser() {
 
     async function Submit(e) {
         e.preventDefault();
+        setEmailError('');
         try {
              await axios.post(addUsersApi.addNewUser(), {
                 firstName: fName,
@@ -111,7 +112,7 @@ export default function AddNewUser() {
 
             navigation('/mainPage');
         } catch(err) {
-            setEmailError(err.response?.data?.errorMessage || "An error occurred");
+            setEmailError(err.response?.data?.errorMessage || "Bir hata oluştu");
         }
     }
 
@@ -119,24 +120,25 @@ export default function AddNewUser() {
         <>
             <div className="add-user-background flex">
                 
-                <button className="add-role-btn" onClick={handleAddRole}>
+                <button className="add-role-btn px-4 py-2  text-white rounded-md hover:bg-blue-600 mb-4 flex justify-center"
+                    style={{ width: '200px' }} onClick={handleAddRole}>
                     <MdOutlineAddTask className="add-role-icon" />
-                    <span>Add Role</span>
+                    <span>Rol Ekle</span>
                 </button>
 
                 <div className="add-user-form-container">
                     <form onSubmit={Submit} className="add-user-form">
                         <div className="form-header flex">
                             <FaRegUserCircle className="user-icon"/>
-                            <h2>Add New User</h2>
+                            <h2>Yeni Kullanıcı Ekle</h2>
                         </div>
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label>First Name:</label> 
+                                <label>Ad:</label> 
                                 <input 
                                     type="text" 
-                                    placeholder="First name" 
+                                    placeholder="Ad" 
                                     value={fName} 
                                     onChange={(e) => setFName(e.target.value)} 
                                     required
@@ -144,10 +146,10 @@ export default function AddNewUser() {
                             </div>
 
                             <div className="form-group">
-                                <label>Last Name:</label> 
+                                <label>Soyad:</label> 
                                 <input 
                                     type="text" 
-                                    placeholder="Last name" 
+                                    placeholder="Soyad" 
                                     value={lName} 
                                     onChange={(e) => setLName(e.target.value)} 
                                     required
@@ -160,7 +162,7 @@ export default function AddNewUser() {
                                 <label htmlFor="email">Email:</label>
                                 <input 
                                     id="email" 
-                                    placeholder="Email address" 
+                                    placeholder="Email adresi" 
                                     type="email" 
                                     required 
                                     value={email} 
@@ -170,10 +172,10 @@ export default function AddNewUser() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="phone">Phone Number:</label>
+                                <label htmlFor="phone">Telefon Numarası:</label>
                                 <input 
                                     id="phone" 
-                                    placeholder="Phone number" 
+                                    placeholder="Telefon numarası" 
                                     type="tel" 
                                     value={phoneNum} 
                                     onChange={(e) => setPhoneNum(e.target.value)}
@@ -183,10 +185,10 @@ export default function AddNewUser() {
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="password">Password:</label>
+                                <label htmlFor="password">Şifre:</label>
                                 <input 
                                     id="password" 
-                                    placeholder="Password (min 8 chars)" 
+                                    placeholder="Şifre (en az 8 karakter)" 
                                     type="password" 
                                     minLength="8"
                                     value={password} 
@@ -196,31 +198,31 @@ export default function AddNewUser() {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="repeat">Confirm Password:</label>
+                                <label htmlFor="repeat">Şifreyi Onayla:</label>
                                 <input 
                                     id="repeat" 
-                                    placeholder="Confirm password" 
+                                    placeholder="Şifreyi tekrar girin" 
                                     type="password" 
                                     value={passwordR} 
                                     onChange={(e) => setPasswordR(e.target.value)} 
                                     required
                                 />
                                 {passwordR && passwordR !== password && (
-                                    <span className="error-message">Passwords don't match</span>
+                                    <span className="error-message">Şifreler eşleşmiyor</span>
                                 )}
                             </div>
                         </div>
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="user-type">User Type:</label>
+                                <label htmlFor="user-type">Kullanıcı Türü:</label>
                                 <select 
                                     id="user-type"
                                     value={type}  
                                     onChange={handleTypeChange}
                                     required
                                 >
-                                    <option value="">Select user type</option>
+                                    <option value="">Kullanıcı türü seçin</option>
                                     {UserType.map((option) => (
                                         <option 
                                             key={option.value} 
@@ -234,7 +236,7 @@ export default function AddNewUser() {
                             </div>
 
                             <div className="form-group">
-                                <label>Roles:</label>
+                                <label>Roller:</label>
                                 <Select 
                                     multi 
                                     options={roleIds} 
@@ -243,7 +245,7 @@ export default function AddNewUser() {
                                     color="#528e25" 
                                     value={selectedRoles} 
                                     onChange={(e) => setSelectedRoles(e.map(option => option.id))}
-                                    placeholder="Select roles"
+                                    placeholder="Roller seçin"
                                     className="roles-select"
                                 /> 
                             </div>
@@ -251,7 +253,7 @@ export default function AddNewUser() {
 
                         <div className="form-actions">
                             <button type="submit" className="submit-btn">
-                                Register User
+                                Kullanıcıyı Kaydet
                             </button>
                         </div>
                     </form>
@@ -262,29 +264,27 @@ export default function AddNewUser() {
             {addRoleConfirmation && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <h3>Add New Role</h3>
+                        <h3>Yeni Rol Ekle</h3>
                         
                         <div className="modal-form">
                             <div className="form-group">
-                                <label>Role Name:</label>
+                                <label>Rol Adı:</label>
                                 <input 
                                     type="text" 
                                     value={roleName} 
                                     onChange={(e) => setRoleName(e.target.value)}  
-                                    placeholder="Enter role name"
+                                    placeholder="Rol adı girin"
                                     required
                                 />
                             </div>
 
                             <div className="form-group checkbox-group">
-                                <label>Full Access</label>
+                                <label>Tam Erişim</label>
                                 <input 
                                     type="checkbox" 
                                     checked={isTotalAccess} 
                                     onChange={handleSetIsAccess}
                                 />
-                                    
-                                
                             </div>
 
                             <div className="modal-actions">
@@ -293,7 +293,7 @@ export default function AddNewUser() {
                                     className="cancel-btn" 
                                     onClick={cancelAddRole}
                                 >
-                                    Cancel
+                                    İptal
                                 </button>
                                 <button 
                                     type="button" 
@@ -301,7 +301,7 @@ export default function AddNewUser() {
                                     onClick={addRoleFunction}
                                     disabled={!roleName}
                                 >
-                                    Add Role
+                                    Rol Ekle
                                 </button>
                             </div>
                         </div>
@@ -312,7 +312,7 @@ export default function AddNewUser() {
             {/* Success Message */}
             {showDonemessage && (
                 <div className="success-message">
-                    Role added successfully!
+                    Rol başarıyla eklendi!
                 </div>
             )}
         </>

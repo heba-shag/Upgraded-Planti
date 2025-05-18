@@ -63,19 +63,19 @@ const MainLands = () => {
       })
       .then((res) => {
         if (res.status !== 200) {
-          throw Error("Couldn't fetch data for that resource");
+          throw Error("Veriler alınamadı");
         }
         setMainLand(res.data);
       })
       .catch(err => {
         console.log(err);
-        showNotification('Failed to fetch data', 'error');
+        showNotification('Veri alınamadı', 'error');
       });
     }, [runUseEffect]);
 
     const handleAdd = async () => {
       if (!newItem.title || !newItem.size || !newItem.location) {
-        showNotification('Please fill all required fields', 'error');
+        showNotification('Lütfen tüm zorunlu alanları doldurun', 'error');
         return;
       }
       try {
@@ -96,11 +96,11 @@ const MainLands = () => {
             location: '',
             size: 0,
           });
-          showNotification('Item added successfully!');
+          showNotification('Öğe başarıyla eklendi!');
         }
       } catch(err) {
         console.log(err);
-        showNotification('Failed to add item', 'error');
+        showNotification('Öğe eklenemedi', 'error');
       }
     };
 
@@ -113,11 +113,11 @@ const MainLands = () => {
         });
         if (res.status === 200) {
           setRun((prev) => prev + 1);
-          showNotification('Item deleted successfully!');
+          showNotification('Öğe başarıyla silindi!');
         }
       } catch {
         console.log("none");
-        showNotification('Failed to delete item', 'error');
+        showNotification('Öğe silinemedi', 'error');
       }
     };
 
@@ -131,7 +131,7 @@ const MainLands = () => {
 
     const handleSave = async (item) => {
       if (!editingRow.title || !editingRow.location || !editingRow.size) {
-        showNotification('Please fill all required fields', 'error');
+        showNotification('Lütfen tüm zorunlu alanları doldurun', 'error');
         return;
       }
       
@@ -149,11 +149,11 @@ const MainLands = () => {
         if (res.status === 200) {
           setRun((prev) => prev + 1);
           setEditingRow(null);
-          showNotification('Item updated successfully!');
+          showNotification('Öğe başarıyla güncellendi!');
         }
       } catch (err) {
         console.log(err);
-        showNotification('Error updating item', 'error');
+        showNotification('Öğe güncellenirken hata oluştu', 'error');
       }
     };
 
@@ -184,7 +184,7 @@ const MainLands = () => {
       return [
         ...baseColumns,
         {
-          header: 'işlemler',
+          header: 'İşlemler',
           accessorKey: 'actions',
           cell: ({ row }) => {
             return (
@@ -195,13 +195,13 @@ const MainLands = () => {
                       onClick={() => handleSave(row.original)}
                       className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm w-16"
                     >
-                      Save
+                      Kaydet
                     </button>
                     <button
                       onClick={handleCancelEdit}
                       className="px-2 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors text-sm w-16"
                     >
-                      Cancel
+                      İptal
                     </button>
                   </>
                 ) : (
@@ -210,19 +210,19 @@ const MainLands = () => {
                       onClick={() => handleEdit(row)}
                       className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm w-16"
                     >
-                      Edit
+                      Düzenle
                     </button>
                     <button
                       onClick={() => handleDelete(row.original.id)}
                       className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm w-16"
                     >
-                      Delete
+                      Sil
                     </button>
                     <NavLink to={`${row.original.id}`}>
                       <button
                         className="px-2 py-1 bg-green-200 text-green-800 rounded-md hover:bg-green-300 transition-colors text-sm w-16"
                       >
-                        Details
+                        Detaylar
                       </button>
                     </NavLink>
                   </>
@@ -267,14 +267,14 @@ const MainLands = () => {
         </div>
       )}
 
-      <Header category="Page" title="Tarlalar" />
+      <Header title="Tarlalar" />
 
       <div className="mb-4">
         <input
           type="text"
           value={table.getState().globalFilter || ''}
           onChange={(e) => table.setGlobalFilter(e.target.value)}
-          placeholder="Search..."
+          placeholder="Ara..."
           className="p-2 border rounded w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -285,7 +285,7 @@ const MainLands = () => {
             onClick={() => setIsAdding(true)}
             className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-48 text-center"
           >
-            Ekleme
+            Yeni Ekle
           </button>
         )}
       </div>
@@ -345,13 +345,13 @@ const MainLands = () => {
                       onClick={handleAdd}
                       className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm w-16"
                     >
-                      Save
+                      Kaydet
                     </button>
                     <button
                       onClick={() => setIsAdding(false)}
                       className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm w-16"
                     >
-                      Cancel
+                      İptal
                     </button>
                   </div>
                 </td>
@@ -378,22 +378,22 @@ const MainLands = () => {
             disabled={!table.getCanPreviousPage()}
             className="px-3 py-1.5 bg-gray-200 rounded-md hover:bg-gray-300 disabled:opacity-50 transition-colors"
           >
-            Previous
+            Önceki
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             className="px-3 py-1.5 bg-gray-200 rounded-md hover:bg-gray-300 disabled:opacity-50 transition-colors"
           >
-            Next
+            Sonraki
           </button>
         </div>
         
         <div className="flex items-center space-x-4">
           <span className="text-sm">
-            Page{' '}
+            Sayfa{' '}
             <strong>
-              {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
             </strong>
           </span>
           
@@ -404,7 +404,7 @@ const MainLands = () => {
           >
             {[5, 10, 20].map((size) => (
               <option key={size} value={size}>
-                Show {size}
+                Göster {size}
               </option>
             ))}
           </select>
@@ -414,4 +414,4 @@ const MainLands = () => {
   );
 };
 
-export default MainLands; 
+export default MainLands;

@@ -45,7 +45,7 @@ const FlowerDepo = () => {
           setCodeFilter(res.data.data.map(code => ({ value: code.code, label: code.code })));
         }
       } catch (err) {
-        console.error("Error fetching flower store:", err);
+        console.error("Çiçek deposu verileri alınırken hata:", err);
       }
     };
     fetchData();
@@ -89,7 +89,7 @@ const FlowerDepo = () => {
         setTimeout(() => setShowDoneMessage(false), 2000);
       }
     } catch (error) {
-      console.error("Error adding external flowers:", error);
+      console.error("Harici çiçek eklenirken hata:", error);
     }
   };
 
@@ -107,7 +107,7 @@ const FlowerDepo = () => {
         setTimeout(() => setShowDoneMessage(false), 2000);
       }
     } catch (error) {
-      console.error("Error adding trashed flowers:", error);
+      console.error("Atık çiçek eklenirken hata:", error);
     }
   };
 
@@ -130,18 +130,18 @@ const FlowerDepo = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'code', headerText: 'Code', placeholder: 'Filter code' },
-    { field: 'count', headerText: 'Count', placeholder: 'Filter count' },
-    { field: 'totalCount', headerText: 'Total Count', placeholder: 'Filter total count' },
-    { field: 'remainedCount', headerText: 'Remained Count', placeholder: 'Filter remained count' },
-    { field: 'flowerLong', headerText: 'Flower Long', placeholder: 'Filter flower long' },
-    { field: 'trashedCount', headerText: 'Trashed Count', placeholder: 'Filter trashed count' },
-    { field: 'externalCount', headerText: 'External Count', placeholder: 'Filter external count' }
+    { field: 'code', headerText: 'Kod', placeholder: 'Kod filtrele' },
+    { field: 'count', headerText: 'Adet', placeholder: 'Adet filtrele' },
+    { field: 'totalCount', headerText: 'Toplam Adet', placeholder: 'Toplam adet filtrele' },
+    { field: 'remainedCount', headerText: 'Kalan Adet', placeholder: 'Kalan adet filtrele' },
+    { field: 'flowerLong', headerText: 'Çiçek Uzunluğu', placeholder: 'Çiçek uzunluğu filtrele' },
+    { field: 'trashedCount', headerText: 'Atık Adet', placeholder: 'Atık adet filtrele' },
+    { field: 'externalCount', headerText: 'Harici Adet', placeholder: 'Harici adet filtrele' }
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Çiçek Depo" />
+      <Header title="Çiçek Deposu" />
       
       <div className="flex justify-end mb-4">
         <button
@@ -150,7 +150,7 @@ const FlowerDepo = () => {
           style={{ width: '150px' }}
         >
           <MdOutlineAddTask className="mr-2" />
-          Ekleme
+          Ekle
         </button>
       </div>
 
@@ -218,13 +218,13 @@ const FlowerDepo = () => {
             <h3 className="text-lg font-medium mb-4">Çiçek Ekleme</h3>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Code</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Kod</label>
               <select
                 value={selectedStored}
                 onChange={handleNameChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               >
-                <option value="">Choose</option>
+                <option value="">Seçiniz</option>
                 {flowerDepot.map(option => (
                   <option key={option.id} value={option.id}>
                     {option.code}
@@ -234,13 +234,13 @@ const FlowerDepo = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Adit</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Adet</label>
               <input
                 type="number"
                 value={storedCount}
                 onChange={(e) => setStoredCount(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="Count..."
+                placeholder="Adet girin..."
               />
             </div>
             
@@ -249,19 +249,19 @@ const FlowerDepo = () => {
                 onClick={cancelFunction}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
               >
-                Cancel
+                İptal
               </button>
               <button
                 onClick={deleteFunction}
                 className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
               >
-                Trashed Ekleme
+                Atık Ekle
               </button>
               <button
                 onClick={addFunction}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
               >
-                External Ekleme
+                Harici Ekle
               </button>
             </div>
           </div>
@@ -270,7 +270,7 @@ const FlowerDepo = () => {
 
       {showDonemessage && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
-          Operation completed successfully!
+          İşlem başarıyla tamamlandı!
         </div>
       )}
     </div>

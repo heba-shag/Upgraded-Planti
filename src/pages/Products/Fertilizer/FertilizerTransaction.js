@@ -56,7 +56,7 @@ const FertilizerTransaction = () => {
           setFertilizers(fertilizersRes.data.data);
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Veri alınırken hata oluştu:", err);
       }
     };
     fetchData();
@@ -119,7 +119,7 @@ const FertilizerTransaction = () => {
         });
       }
     } catch (error) {
-      console.error("Error adding transaction:", error);
+      console.error("İşlem eklenirken hata:", error);
     }
   };
 
@@ -152,28 +152,27 @@ const FertilizerTransaction = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'date', headerText: 'Tarih', placeholder: 'Date' },
-    { field: 'fertilizer.title', headerText: 'Bilimsel Adı', placeholder: 'Filter Scientific Name' },
-    { field: 'fertilizer.publicTitle', headerText: 'Ad', placeholder: 'Filter Title' },
-    { field: 'quantityChange', headerText: 'Adit', placeholder: 'Filter Changes count' },
-    { field: 'fertilizer.npk', headerText: 'NPK', placeholder: 'Filter remained NPK' },
-    { field: 'fertilizer.description', headerText: 'Tanım', placeholder: 'Filter description' },
-    { field: 'isAdd', headerText: 'Is Add?', placeholder: 'Filter Is Add' },
+    { field: 'date', headerText: 'Tarih', placeholder: 'Tarih filtrele' },
+    { field: 'fertilizer.title', headerText: 'Bilimsel Adı', placeholder: 'Bilimsel ad filtrele' },
+    { field: 'fertilizer.publicTitle', headerText: 'Ad', placeholder: 'Ad filtrele' },
+    { field: 'quantityChange', headerText: 'Miktar', placeholder: 'Miktar filtrele' },
+    { field: 'fertilizer.npk', headerText: 'NPK', placeholder: 'NPK filtrele' },
+    { field: 'fertilizer.description', headerText: 'Açıklama', placeholder: 'Açıklama filtrele' },
+    { field: 'isAdd', headerText: 'Ekleme mi?', placeholder: 'İşlem türü filtrele' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Gübre Stok işlemler" />
+      <Header title="Gübre Stok İşlemleri" />
       
-      {/* Adjusted "Add Transaction" button with fixed width */}
       <div className="flex justify-end mb-4">
         <button
           onClick={handleAddClick}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex justify-center items-center"
           style={{ width: '170px' }}
         >
           <MdOutlineAddTask className="mr-2" />
-          Stok işlemler Ekleme
+          Stok İşlemi Ekle
         </button>
       </div>
 
@@ -213,7 +212,7 @@ const FertilizerTransaction = () => {
                   let displayValue = value;
                   
                   if (column.field === 'isAdd') {
-                    displayValue = value ? 'Yes' : 'No';
+                    displayValue = value ? 'Evet' : 'Hayır';
                   }
                   
                   return (
@@ -228,7 +227,6 @@ const FertilizerTransaction = () => {
         </table>
       </div>
 
-      {/* Pagination with smaller, centered buttons */}
       <div className="flex justify-center mt-4 space-x-1">
         {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }, (_, i) => (
           <button
@@ -248,7 +246,7 @@ const FertilizerTransaction = () => {
       {addConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-medium mb-4">Stok işlemler Ekleme</h3>
+            <h3 className="text-lg font-medium mb-4">Stok İşlemi Ekle</h3>
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">Gübre</label>
@@ -259,7 +257,7 @@ const FertilizerTransaction = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 required
               >
-                <option value="">Select Gübre</option>
+                <option value="">Gübre Seçin</option>
                 {fertilizers.map(fertilizer => (
                   <option key={fertilizer.fertilizer.id} value={fertilizer.fertilizer.id}>
                     {fertilizer.fertilizer.publicTitle} ({fertilizer.fertilizer.title})
@@ -269,7 +267,7 @@ const FertilizerTransaction = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sayı</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Miktar</label>
               <input
                 type="number"
                 name="quantity"
@@ -303,7 +301,7 @@ const FertilizerTransaction = () => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="isAdd" className="ml-2 block text-sm text-gray-700">
-                Is Addition?
+                Ekleme İşlemi mi?
               </label>
             </div>
             
@@ -312,14 +310,14 @@ const FertilizerTransaction = () => {
                 onClick={cancelFunction}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
               >
-                Cancel
+                İptal
               </button>
               <button
                 onClick={addFunction}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 disabled={!formData.fertilizerId}
               >
-                Submit
+                Kaydet
               </button>
             </div>
           </div>
@@ -328,7 +326,7 @@ const FertilizerTransaction = () => {
 
       {showDonemessage && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
-          Operation completed successfully!
+          İşlem başarıyla tamamlandı!
         </div>
       )}
     </div>

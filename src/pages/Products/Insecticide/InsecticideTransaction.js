@@ -54,7 +54,7 @@ const InsecticideTransaction = () => {
           setInsecticides(insecticidesRes.data.data);
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Veri çekme hatası:", err);
       }
     };
     fetchData();
@@ -121,7 +121,7 @@ const InsecticideTransaction = () => {
         });
       }
     } catch (error) {
-      console.error("Error adding transaction:", error);
+      console.error("İşlem ekleme hatası:", error);
     }
   };
 
@@ -154,27 +154,27 @@ const InsecticideTransaction = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'date', headerText: 'Tarih', placeholder: 'Date' },
-    { field: 'insecticide.title', headerText: 'Bilimsel Adı', placeholder: 'Filter Scientific Name' },
-    { field: 'insecticide.publicTitle', headerText: 'Ad', placeholder: 'Filter Title' },
-    { field: 'quantityChange', headerText: 'Adit', placeholder: 'Filter Changes count' },
-    { field: 'insecticide.type', headerText: 'Tür', placeholder: 'Filter Type' },
-    { field: 'insecticide.description', headerText: 'Tanım', placeholder: 'Filter description' },
-    { field: 'isAdd', headerText: 'Is Add?', placeholder: 'Filter Is Add' },
+    { field: 'date', headerText: 'Tarih', placeholder: 'Tarih filtrele' },
+    { field: 'insecticide.title', headerText: 'Bilimsel Adı', placeholder: 'Bilimsel ad filtrele' },
+    { field: 'insecticide.publicTitle', headerText: 'Ad', placeholder: 'Ad filtrele' },
+    { field: 'quantityChange', headerText: 'Miktar Değişimi', placeholder: 'Miktar filtrele' },
+    { field: 'insecticide.type', headerText: 'Tür', placeholder: 'Tür filtrele' },
+    { field: 'insecticide.description', headerText: 'Açıklama', placeholder: 'Açıklama filtrele' },
+    { field: 'isAdd', headerText: 'Ekleme mi?', placeholder: 'İşlem türü filtrele' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="ilaç Stok işlemler" />
+      <Header title="İlaç Stok İşlemleri" />
       
       <div className="flex justify-end mb-4">
         <button
           onClick={handleAddClick}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center"
-          style={{ width: '170px' }}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex justify-center items-center"
+          style={{ width: '200px' }}
         >
           <MdOutlineAddTask className="mr-2" />
-          Stok işlemler Ekleme
+          Stok İşlemi Ekle
         </button>
       </div>
 
@@ -214,7 +214,7 @@ const InsecticideTransaction = () => {
                   let displayValue = value;
                   
                   if (column.field === 'isAdd') {
-                    displayValue = value ? 'Yes' : 'No';
+                    displayValue = value ? 'Evet' : 'Hayır';
                   } else if (column.field === 'insecticide.type') {
                     displayValue = getTypeDisplay(value);
                   }
@@ -250,10 +250,10 @@ const InsecticideTransaction = () => {
       {addConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-medium mb-4">Stok işlemler Ekleme</h3>
+            <h3 className="text-lg font-medium mb-4">Stok İşlemi Ekle</h3>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">ilaç</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">İlaç</label>
               <select
                 name="insecticideId"
                 value={formData.insecticideId}
@@ -261,7 +261,7 @@ const InsecticideTransaction = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 required
               >
-                <option value="">Select ilaç</option>
+                <option value="">İlaç seçin</option>
                 {insecticides.map(insecticide => (
                   <option key={insecticide.insecticide.id} value={insecticide.insecticide.id}>
                     {insecticide.insecticide.publicTitle} ({insecticide.insecticide.title})
@@ -271,7 +271,7 @@ const InsecticideTransaction = () => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sayı</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Miktar</label>
               <input
                 type="number"
                 name="quantity"
@@ -305,7 +305,7 @@ const InsecticideTransaction = () => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="isAdd" className="ml-2 block text-sm text-gray-700">
-                Is Addition?
+                Stok Ekleme mi?
               </label>
             </div>
             
@@ -314,14 +314,14 @@ const InsecticideTransaction = () => {
                 onClick={cancelFunction}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
               >
-                Cancel
+                İptal
               </button>
               <button
                 onClick={addFunction}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 disabled={!formData.insecticideId}
               >
-                Submit
+                Kaydet
               </button>
             </div>
           </div>
@@ -330,7 +330,7 @@ const InsecticideTransaction = () => {
 
       {showDonemessage && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
-          Operation completed successfully!
+          İşlem başarıyla tamamlandı!
         </div>
       )}
     </div>

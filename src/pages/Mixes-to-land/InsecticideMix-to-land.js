@@ -178,7 +178,7 @@ const InsecticideMixToLand = () => {
     baseAddMixUrl: isDev ? process.env.REACT_APP_API_INSECTICIDESTORE_URL : process.env.REACT_APP_API_INSECTICIDESTORE_URL,
     addMix: () => `${showMixLandApi.baseAddMixUrl}/UpdateStoreForMix`
   };
-console.log(showMixLandApi.addMix());
+
   const getAddMixLandApi = (mixId) => ({
     baseUrl: isDev ? process.env.REACT_APP_API_INSECTICIDELAND_URL : process.env.REACT_APP_API_INSECTICIDELAND_URL,
     addMixLand: () => `${getAddMixLandApi(mixId).baseUrl}/AddMixLands?mixId=${mixId}`,
@@ -223,8 +223,8 @@ console.log(showMixLandApi.addMix());
       setLands(res.data);
       updateTasks(res.data);
     } catch (err) {
-      console.error('Error fetching lands:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to load lands');
+      console.error('Tarlalar alınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Tarlalar yüklenemedi');
     }
   };
 
@@ -235,8 +235,8 @@ console.log(showMixLandApi.addMix());
       });
       setMixes(res.data);
     } catch (err) {
-      console.error('Error fetching applicable mixes:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to load applicable mixes');
+      console.error('Uygulanabilir ilaç karışımları alınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Uygulanabilir ilaç karışımları yüklenemedi');
     }
   };
 
@@ -247,8 +247,8 @@ console.log(showMixLandApi.addMix());
       });
       setAllMixes(res.data.data);
     } catch (err) {
-      console.error('Error fetching all mixes:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to load all mixes');
+      console.error('Tüm ilaç karışımları alınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'Tüm ilaç karışımları yüklenemedi');
     }
   };
 
@@ -303,11 +303,11 @@ console.log(showMixLandApi.addMix());
 
   const moveToDone = async () => {
     if (!selectedMix) {
-      setError('Please select an insecticide first');
+      setError('Lütfen önce bir ilaç seçin');
       return;
     }
     if (selectedLands.length === 0) {
-      setError('Please select at least one land');
+      setError('Lütfen en az bir tarla seçin');
       return;
     }
     
@@ -345,8 +345,8 @@ console.log(showMixLandApi.addMix());
       setError(null);
       fetchLands();
     } catch (err) {
-      console.error('Error moving to done:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to assign insecticide to lands');
+      console.error('Tamamlananlara taşınırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'İlaç tarlalara atanamadı');
       fetchLands();
     } finally {
       setIsSubmitting(false);
@@ -380,8 +380,8 @@ console.log(showMixLandApi.addMix());
 
       fetchLands();
     } catch (err) {
-      console.error('Error removing from done:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to remove insecticide assignment');
+      console.error('Tamamlananlardan kaldırılırken hata:', err);
+      setError(err.response?.data?.errorMessage || 'İlaç ataması kaldırılamadı');
       fetchLands();
     } finally {
       setIsSubmitting(false);
@@ -450,11 +450,11 @@ console.log(showMixLandApi.addMix());
 
   const handleSaveInsecticide = async () => {
     if (!newInsecticide.mixId) {
-      setError('Please select an insecticide mix');
+      setError('Lütfen bir ilaç karışımı seçin');
       return;
     }
     if (!newInsecticide.donumNum || newInsecticide.donumNum <= 0) {
-      setError('Please enter a valid donum number (greater than 0)');
+      setError('Lütfen geçerli bir dönüm sayısı girin (0\'dan büyük)');
       return;
     }
 
@@ -478,8 +478,8 @@ console.log(showMixLandApi.addMix());
       handleCloseDialog();
       setError(null);
     } catch (err) {
-      console.error('Error saving insecticide:', err);
-      setError(err.response?.data?.errorMessage || 'Failed to save insecticide');
+      console.error('İlaç kaydedilirken hata:', err);
+      setError(err.response?.data?.errorMessage || 'İlaç kaydedilemedi');
     } finally {
       setIsSubmitting(false);
     }
@@ -487,7 +487,7 @@ console.log(showMixLandApi.addMix());
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="App" title="Mix ilaç Management" />
+      <Header category="Uygulama" title="İlaç Karışım Yönetimi" />
       
       {error && (
         <div style={{
@@ -521,7 +521,7 @@ console.log(showMixLandApi.addMix());
             }))}
             value={selectedMix}
             onChange={handleMixSelect}
-            placeholder="Select ilaç..."
+            placeholder="İlaç seçin..."
             isClearable
             required
           />
@@ -544,7 +544,7 @@ console.log(showMixLandApi.addMix());
             }
           }}
         >
-          ilaç Ekleme
+          İlaç Ekle
         </Button>
         
         <Button 
@@ -564,7 +564,7 @@ console.log(showMixLandApi.addMix());
             }
           }}
         >
-          Filters
+          Filtreler
         </Button>
         
         {selectedMix && (
@@ -585,7 +585,7 @@ console.log(showMixLandApi.addMix());
               }
             }}
           >
-            {isSubmitting ? 'Processing...' : `Mark as Done (${selectedLands.length})`}
+            {isSubmitting ? 'İşleniyor...' : `Tamamlandı olarak işaretle (${selectedLands.length})`}
           </Button>
         )}
       </div>
@@ -605,7 +605,7 @@ console.log(showMixLandApi.addMix());
               options={uniqueLandNames.map(name => ({ value: name, label: name }))}
               value={landFilter ? { value: landFilter, label: landFilter } : null}
               onChange={(option) => setLandFilter(option?.value || null)}
-              placeholder="Filter by Tarla..."
+              placeholder="Tarlaya göre filtrele..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -615,7 +615,7 @@ console.log(showMixLandApi.addMix());
               options={uniqueMixNames.map(name => ({ value: name, label: name }))}
               value={mixFilter ? { value: mixFilter, label: mixFilter } : null}
               onChange={(option) => setMixFilter(option?.value || null)}
-              placeholder="Filter by ilaç..."
+              placeholder="İlaca göre filtrele..."
               isClearable
               isDisabled={isSubmitting}
             />
@@ -639,13 +639,13 @@ console.log(showMixLandApi.addMix());
               }
             }}
           >
-            Clear Filters
+            Filtreleri Temizle
           </Button>
         </div>
       )}
       
       <Dialog open={showAddInsecticideDialog} onClose={!isSubmitting ? handleCloseDialog : null}>
-        <DialogTitle>ilaç Ekleme Application</DialogTitle>
+        <DialogTitle>İlaç Uygulama Ekleme</DialogTitle>
         <DialogContent>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px 0' }}>
             <Select
@@ -663,14 +663,14 @@ console.log(showMixLandApi.addMix());
                 ...newInsecticide,
                 mixId: option ? option.value : null
               })}
-              placeholder="Select ilaç Mix..."
+              placeholder="İlaç karışımı seçin..."
               isClearable
               required
               isDisabled={isSubmitting}
             />
             
             <TextField
-              label="Donums"
+              label="Dönüm"
               type="number"
               value={newInsecticide.donumNum}
               onChange={(e) => setNewInsecticide({
@@ -684,7 +684,7 @@ console.log(showMixLandApi.addMix());
             
             <div style={{ marginTop: '10px' }}>
               <label style={{ display: 'block', marginBottom: '5px', color: 'rgba(0, 0, 0, 0.6)' }}>
-                Application Tarih
+                Uygulama Tarihi
               </label>
               <DatePicker
                 selected={newInsecticide.date}
@@ -715,7 +715,7 @@ console.log(showMixLandApi.addMix());
               }
             }}
           >
-            Cancel
+            İptal
           </Button>
           <Button 
             onClick={handleSaveInsecticide} 
@@ -735,7 +735,7 @@ console.log(showMixLandApi.addMix());
               }
             }}
           >
-            {isSubmitting ? 'Saving...' : 'Save'}
+            {isSubmitting ? 'Kaydediliyor...' : 'Kaydet'}
           </Button>
         </DialogActions>
       </Dialog>
@@ -743,7 +743,7 @@ console.log(showMixLandApi.addMix());
       <DndProvider backend={HTML5Backend}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           <Column
-            title="To Do"
+            title="Yapılacaklar"
             tasks={selectedMix ? filteredLandsByMix.todo : filteredTasks.todo}
             moveTask={(fromIndex, toIndex) => {
               const sourceArray = selectedMix ? filteredLandsByMix.todo : filteredTasks.todo;
@@ -760,19 +760,19 @@ console.log(showMixLandApi.addMix());
             actionButton={
               selectedMix && (
                 <div style={{ fontSize: '0.9em', color: '#666' }}>
-                  Select Tarlalar to ilaç with: <strong>{selectedMix.label}</strong>
+                  Şu ilaçla uygulanacak tarlalar: <strong>{selectedMix.label}</strong>
                 </div>
               )
             }
             filterComponent={
               <span style={{ fontSize: '0.8em', color: '#666' }}>
-                {selectedMix ? filteredLandsByMix.todo.length : filteredTasks.todo.length} of {tasks.todo.length}
+                {selectedMix ? filteredLandsByMix.todo.length : filteredTasks.todo.length} / {tasks.todo.length}
               </span>
             }
           />
           
           <Column
-            title="Done"
+            title="Tamamlananlar"
             tasks={selectedMix ? filteredLandsByMix.done : filteredTasks.done}
             moveTask={(fromIndex, toIndex) => {
               const sourceArray = selectedMix ? filteredLandsByMix.done : filteredTasks.done;
@@ -786,7 +786,7 @@ console.log(showMixLandApi.addMix());
             onRemove={handleRemoveFromDone}
             filterComponent={
               <span style={{ fontSize: '0.8em', color: '#666' }}>
-                {selectedMix ? filteredLandsByMix.done.length : filteredTasks.done.length} of {tasks.done.length}
+                {selectedMix ? filteredLandsByMix.done.length : filteredTasks.done.length} / {tasks.done.length}
               </span>
             }
           />

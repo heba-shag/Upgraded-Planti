@@ -88,8 +88,8 @@ const FertilizerMix = () => {
                 setFertilizers(fertilizerRes.data.data || fertilizerRes.data);
                 setMixes(mixRes.data.data || mixRes.data);
             } catch (err) {
-                showNotification('Failed to load data', 'error');
-                console.error('Error fetching data:', err);
+                showNotification('Veriler yüklenemedi', 'error');
+                console.error('Veri çekme hatası:', err);
             } finally {
                 setLoading(false);
             }
@@ -103,7 +103,7 @@ const FertilizerMix = () => {
         const rows = mixes.map((mix) => ({
             id: mix.id,
             title: mix.title,
-            type: mix.type === 0 ? "Yaprak gübreleme" : "damlama gübreleme",
+            type: mix.type === 0 ? "Yaprak gübreleme" : "Damlama gübreleme",
             color: getColorName(mix.color),
             originalData: mix,
             isAddNew: false
@@ -122,20 +122,20 @@ const FertilizerMix = () => {
     // Helper functions
     const getColorName = (color) => {
         const colors = {
-            1: "Red",
-            2: "Blue",
-            3: "Green",
-            4: "Yellow",
-            5: "Purple",
-            6: "Orange"
+            1: "Kırmızı",
+            2: "Mavi",
+            3: "Yeşil",
+            4: "Sarı",
+            5: "Mor",
+            6: "Turuncu"
         };
-        return colors[color] || "Unknown";
+        return colors[color] || "Bilinmiyor";
     };
 
     // Edit functions
     const handleEdit = (rowData) => {
         if (!rowData || !rowData.originalData) {
-            console.error('Invalid row data for editing');
+            console.error('Düzenleme için geçersiz satır verisi');
             return;
         }
 
@@ -168,9 +168,9 @@ const FertilizerMix = () => {
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            showNotification('Gübre mix updated successfully');
+            showNotification('Gübre karışımı başarıyla güncellendi');
         } catch (err) {
-            showNotification(err.response?.data?.errorMessage || 'Failed to update fertilizer mix', 'error');
+            showNotification(err.response?.data?.errorMessage || 'Gübre karışımı güncellenemedi', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -179,16 +179,15 @@ const FertilizerMix = () => {
 
     // Delete function
     const handleDelete = async (id) => {
-        
         try {
             setLoading(true);
             await axios.delete(APIS.deleteFertilizerMix(id), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            showNotification('Gübre mix deleted successfully');
+            showNotification('Gübre karışımı başarıyla silindi');
         } catch (err) {
-            showNotification(err.response?.data?.errorMessage || 'Failed to delete fertilizer mix', 'error');
+            showNotification(err.response?.data?.errorMessage || 'Gübre karışımı silinemedi', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -211,9 +210,9 @@ const FertilizerMix = () => {
                 mixes: [{ fertilizerId: "", quantity: 0 }]
             });
             setRun(prev => prev + 1);
-            showNotification('Gübre mix added successfully');
+            showNotification('Gübre karışımı başarıyla eklendi');
         } catch (err) {
-            showNotification(err.response?.data?.errorMessage || 'Failed to add fertilizer mix', 'error');
+            showNotification(err.response?.data?.errorMessage || 'Gübre karışımı eklenemedi', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -262,8 +261,8 @@ const FertilizerMix = () => {
         },
         {
             field: 'actions',
-            headerName: 'işlemler',
-            width: 120,
+            headerName: 'İşlemler',
+            width: 170,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
                 
@@ -277,6 +276,7 @@ const FertilizerMix = () => {
                         margin: 0
                     }}>
                         <IconButton 
+                            style={{width:"20%"}}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 handleEdit(params.row);
@@ -298,6 +298,7 @@ const FertilizerMix = () => {
                             <BsPencil style={{ fontSize: '1rem' }} />
                         </IconButton>
                         <IconButton 
+                            style={{width:"20%"}}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 handleDelete(params.row.id);
@@ -350,7 +351,7 @@ const FertilizerMix = () => {
                             padding: '6px 12px'
                         }}
                     >
-                        Ekleme
+                        Yeni Ekle
                     </MuiButton>
                 );
             },
@@ -361,7 +362,7 @@ const FertilizerMix = () => {
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Gübre Mixes Management" />
+            <Header title="Gübre Karışımları Yönetimi" />
 
             {notification.show && (
                 <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
@@ -404,7 +405,6 @@ const FertilizerMix = () => {
                 },
             }}>
                 <DataGrid
-                
                     rows={prepareRows()}
                     columns={columns}
                     pageSize={10}
@@ -430,11 +430,11 @@ const FertilizerMix = () => {
                 fullWidth
                 fullScreen={isMobile}
             >
-                <DialogTitle> Gübre Mix Ekleme</DialogTitle>
+                <DialogTitle>Gübre Karışımı Ekle</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
-                            label="Title"
+                            label="Başlık"
                             value={newData.title}
                             onChange={(e) => setNewData({...newData, title: e.target.value})}
                             fullWidth
@@ -447,11 +447,11 @@ const FertilizerMix = () => {
                                     <InputLabel>Tür</InputLabel>
                                     <Select
                                         value={newData.type}
-                                        label="Type"
+                                        label="Tür"
                                         onChange={(e) => setNewData({...newData, type: e.target.value})}
                                     >
                                         <MenuItem value={0}>Yaprak gübreleme</MenuItem>
-                                        <MenuItem value={1}>damlama gübreleme</MenuItem>
+                                        <MenuItem value={1}>Damlama gübreleme</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -460,7 +460,7 @@ const FertilizerMix = () => {
                                     <InputLabel>Renk</InputLabel>
                                     <Select
                                         value={newData.color}
-                                        label="Color"
+                                        label="Renk"
                                         onChange={(e) => setNewData({...newData, color: e.target.value})}
                                     >
                                         {[1,2,3,4,5,6].map(color => (
@@ -473,7 +473,7 @@ const FertilizerMix = () => {
                             </Grid>
                         </Grid>
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Gübre</Typography>
+                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Gübreler</Typography>
                         
                         {newData.mixes.map((mix, index) => (
                             <Grid container spacing={2} key={index} alignItems="center" sx={{ mb: 2 }}>
@@ -482,7 +482,7 @@ const FertilizerMix = () => {
                                         <InputLabel>Gübre</InputLabel>
                                         <Select
                                             value={mix.fertilizerId}
-                                            label="Fertilizer"
+                                            label="Gübre"
                                             onChange={(e) => handleMixChange(index, 'fertilizerId', e.target.value)}
                                         >
                                             {fertilizers.map(fert => (
@@ -495,7 +495,7 @@ const FertilizerMix = () => {
                                 </Grid>
                                 <Grid item xs={8} sm={3}>
                                     <TextField
-                                        label="Sayı"
+                                        label="Miktar"
                                         type="number"
                                         value={mix.quantity}
                                         onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -521,7 +521,7 @@ const FertilizerMix = () => {
                             startIcon={<BsPlus />}
                             sx={{ mt: 2 }}
                         >
-                            Gübre Ekleme
+                            Gübre Ekle
                         </MuiButton>
                     </Box>
                 </DialogContent>
@@ -531,7 +531,7 @@ const FertilizerMix = () => {
                         disabled={loading}
                         sx={{ mr: 1 }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleAddSubmit} 
@@ -539,7 +539,7 @@ const FertilizerMix = () => {
                         variant="contained"
                         disabled={loading || !newData.title || !newData.mixes.every(m => m.fertilizerId && m.quantity)}
                     >
-                        {loading ? <CircularProgress size={24} /> : 'Save'}
+                        {loading ? <CircularProgress size={24} /> : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
@@ -552,7 +552,7 @@ const FertilizerMix = () => {
                 fullWidth
                 fullScreen={isMobile}
             >
-                <DialogTitle>Edit Gübre Mix</DialogTitle>
+                <DialogTitle>Gübre Karışımını Düzenle</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
@@ -569,11 +569,11 @@ const FertilizerMix = () => {
                                     <InputLabel>Tür</InputLabel>
                                     <Select
                                         value={tempData.type || 0}
-                                        label="Type"
+                                        label="Tür"
                                         onChange={(e) => setTempData({...tempData, type: e.target.value})}
                                     >
                                         <MenuItem value={0}>Yaprak gübreleme</MenuItem>
-                                        <MenuItem value={1}>damlama gübreleme</MenuItem>
+                                        <MenuItem value={1}>Damlama gübreleme</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -582,7 +582,7 @@ const FertilizerMix = () => {
                                     <InputLabel>Renk</InputLabel>
                                     <Select
                                         value={tempData.color || 0}
-                                        label="Color"
+                                        label="Renk"
                                         onChange={(e) => setTempData({...tempData, color: e.target.value})}
                                     >
                                         {[1,2,3,4,5,6].map(color => (
@@ -602,7 +602,7 @@ const FertilizerMix = () => {
                         disabled={loading}
                         sx={{ mr: 1 }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleEditSave} 
@@ -610,7 +610,7 @@ const FertilizerMix = () => {
                         variant="contained"
                         disabled={loading || !tempData.title}
                     >
-                        {loading ? <CircularProgress size={24} /> : 'Save'}
+                        {loading ? <CircularProgress size={24} /> : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

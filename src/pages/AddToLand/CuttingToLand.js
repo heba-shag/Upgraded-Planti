@@ -105,8 +105,8 @@ const CuttingToLand = () => {
         setCuttingColors(cuttingColorRes.data);
         setCuttingLand(cuttingLandRes.data.data);
       } catch (err) {
-        console.error('Error fetching data:', err);
-        showNotification('Failed to load data', 'error');
+        console.error('Veri yüklenirken hata oluştu:', err);
+        showNotification('Veri yüklenemedi', 'error');
       } finally {
         setLoading(false);
       }
@@ -120,8 +120,8 @@ const CuttingToLand = () => {
     const rows = cuttingLand.map((item) => ({
       id: item.id,
       date: new Date(item.date).toLocaleDateString(),
-      cuttingColorTitle: item.cuttingColor?.code || 'Unknown',
-      landTitle: item.land?.title || 'Unknown',
+      cuttingColorTitle: item.cuttingColor?.code || 'Bilinmiyor',
+      landTitle: item.land?.title || 'Bilinmiyor',
       quantity: item.quantity,
       originalData: item
     }));
@@ -163,10 +163,10 @@ const CuttingToLand = () => {
       
       setRun(prev => prev + 1);
       setEditModalOpen(false);
-      showNotification('Fide application updated successfully');
+      showNotification('Fide uygulaması başarıyla güncellendi');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to update Fide application', 'error');
+      showNotification('Fide uygulaması güncellenemedi', 'error');
     } finally {
       setLoading(false);
     }
@@ -174,17 +174,16 @@ const CuttingToLand = () => {
 
   // Delete function
   const handleDelete = async (id) => {
-    
     try {
       setLoading(true);
       await axios.delete(APIS.deleteCuttingLand(id), {
         headers: { Authorization: token }
       });
       setRun(prev => prev + 1);
-      showNotification('Fide application deleted successfully');
+      showNotification('Fide uygulaması başarıyla silindi');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to delete Fide application', 'error');
+      showNotification('Fide uygulaması silinemedi', 'error');
     } finally {
       setLoading(false);
     }
@@ -214,10 +213,10 @@ const CuttingToLand = () => {
         cuttings: [{ quantity: '', cuttingColorId: '' }]
       });
       setRun(prev => prev + 1);
-      showNotification('Fide application added successfully');
+      showNotification('Fide uygulaması başarıyla eklendi');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to add Fide application', 'error');
+      showNotification('Fide uygulaması eklenemedi', 'error');
     } finally {
       setLoading(false);
     }
@@ -275,10 +274,10 @@ const CuttingToLand = () => {
         colorId: '',
         code: ''
       });
-      showNotification('Fide renk added successfully');
+      showNotification('Fide rengi başarıyla eklendi');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to add Fide renk', 'error');
+      showNotification('Fide rengi eklenemedi', 'error');
     } finally {
       setLoading(false);
     }
@@ -287,24 +286,31 @@ const CuttingToLand = () => {
   // Columns configuration
   const columns = [
     { field: 'date', headerName: 'Tarih', width: 150 },
-    { field: 'cuttingColorTitle', headerName: 'Fide Renk Code', width: 180 },
+    { field: 'cuttingColorTitle', headerName: 'Fide Renk Kodu', width: 180 },
     { field: 'landTitle', headerName: 'Tarla', width: 180 },
     { 
       field: 'quantity', 
-      headerName: 'Sayı', 
+      headerName: 'Adet', 
       width: 120,
       align: 'center',
       headerAlign: 'center'
     },
     {
       field: 'actions',
-      headerName: 'işlemler',
+      headerName: 'İşlemler',
       width: 170,
       renderCell: (params) => {
         if (params.row.isAddNew) return null;
         
         return (
-          <Box display="flex" >
+          <Box sx={{ 
+              display: 'flex', 
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              margin: 0
+            }}>
             <IconButton 
               onClick={() => handleEdit(params.row)}
               size="small"
@@ -368,7 +374,7 @@ const CuttingToLand = () => {
               fontSize: '0.8125rem'
             }}
           >
-            Ekleme
+            Yeni Ekle
           </MuiButton>
         );
       },
@@ -379,7 +385,7 @@ const CuttingToLand = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Page" title="Fide Tarlalar" />
+      <Header title="Fide Tarla Uygulamaları" />
       
       {/* Notification */}
       {notification.show && (
@@ -444,12 +450,12 @@ const CuttingToLand = () => {
 
       {/* Add Modal */}
       <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Ekleme Fide Application</DialogTitle>
+        <DialogTitle>Yeni Fide Uygulaması Ekle</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               select
-              label="Land"
+              label="Tarla"
               value={newData.landId}
               onChange={(e) => setNewData({...newData, landId: e.target.value})}
               fullWidth
@@ -480,7 +486,7 @@ const CuttingToLand = () => {
               }}
             />
 
-            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Fide</Typography>
+            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Fide Bilgileri</Typography>
             
             {newData.cuttings.map((mix, index) => (
               <Box key={index} sx={{ 
@@ -509,7 +515,7 @@ const CuttingToLand = () => {
                 </TextField>
 
                 <TextField
-                  label="Sayı"
+                  label="Adet"
                   type="number"
                   value={mix.quantity}
                   onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -550,7 +556,7 @@ const CuttingToLand = () => {
                   padding: '8px 16px'
                 }}
               >
-                Add Cutting
+                Fide Ekle
               </MuiButton>
               
               <MuiButton 
@@ -563,7 +569,7 @@ const CuttingToLand = () => {
                   padding: '8px 16px'
                 }}
               >
-                Add New Color
+                Yeni Renk Ekle
               </MuiButton>
             </Box>
           </Box>
@@ -578,7 +584,7 @@ const CuttingToLand = () => {
               color: 'text.secondary'
             }}
           >
-            Cancel
+            İptal
           </MuiButton>
           <MuiButton 
             onClick={handleAddSubmit} 
@@ -590,14 +596,14 @@ const CuttingToLand = () => {
               boxShadow: 'none'
             }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Save'}
+            {loading ? <CircularProgress size={24} /> : 'Kaydet'}
           </MuiButton>
         </DialogActions>
       </Dialog>
 
       {/* Add Color Modal */}
       <Dialog open={addColorModalOpen} onClose={handleAddColorCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>Ekleme Fide Renk</DialogTitle>
+        <DialogTitle>Yeni Fide Rengi Ekle</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -639,7 +645,7 @@ const CuttingToLand = () => {
             </TextField>
 
             <TextField
-              label="Code"
+              label="Kod"
               value={newColorData.code}
               onChange={(e) => setNewColorData({...newColorData, code: e.target.value})}
               fullWidth
@@ -661,7 +667,7 @@ const CuttingToLand = () => {
               color: 'text.secondary'
             }}
           >
-            Cancel
+            İptal
           </MuiButton>
           <MuiButton 
             onClick={handleAddColorSubmit} 
@@ -673,14 +679,14 @@ const CuttingToLand = () => {
               boxShadow: 'none'
             }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Save'}
+            {loading ? <CircularProgress size={24} /> : 'Kaydet'}
           </MuiButton>
         </DialogActions>
       </Dialog>
 
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-        <DialogTitle>Edit Fide Application</DialogTitle>
+        <DialogTitle>Fide Uygulamasını Düzenle</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -734,7 +740,7 @@ const CuttingToLand = () => {
             />
 
             <TextField
-              label="Sayı"
+              label="Adet"
               type="number"
               value={tempData.quantity || ''}
               onChange={(e) => setTempData({...tempData, quantity: e.target.value})}
@@ -757,7 +763,7 @@ const CuttingToLand = () => {
               color: 'text.secondary'
             }}
           >
-            Cancel
+            İptal
           </MuiButton>
           <MuiButton 
             onClick={handleEditSave} 
@@ -769,7 +775,7 @@ const CuttingToLand = () => {
               boxShadow: 'none'
             }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Save'}
+            {loading ? <CircularProgress size={24} /> : 'Kaydet'}
           </MuiButton>
         </DialogActions>
       </Dialog>

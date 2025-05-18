@@ -61,7 +61,7 @@ const OrderDetailsDropdown = ({ orderDetails = [] }) => {
           }
         }}
       >
-        {orderDetails.length} Items
+        {orderDetails.length} Ürün
       </MuiButton>
       <Menu
         anchorEl={anchorEl}
@@ -79,19 +79,19 @@ const OrderDetailsDropdown = ({ orderDetails = [] }) => {
             <MenuItem key={idx} onClick={handleClose} dense>
               <Box sx={{ width: '100%' }}>
                 <Typography variant="body1">
-                  {detail.flowerStore?.code || 'Unknown Flower'}
+                  {detail.flowerStore?.code || 'Bilinmeyen Çiçek'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Count: {detail.count || 'N/A'}
+                  Adet: {detail.count || 'Yok'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Length: {detail.flowerStore?.flowerLong || 'N/A'}
+                  Uzunluk: {detail.flowerStore?.flowerLong || 'Yok'}
                 </Typography>
               </Box>
             </MenuItem>
           ))
         ) : (
-          <MenuItem onClick={handleClose}>No items found</MenuItem>
+          <MenuItem onClick={handleClose}>Ürün bulunamadı</MenuItem>
         )}
       </Menu>
     </div>
@@ -105,6 +105,8 @@ const Orders = () => {
     const [flowers, setFlowers] = useState([]);
     const [editingRow, setEditingRow] = useState(null);
     const [editingStatusRow, setEditingStatusRow] = useState(null);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [orderToDelete, setOrderToDelete] = useState(null);
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editStatusModalOpen, setEditStatusModalOpen] = useState(false);
@@ -180,8 +182,8 @@ const Orders = () => {
                 setClients(clientsRes.data.data || clientsRes.data);
                 setFlowers(flowersRes.data.data || flowersRes.data);
             } catch (err) {
-                showNotification('Failed to load data', 'error');
-                console.error('Error fetching data:', err);
+                showNotification('Veriler yüklenirken hata oluştu', 'error');
+                console.error('Veri yükleme hatası:', err);
             } finally {
                 setLoading(false);
             }
@@ -223,7 +225,7 @@ const Orders = () => {
     // Edit order details functions
     const handleEditOrder = (rowData) => {
         if (!rowData || !rowData.originalData) {
-            console.error('Invalid row data for editing');
+            console.error('Düzenleme için geçersiz satır verisi');
             return;
         }
 
@@ -253,9 +255,9 @@ const Orders = () => {
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            showNotification('Order details updated successfully');
+            showNotification('Sipariş başarıyla güncellendi');
         } catch (err) {
-            showNotification('Failed to update order details', 'error');
+            showNotification('Sipariş güncellenirken hata oluştu', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -265,7 +267,7 @@ const Orders = () => {
     // Edit order status functions
     const handleEditStatus = (rowData) => {
         if (!rowData || !rowData.originalData) {
-            console.error('Invalid row data for editing status');
+            console.error('Durum düzenleme için geçersiz satır verisi');
             return;
         }
 
@@ -295,9 +297,9 @@ const Orders = () => {
             
             setRun(prev => prev + 1);
             setEditStatusModalOpen(false);
-            showNotification('Order status updated successfully');
+            showNotification('Sipariş durumu başarıyla güncellendi');
         } catch (err) {
-            showNotification('Failed to update order status', 'error');
+            showNotification('Sipariş durumu güncellenirken hata oluştu', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -305,19 +307,27 @@ const Orders = () => {
     };
 
     // Delete function
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
+        setOrderToDelete(id);
+        setDeleteConfirmOpen(true);
+    };
+    const handleConfirmDelete = async () => {
+        if (!orderToDelete) return;
+    
         try {
             setLoading(true);
-            await axios.post(APIS.deleteOrder(id), {
+            await axios.post(APIS.deleteOrder(orderToDelete),null, {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            showNotification('Order deleted successfully');
+            showNotification('Sipariş başarıyla silindi');
         } catch (err) {
-            showNotification('Failed to delete order', 'error');
+            showNotification('Sipariş silinirken hata oluştu', 'error');
             console.error(err);
         } finally {
             setLoading(false);
+            setDeleteConfirmOpen(false);
+            setOrderToDelete(null);
         }
     };
 
@@ -343,9 +353,9 @@ const Orders = () => {
                 }]
             });
             setRun(prev => prev + 1);
-            showNotification('Order added successfully');
+            showNotification('Sipariş başarıyla eklendi');
         } catch (err) {
-            showNotification('Failed to add order', 'error');
+            showNotification('Sipariş eklenirken hata oluştu', 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -375,36 +385,36 @@ const Orders = () => {
 
     // Columns configuration
     const columns = [
-        { field: 'number', headerName: 'Order Number', width: 150 },
+        { field: 'number', headerName: 'Sipariş No', width: 150 },
         { 
             field: 'isBought', 
-            headerName: 'Is Bought', 
+            headerName: 'Satın Alındı', 
             width: 120,
             renderCell: (params) => (
-                params.value ? 'Yes' : 'No'
+                params.value ? 'Evet' : 'Hayır'
             )
         },
         { 
             field: 'orderDate', 
-            headerName: 'Order Tarih', 
+            headerName: 'Sipariş Tarihi', 
             width: 170,
             renderCell: (params) => formatDate(params.value)
         },
         { 
             field: 'boughtDate', 
-            headerName: 'Bought Tarih', 
+            headerName: 'Satın Alma Tarihi', 
             width: 170,
             renderCell: (params) => formatDate(params.value)
         },
         { 
             field: 'client', 
-            headerName: 'Client', 
+            headerName: 'Müşteri', 
             width: 150,
             renderCell: (params) => params.value?.name || '-'
         },
         {
             field: 'details',
-            headerName: 'Items',
+            headerName: 'Ürünler',
             width: 170,
             renderCell: (params) => (
                 <OrderDetailsDropdown 
@@ -416,7 +426,7 @@ const Orders = () => {
         },
         {
             field: 'actions',
-            headerName: 'işlemler',
+            headerName: 'İşlemler',
             width: 200,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
@@ -431,7 +441,7 @@ const Orders = () => {
                         padding: 0,
                         margin: 0
                     }}>
-                        <Tooltip style={{width:"20%"}} title="Edit Order Details">
+                        <Tooltip style={{width:"20%"}} title="Siparişi Düzenle">
                             <IconButton 
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -459,7 +469,7 @@ const Orders = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip style={{width:"20%"}} title="Update Order Status">
+                        <Tooltip style={{width:"20%"}} title="Durumu Güncelle">
                             <IconButton 
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -487,7 +497,7 @@ const Orders = () => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip style={{width:"20%"}} title="Delete Order">
+                        <Tooltip style={{width:"20%"}} title="Siparişi Sil">
                             <IconButton 
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -547,7 +557,7 @@ const Orders = () => {
                             padding: '6px 12px'
                         }}
                     >
-                        Ekleme
+                        Yeni Ekle
                     </MuiButton>
                 );
             },
@@ -558,7 +568,7 @@ const Orders = () => {
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Orders Management" />
+            <Header title="Sipariş Yönetimi" />
 
             {notification.show && (
                 <div className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-md shadow-lg ${
@@ -620,7 +630,7 @@ const Orders = () => {
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle> Order Ekleme</DialogTitle>
+                <DialogTitle>Yeni Sipariş Ekle</DialogTitle>
                 <DialogContent>
                     <Box sx={{ 
                         mt: 2,
@@ -629,7 +639,7 @@ const Orders = () => {
                         gap: '20px'
                     }}>
                         <TextField
-                            label="Order Number"
+                            label="Sipariş No"
                             value={newData.number}
                             onChange={(e) => setNewData({...newData, number: e.target.value})}
                             fullWidth
@@ -649,17 +659,17 @@ const Orders = () => {
                                     color="primary"
                                 />
                             }
-                            label="Is Bought"
+                            label="Satın Alındı"
                         />
 
                         <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
-                            <InputLabel>Client</InputLabel>
+                            <InputLabel>Müşteri</InputLabel>
                             <Select
                                 value={newData.clientId}
-                                label="Client"
+                                label="Müşteri"
                                 onChange={(e) => setNewData({...newData, clientId: e.target.value})}
                             >
-                                <MenuItem value={0}>Select Client</MenuItem>
+                                <MenuItem value={0}>Müşteri Seçin</MenuItem>
                                 {clients.map(client => (
                                     <MenuItem key={client.id} value={client.id}>
                                         {client.name}
@@ -669,7 +679,7 @@ const Orders = () => {
                         </FormControl>
 
                         <TextField
-                            label="Order Date"
+                            label="Sipariş Tarihi"
                             type="datetime-local"
                             value={newData.orderDate}
                             onChange={(e) => setNewData({...newData, orderDate: e.target.value})}
@@ -682,7 +692,7 @@ const Orders = () => {
 
                         {newData.isBought && (
                             <TextField
-                                label="Bought Tarih"
+                                label="Satın Alma Tarihi"
                                 type="datetime-local"
                                 value={newData.boughtDate}
                                 onChange={(e) => setNewData({...newData, boughtDate: e.target.value})}
@@ -694,7 +704,7 @@ const Orders = () => {
                             />
                         )}
 
-                        <Typography variant="h6" sx={{ mb: 2 }}>Çiçek Details</Typography>
+                        <Typography variant="h6" sx={{ mb: 2 }}>Çiçek Detayları</Typography>
                         
                         {newData.flowerOrderDetails.map((detail, index) => (
                             <Box key={index} sx={{ 
@@ -711,7 +721,7 @@ const Orders = () => {
                                         label="Çiçek"
                                         onChange={(e) => handleFlowerDetailChange(index, 'code', e.target.value)}
                                     >
-                                        <MenuItem value="">Select Çiçek</MenuItem>
+                                        <MenuItem value="">Çiçek Seçin</MenuItem>
                                         {flowers.map(flower => (
                                             <MenuItem key={flower.id} value={flower.code}>
                                                 {flower.code} - {flower.name}
@@ -721,7 +731,7 @@ const Orders = () => {
                                 </FormControl>
 
                                 <TextField
-                                    label="Adit"
+                                    label="Adet"
                                     type="number"
                                     value={detail.count}
                                     onChange={(e) => handleFlowerDetailChange(index, 'count', e.target.value)}
@@ -730,7 +740,7 @@ const Orders = () => {
                                 />
 
                                 <TextField
-                                    label="Long"
+                                    label="Uzunluk"
                                     type="number"
                                     value={detail.long}
                                     onChange={(e) => handleFlowerDetailChange(index, 'long', e.target.value)}
@@ -765,7 +775,7 @@ const Orders = () => {
                                     fontSize: '0.875rem'
                                 }}
                             >
-                                Çiçek Ekleme
+                                Çiçek Ekle
                             </MuiButton>
                         </Box>
                     </Box>
@@ -781,7 +791,7 @@ const Orders = () => {
                         }}
                         variant="outlined"
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleAddSubmit} 
@@ -794,25 +804,25 @@ const Orders = () => {
                             py: 1
                         }}
                     >
-                        {loading ? <CircularProgress size={24} /> : 'Save'}
+                        {loading ? <CircularProgress size={24} /> : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
 
             {/* Edit Order Details Modal */}
             <Dialog open={editModalOpen} onClose={handleEditOrderCancel} maxWidth="md" fullWidth>
-                <DialogTitle>Edit Order Details</DialogTitle>
+                <DialogTitle>Sipariş Düzenle</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
 
                         <FormControl fullWidth margin="normal">
-                            <InputLabel>Client</InputLabel>
+                            <InputLabel>Müşteri</InputLabel>
                             <Select
                                 value={tempData.clientId || 0}
-                                label="Client"
+                                label="Müşteri"
                                 onChange={(e) => setTempData({...tempData, clientId: e.target.value})}
                             >
-                                <MenuItem value={0}>Select Client</MenuItem>
+                                <MenuItem value={0}>Müşteri Seçin</MenuItem>
                                 {clients.map(client => (
                                     <MenuItem key={client.id} value={client.id}>
                                         {client.name}
@@ -822,7 +832,7 @@ const Orders = () => {
                         </FormControl>
 
                         <TextField
-                            label="Order Tarih"
+                            label="Sipariş Tarihi"
                             type="datetime-local"
                             value={tempData.orderDate || ''}
                             onChange={(e) => setTempData({...tempData, orderDate: e.target.value})}
@@ -840,7 +850,7 @@ const Orders = () => {
                         disabled={loading}
                         sx={{ mr: 1 }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleEditOrderSave} 
@@ -848,14 +858,14 @@ const Orders = () => {
                         variant="contained"
                         disabled={loading || !tempData.clientId}
                     >
-                        {loading ? <CircularProgress size={24} /> : 'Save'}
+                        {loading ? <CircularProgress size={24} /> : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
 
             {/* Edit Order Status Modal */}
             <Dialog open={editStatusModalOpen} onClose={handleEditStatusCancel} maxWidth="sm" fullWidth>
-                <DialogTitle>Update Order Status</DialogTitle>
+                <DialogTitle>Sipariş Durumunu Güncelle</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <FormControlLabel
@@ -870,12 +880,12 @@ const Orders = () => {
                                     color="primary"
                                 />
                             }
-                            label="Is Bought"
+                            label="Satın Alındı"
                         />
 
                         {tempStatusData.isBought && (
                             <TextField
-                                label="Bought Tarih"
+                                label="Satın Alma Tarihi"
                                 type="datetime-local"
                                 value={tempStatusData.boughtDate || ''}
                                 onChange={(e) => setTempStatusData({...tempStatusData, boughtDate: e.target.value})}
@@ -894,7 +904,7 @@ const Orders = () => {
                         disabled={loading}
                         sx={{ mr: 1 }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleEditStatusSave} 
@@ -902,7 +912,31 @@ const Orders = () => {
                         variant="contained"
                         disabled={loading}
                     >
-                        {loading ? <CircularProgress size={24} /> : 'Update Status'}
+                        {loading ? <CircularProgress size={24} /> : 'Güncelle'}
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+                <DialogTitle>Sipariş Silme</DialogTitle>
+                <DialogContent>
+                    <Typography>Bu siparişi silmek istediğinizden emin misiniz?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <MuiButton 
+                        onClick={() => setDeleteConfirmOpen(false)}
+                        color="primary"
+                    >
+                        Hayır
+                    </MuiButton>
+                    <MuiButton 
+                        onClick={handleConfirmDelete}
+                        color="error"
+                        variant="contained"
+                        disabled={loading}
+                    >
+                        {loading ? <CircularProgress size={24} /> : 'Evet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

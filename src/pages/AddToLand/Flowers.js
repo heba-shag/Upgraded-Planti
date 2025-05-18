@@ -81,8 +81,8 @@ const Flowers = () => {
                 setFlowers(flowerRes.data.data.data);
                 setCuttingLands(cuttingLandRes.data.data);
             } catch (err) {
-                console.error('Error fetching data:', err);
-                showNotification('Failed to load data', 'error');
+                console.error('Veri yüklenirken hata oluştu:', err);
+                showNotification('Veri yüklenemedi', 'error');
             } finally {
                 setLoading(false);
             }
@@ -102,7 +102,7 @@ const Flowers = () => {
             count: item.count,
             long: item.long,
             worker: item.worker,
-            landTitle: item.cuttingLand?.land?.title || 'Unknown',
+            landTitle: item.cuttingLand?.land?.title || 'Bilinmiyor',
             originalData: item
         }));
 
@@ -169,10 +169,10 @@ const Flowers = () => {
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            showNotification('Record updated successfully');
+            showNotification('Kayıt başarıyla güncellendi');
         } catch (err) {
             console.error(err);
-            showNotification('Failed to update record', 'error');
+            showNotification('Kayıt güncellenemedi', 'error');
         } finally {
             setLoading(false);
         }
@@ -180,17 +180,16 @@ const Flowers = () => {
 
     // Delete function
     const handleDelete = async (id) => {
-        
         try {
             setLoading(true);
             await axios.delete(APIS.deleteFlower(id), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            showNotification('Record deleted successfully');
+            showNotification('Kayıt başarıyla silindi');
         } catch (err) {
             console.error(err);
-            showNotification('Failed to delete record', 'error');
+            showNotification('Kayıt silinemedi', 'error');
         } finally {
             setLoading(false);
         }
@@ -198,7 +197,6 @@ const Flowers = () => {
 
     // Add functions
     const handleAddSubmit = async () => {
-        
         try {
             setLoading(true);
             const dataToSend = {
@@ -227,10 +225,10 @@ const Flowers = () => {
                 }]
             });
             setRun(prev => prev + 1);
-            showNotification('Record added successfully');
+            showNotification('Kayıt başarıyla eklendi');
         } catch (err) {
             console.error(err);
-            showNotification('Failed to add record', 'error');
+            showNotification('Kayıt eklenemedi', 'error');
         } finally {
             setLoading(false);
         }
@@ -239,20 +237,27 @@ const Flowers = () => {
     // Columns configuration
     const columns = [
         { field: 'date', headerName: 'Tarih', width: 150 },
-        { field: 'worker', headerName: 'Worker', width: 150 },
-        { field: 'count', headerName: 'Adit', width: 100, align: 'center', headerAlign: 'center' },
-        { field: 'long', headerName: 'Long', width: 100, align: 'center', headerAlign: 'center' },
-        { field: 'note', headerName: 'Note', width: 200 },
-        { field: 'landTitle', headerName: 'Tarla', width: 150 },
+        { field: 'worker', headerName: 'İşçi', width: 150 },
+        { field: 'count', headerName: 'Adet', width: 100, align: 'center', headerAlign: 'center' },
+        { field: 'long', headerName: 'Uzunluk', width: 100, align: 'center', headerAlign: 'center' },
+        { field: 'note', headerName: 'Not', width: 170 },
+        { field: 'landTitle', headerName: 'Tarla', width: 170 },
         {
             field: 'actions',
-            headerName: 'işlemler',
-            width: 120,
+            headerName: 'İşlemler',
+            width: 170,
             renderCell: (params) => {
                 if (params.row.isAddNew) return null;
                 
                 return (
-                    <Box display="flex">
+                    <Box sx={{ 
+                        display: 'flex', 
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                        margin: 0
+                        }}>
                         <IconButton 
                             onClick={() => handleEdit(params.row)}
                             size="small"
@@ -316,7 +321,7 @@ const Flowers = () => {
                             fontSize: '0.8125rem'
                         }}
                     >
-                        Ekleme
+                        Yeni Ekle
                     </MuiButton>
                 );
             },
@@ -327,7 +332,7 @@ const Flowers = () => {
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header category="Page" title="Çiçek Management" />
+            <Header title="Çiçek Yönetimi" />
 
             {/* Notification */}
             {notification.show && (
@@ -392,7 +397,7 @@ const Flowers = () => {
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle sx={{ p: 3, fontSize: '1.2rem', fontWeight: 'bold' }}>Add New Flower Record</DialogTitle>
+                <DialogTitle sx={{ p: 3, fontSize: '1.2rem', fontWeight: 'bold' }}>Yeni Çiçek Kaydı Ekle</DialogTitle>
                 <DialogContent sx={{ p: 3 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <Grid container spacing={3}>
@@ -411,10 +416,10 @@ const Flowers = () => {
                                         }
                                     }}
                                 >
-                                    <MenuItem value="">Select Tarla</MenuItem>
+                                    <MenuItem value="">Tarla Seçin</MenuItem>
                                     {cuttingLands.map((land) => (
                                         <MenuItem key={land.id} value={land.id}>
-                                            {land.land?.title || `Land ${land.id}`}
+                                            {land.land?.title || `Tarla ${land.id}`}
                                         </MenuItem>
                                     ))}
                                 </TextField>
@@ -438,7 +443,7 @@ const Flowers = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    label="Worker"
+                                    label="İşçi"
                                     value={newData.worker}
                                     onChange={(e) => setNewData({...newData, worker: e.target.value})}
                                     fullWidth
@@ -453,7 +458,7 @@ const Flowers = () => {
                             </Grid>
                         </Grid>
 
-                        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold', fontSize: '1.1rem' }}>Çiçek</Typography>
+                        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold', fontSize: '1.1rem' }}>Çiçek Bilgileri</Typography>
                         
                         {newData.flowers.map((flower, index) => (
                             <Box key={index} sx={{ 
@@ -468,7 +473,7 @@ const Flowers = () => {
                                 <Grid container spacing={2} alignItems="center">
                                     <Grid item xs={12} sm={5}>
                                         <TextField
-                                            label="Adit"
+                                            label="Adet"
                                             type="number"
                                             value={flower.count}
                                             onChange={(e) => handleFlowerChange(index, 'count', e.target.value)}
@@ -484,7 +489,7 @@ const Flowers = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={5}>
                                         <TextField
-                                            label="Long"
+                                            label="Uzunluk"
                                             type="number"
                                             value={flower.long}
                                             onChange={(e) => handleFlowerChange(index, 'long', e.target.value)}
@@ -517,7 +522,7 @@ const Flowers = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
-                                            label="Note"
+                                            label="Not"
                                             value={flower.note}
                                             onChange={(e) => handleFlowerChange(index, 'note', e.target.value)}
                                             fullWidth
@@ -551,7 +556,7 @@ const Flowers = () => {
                                 }
                             }}
                         >
-                            Çiçek Ekleme
+                            Çiçek Ekle
                         </MuiButton>
                     </Box>
                 </DialogContent>
@@ -571,7 +576,7 @@ const Flowers = () => {
                             }
                         }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleAddSubmit} 
@@ -590,14 +595,14 @@ const Flowers = () => {
                             }
                         }}
                     >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Save'}
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
 
             {/* Edit Modal */}
             <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="sm" fullWidth>
-                <DialogTitle sx={{ p: 3, fontSize: '1.2rem', fontWeight: 'bold' }}>Edit Flower Record</DialogTitle>
+                <DialogTitle sx={{ p: 3, fontSize: '1.2rem', fontWeight: 'bold' }}>Çiçek Kaydını Düzenle</DialogTitle>
                 <DialogContent sx={{ p: 3 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <TextField
@@ -617,7 +622,7 @@ const Flowers = () => {
                         />
 
                         <TextField
-                            label="Worker"
+                            label="İşçi"
                             value={tempData.worker || ''}
                             onChange={(e) => setTempData({...tempData, worker: e.target.value})}
                             fullWidth
@@ -633,7 +638,7 @@ const Flowers = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label="Adit"
+                                    label="Adet"
                                     type='number'
                                     value={tempData.count || ''}
                                     onChange={(e) => setTempData({...tempData, count: e.target.value})}
@@ -649,7 +654,7 @@ const Flowers = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label="Long"
+                                    label="Uzunluk"
                                     type='number'
                                     value={tempData.long || ''}
                                     onChange={(e) => setTempData({...tempData, long: e.target.value})}
@@ -666,7 +671,7 @@ const Flowers = () => {
                         </Grid>
 
                         <TextField
-                            label="Note"
+                            label="Not"
                             value={tempData.note || ''}
                             onChange={(e) => setTempData({...tempData, note: e.target.value})}
                             fullWidth
@@ -697,7 +702,7 @@ const Flowers = () => {
                             }
                         }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleEditSave} 
@@ -716,7 +721,7 @@ const Flowers = () => {
                             }
                         }}
                     >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Save'}
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

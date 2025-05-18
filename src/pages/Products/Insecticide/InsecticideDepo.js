@@ -36,7 +36,7 @@ const InsecticideDepo = () => {
           setFilteredData(res.data.data);
         }
       } catch (err) {
-        console.error("Error fetching insecticide store:", err);
+        console.error("İlaç deposu verileri çekilirken hata:", err);
       }
     };
     fetchData();
@@ -75,8 +75,8 @@ const InsecticideDepo = () => {
   const handleFilter = (key, value) => {
     setFilterConfig({ key, value });
     const filtered = data.filter(item => {
-      const itemValue = String(getNestedValue(item, key) || '').toLowerCase();
-      return itemValue.includes(value.toLowerCase());
+      const itemValue = String(getNestedValue(item, key) || '');
+      return itemValue.toLowerCase().includes(value.toLowerCase());
     });
     setFilteredData(filtered);
   };
@@ -88,16 +88,16 @@ const InsecticideDepo = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'insecticide.title', headerText: 'Bilimsel Adı', placeholder: 'Filter Scientific Name' },
-    { field: 'insecticide.publicTitle', headerText: 'Ad', placeholder: 'Filter Title' },
-    { field: 'totalQuantity', headerText: 'Adit', placeholder: 'Filter total count' },
-    { field: 'insecticide.type', headerText: 'Tür', placeholder: 'Filter type' },
-    { field: 'insecticide.description', headerText: 'Tanım', placeholder: 'Filter description' },
+    { field: 'insecticide.title', headerText: 'Bilimsel Adı', placeholder: 'Bilimsel ad filtrele' },
+    { field: 'insecticide.publicTitle', headerText: 'Ad', placeholder: 'Ad filtrele' },
+    { field: 'totalQuantity', headerText: 'Toplam Miktar', placeholder: 'Miktar filtrele' },
+    { field: 'insecticide.type', headerText: 'Tür', placeholder: 'Tür filtrele' },
+    { field: 'insecticide.description', headerText: 'Açıklama', placeholder: 'Açıklama filtrele' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="ilaç Depo" />
+      <Header title="İlaç Deposu" />
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">

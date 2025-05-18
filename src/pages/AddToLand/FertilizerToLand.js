@@ -25,7 +25,7 @@ import Select from 'react-dropdown-select';
 
 const fertilizerTypes = [
   { value: 0, label: "Yaprak gübreleme" },
-  { value: 1, label: "damlama gübreleme" }
+  { value: 1, label: "Damlama gübreleme" }
 ];
 
 const FertilizerToLand = () => {
@@ -97,8 +97,8 @@ const FertilizerToLand = () => {
         setFertilizers(fertilizerRes.data.data);
         setFertilizerLand(fertilizerLandRes.data.data);
       } catch (err) {
-        console.error('Error fetching data:', err);
-        showNotification('Failed to load data', 'error');
+        console.error('Veri alınırken hata:', err);
+        showNotification('Veri yüklenemedi', 'error');
       } finally {
         setLoading(false);
       }
@@ -134,10 +134,10 @@ const FertilizerToLand = () => {
             id: `${parentId}-child-${index}`,
             parentId,
             date: '',
-            fertilizerTitle: item.fertilizer?.title || 'Unknown',
-            landTitle: item.land?.title || 'Unknown',
+            fertilizerTitle: item.fertilizer?.title || 'Bilinmiyor',
+            landTitle: item.land?.title || 'Bilinmiyor',
             quantity: item.quantity,
-            type: item.type === 0 ? "Yaprak gübreleme" : "damlama gübreleme",
+            type: item.type === 0 ? "Yaprak gübreleme" : "Damlama gübreleme",
             isParent: false,
             originalData: item
           });
@@ -182,10 +182,10 @@ const FertilizerToLand = () => {
       
       setRun(prev => prev + 1);
       setEditModalOpen(false);
-      showNotification('Gübre updated successfully');
+      showNotification('Gübre başarıyla güncellendi');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to update Gübre', 'error');
+      showNotification('Gübre güncellenirken hata oluştu', 'error');
     } finally {
       setLoading(false);
     }
@@ -193,17 +193,16 @@ const FertilizerToLand = () => {
 
   // Delete function
   const handleDelete = async (id) => {
-    
     try {
       setLoading(true);
       await axios.delete(APIS.deleteFertilizerLand(id), {
         headers: { Authorization: token }
       });
       setRun(prev => prev + 1);
-      showNotification('Gübre deleted successfully');
+      showNotification('Gübre başarıyla silindi');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to delete Gübre', 'error');
+      showNotification('Gübre silinirken hata oluştu', 'error');
     } finally {
       setLoading(false);
     }
@@ -235,10 +234,10 @@ const FertilizerToLand = () => {
         mixes: [{ quantity: '', fertilizerId: '' }]
       });
       setRun(prev => prev + 1);
-      showNotification('Gübre added successfully');
+      showNotification('Gübre başarıyla eklendi');
     } catch (err) {
       console.error(err);
-      showNotification('Failed to add Gübre', 'error');
+      showNotification('Gübre eklenirken hata oluştu', 'error');
     } finally {
       setLoading(false);
     }
@@ -309,20 +308,28 @@ const FertilizerToLand = () => {
     { field: 'type', headerName: 'Tür', width: 120 },
     { 
       field: 'quantity', 
-      headerName: 'Sayı', 
+      headerName: 'Miktar', 
       width: 120,
       align: 'center',
       headerAlign: 'center'
     },
     {
       field: 'actions',
-      headerName: 'işlemler',
+      headerName: 'İşlemler',
       width: 170,
       renderCell: (params) => {
         if (params.row.isParent || params.row.isAddNew) return null;
         
         return (
-          <Box display="flex" >
+          <Box sx={{ 
+              display: 'flex', 
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              margin: 0
+            }}>
+            
             <IconButton 
               onClick={() => handleEdit(params.row)}
               size="small"
@@ -386,7 +393,7 @@ const FertilizerToLand = () => {
               fontSize: '0.8125rem'
             }}
           >
-            Add New
+            Yeni Ekle
           </MuiButton>
         );
       },
@@ -407,7 +414,7 @@ const FertilizerToLand = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'fertilization_report.xlsx');
+      link.setAttribute('download', 'gubre_raporu.xlsx');
       document.body.appendChild(link);
       link.click();
       
@@ -415,10 +422,10 @@ const FertilizerToLand = () => {
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
       
-      showNotification('Excel file exported successfully');
+      showNotification('Excel dosyası başarıyla dışa aktarıldı');
     } catch (err) {
-      console.error('Error exporting to Excel:', err);
-      showNotification('Failed to export Excel file', 'error');
+      console.error('Excel dışa aktarılırken hata:', err);
+      showNotification('Excel dosyası dışa aktarılırken hata oluştu', 'error');
     } finally {
       setLoading(false);
     }
@@ -426,7 +433,7 @@ const FertilizerToLand = () => {
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-      <Header category="Page" title="Gübre Tarlalar" />
+      <Header title="Tarlalara Gübre Uygulamaları" />
       
       {/* Notification */}
       {notification.show && (
@@ -459,7 +466,7 @@ const FertilizerToLand = () => {
             width: 'fit-content'
           }}
         >
-          {loading ? 'Exporting...' : 'Export to Excel'}
+          {loading ? 'Dışa Aktarılıyor...' : 'Excel Olarak İndir'}
         </MuiButton>
       </Box>
       
@@ -524,7 +531,7 @@ const FertilizerToLand = () => {
 
       {/* Add Modal */}
       <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Ekleme Gübre Tarlalar</DialogTitle>
+        <DialogTitle>Yeni Gübre Uygulaması Ekle</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl fullWidth>
@@ -574,7 +581,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Gübre Tür"
+              label="Gübre Türü"
               value={newData.type}
               onChange={(e) => setNewData({...newData, type: e.target.value})}
               fullWidth
@@ -590,7 +597,7 @@ const FertilizerToLand = () => {
               ))}
             </TextField>
 
-            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Fertilizer Mixes</Typography>
+            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Gübre Karışımları</Typography>
             
             {newData.mixes.map((mix, index) => (
               <Box key={index} sx={{ 
@@ -612,14 +619,14 @@ const FertilizerToLand = () => {
                     }
                   }}
                 >
-                  <option value="">Select Fertilizer</option>
+                  <option value="">Gübre Seçin</option>
                   {fertilizers.map((fert) => (
                     <option key={fert.id} value={fert.id}>{fert.title}</option>
                   ))}
                 </TextField>
 
                 <TextField
-                  label="Sayı"
+                  label="Miktar"
                   type="number"
                   value={mix.quantity}
                   onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -660,7 +667,7 @@ const FertilizerToLand = () => {
                 padding: '8px 16px'
               }}
             >
-              Mix Ekleme
+              Karışım Ekle
             </MuiButton>
           </Box>
         </DialogContent>
@@ -674,7 +681,7 @@ const FertilizerToLand = () => {
               color: 'text.secondary'
             }}
           >
-            Cancel
+            İptal
           </MuiButton>
           <MuiButton 
             onClick={handleAddSubmit} 
@@ -686,14 +693,14 @@ const FertilizerToLand = () => {
               boxShadow: 'none'
             }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Save'}
+            {loading ? <CircularProgress size={24} /> : 'Kaydet'}
           </MuiButton>
         </DialogActions>
       </Dialog>
 
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-        <DialogTitle>Edit Gübre Tarla</DialogTitle>
+        <DialogTitle>Gübre Uygulamasını Düzenle</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -748,7 +755,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Gübre Tür"
+              label="Gübre Türü"
               value={tempData.type || 0}
               onChange={(e) => setTempData({...tempData, type: e.target.value})}
               fullWidth
@@ -765,7 +772,7 @@ const FertilizerToLand = () => {
             </TextField>
 
             <TextField
-              label="Sayı"
+              label="Miktar"
               type="number"
               value={tempData.quantity || ''}
               onChange={(e) => setTempData({...tempData, quantity: e.target.value})}
@@ -788,7 +795,7 @@ const FertilizerToLand = () => {
               color: 'text.secondary'
             }}
           >
-            Cancel
+            İptal
           </MuiButton>
           <MuiButton 
             onClick={handleEditSave} 
@@ -800,7 +807,7 @@ const FertilizerToLand = () => {
               boxShadow: 'none'
             }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Save'}
+            {loading ? <CircularProgress size={24} /> : 'Kaydet'}
           </MuiButton>
         </DialogActions>
       </Dialog>

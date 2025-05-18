@@ -81,8 +81,8 @@ const InsecticideToLand = () => {
                 })));
                 setInsecticideLand(insecticideLandRes.data.data);
             } catch (err) {
-                console.error('Error fetching data:', err);
-                showNotification('Failed to load data', 'error');
+                console.error('Veri alınırken hata:', err);
+                showNotification('Veri yüklenemedi', 'error');
             } finally {
                 setLoading(false);
             }
@@ -118,8 +118,8 @@ const InsecticideToLand = () => {
                         id: `${parentId}-child-${index}`,
                         parentId,
                         date: '',
-                        insecticideTitle: item.insecticide?.title || 'Unknown',
-                        landTitle: item.land?.title || 'Unknown',
+                        insecticideTitle: item.insecticide?.title || 'Bilinmiyor',
+                        landTitle: item.land?.title || 'Bilinmiyor',
                         liter: item.liter,
                         quantity: item.quantity,
                         note: item.note,
@@ -175,10 +175,10 @@ const InsecticideToLand = () => {
             
             setRun(prev => prev + 1);
             setEditModalOpen(false);
-            showNotification('Application updated successfully');
+            showNotification('Uygulama başarıyla güncellendi');
         } catch (err) {
             console.error(err);
-            showNotification('Failed to update application', 'error');
+            showNotification('Uygulama güncellenirken hata oluştu', 'error');
         } finally {
             setLoading(false);
         }
@@ -186,17 +186,16 @@ const InsecticideToLand = () => {
 
     // Delete function
     const handleDelete = async (id) => {
-        
         try {
             setLoading(true);
             await axios.delete(`${APIS.deleteIsecticideLand()}?id=${id}`, {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
-            showNotification('Application deleted successfully');
+            showNotification('Uygulama başarıyla silindi');
         } catch (err) {
             console.error(err);
-            showNotification('Failed to delete application', 'error');
+            showNotification('Uygulama silinirken hata oluştu', 'error');
         } finally {
             setLoading(false);
         }
@@ -234,10 +233,10 @@ const InsecticideToLand = () => {
                 }]
             });
             setRun(prev => prev + 1);
-            showNotification('Application added successfully');
+            showNotification('Uygulama başarıyla eklendi');
         } catch (err) {
             console.error(err);
-            showNotification('Failed to add application', 'error');
+            showNotification('Uygulama eklenirken hata oluştu', 'error');
         } finally {
             setLoading(false);
         }
@@ -312,20 +311,27 @@ const InsecticideToLand = () => {
             }
         },
         { field: 'date', headerName: 'Tarih', width: 120 },
-        { field: 'insecticideTitle', headerName: 'ilaç', width: 130 },
+        { field: 'insecticideTitle', headerName: 'İlaç', width: 130 },
         { field: 'landTitle', headerName: 'Tarla', width: 130 },
         { field: 'liter', headerName: 'Litre', width: 120, align: 'center', headerAlign: 'center' },
-        { field: 'quantity', headerName: 'Sayı', width: 120, align: 'center', headerAlign: 'center' },
-        { field: 'note', headerName: 'Notes', width: 130 },
+        { field: 'quantity', headerName: 'Miktar', width: 120, align: 'center', headerAlign: 'center' },
+        { field: 'note', headerName: 'Notlar', width: 130 },
         {
             field: 'actions',
-            headerName: 'işlemler',
+            headerName: 'İşlemler',
             width: 170,
             renderCell: (params) => {
                 if (params.row.isParent || params.row.isAddNew) return null;
                 
                 return (
-                    <Box display="flex" >
+                    <Box sx={{ 
+                        display: 'flex', 
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                        margin: 0
+                    }}>
                         <IconButton 
                             onClick={() => handleEdit(params.row)}
                             size="small"
@@ -389,7 +395,7 @@ const InsecticideToLand = () => {
                             fontSize: '0.8125rem'
                         }}
                     >
-                        Ekleme
+                        Yeni Ekle
                     </MuiButton>
                 );
             },
@@ -410,7 +416,7 @@ const InsecticideToLand = () => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'insecticide_applications.xlsx');
+            link.setAttribute('download', 'ilaç_uygulamaları.xlsx');
             document.body.appendChild(link);
             link.click();
             
@@ -418,10 +424,10 @@ const InsecticideToLand = () => {
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(url);
             
-            showNotification('Excel exported successfully');
+            showNotification('Excel başarıyla dışa aktarıldı');
         } catch (err) {
-            console.error('Error exporting to Excel:', err);
-            showNotification('Failed to export to Excel', 'error');
+            console.error('Excel dışa aktarılırken hata:', err);
+            showNotification('Excel dışa aktarılırken hata oluştu', 'error');
         } finally {
             setLoading(false);
         }
@@ -430,8 +436,7 @@ const InsecticideToLand = () => {
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <Header 
-                category="Page" 
-                title="Tarlalar ilaç Applications" 
+                title="Tarlalara İlaç Uygulamaları" 
                 sx={{ width: 'fit-content' }} 
             />
             
@@ -466,7 +471,7 @@ const InsecticideToLand = () => {
                         width: 'fit-content'
                     }}
                 >
-                    {loading ? 'Exporting...' : 'Export'}
+                    {loading ? 'Dışa Aktarılıyor...' : 'Excel İndir'}
                 </MuiButton>
             </Box>
             <div style={{ height: 600, width: '100%', overflowX: 'auto' }}>
@@ -531,7 +536,7 @@ const InsecticideToLand = () => {
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Ekleme</DialogTitle>
+                <DialogTitle>Yeni İlaç Uygulaması Ekle</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl fullWidth>
@@ -580,7 +585,7 @@ const InsecticideToLand = () => {
                         />
 
                         <TextField
-                            label="Notes"
+                            label="Notlar"
                             value={newData.note}
                             onChange={(e) => setNewData({...newData, note: e.target.value})}
                             fullWidth
@@ -593,7 +598,7 @@ const InsecticideToLand = () => {
                             }}
                         />
 
-                        <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Insecticides Mixes</Typography>
+                        <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>İlaç Karışımları</Typography>
                         
                         {newData.mixes.map((mix, index) => (
                             <Box key={index} sx={{ 
@@ -604,7 +609,7 @@ const InsecticideToLand = () => {
                             }}>
                                 <TextField
                                     select
-                                    label="ilaç"
+                                    label="İlaç"
                                     value={mix.insecticideId}
                                     onChange={(e) => handleMixChange(index, 'insecticideId', e.target.value)}
                                     fullWidth
@@ -618,7 +623,7 @@ const InsecticideToLand = () => {
                                     <option value=""></option>
                                     {insecticides.map((insect) => (
                                         <option key={insect.id} value={insect.id}>
-                                            {insect.title} ({insect.type === 0 ? 'Liquid' : 'Powder'})
+                                            {insect.title} ({insect.type === 0 ? 'Sıvı' : 'Toz'})
                                         </option>
                                     ))}
                                 </TextField>
@@ -638,7 +643,7 @@ const InsecticideToLand = () => {
                                 />
 
                                 <TextField
-                                    label="Sayı"
+                                    label="Miktar"
                                     type="number"
                                     value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -683,7 +688,7 @@ const InsecticideToLand = () => {
                                 padding: '8px 16px'
                             }}
                         >
-                            Mix Ekleme
+                            Karışım Ekle
                         </MuiButton>
                     </Box>
                 </DialogContent>
@@ -697,7 +702,7 @@ const InsecticideToLand = () => {
                             color: 'text.secondary'
                         }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleAddSubmit} 
@@ -709,14 +714,14 @@ const InsecticideToLand = () => {
                             boxShadow: 'none'
                         }}
                     >
-                        {loading ? 'Saving...' : 'Save'}
+                        {loading ? 'Kaydediliyor...' : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
 
             {/* Edit Modal */}
             <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
-                <DialogTitle>Edit </DialogTitle>
+                <DialogTitle>İlaç Uygulamasını Düzenle</DialogTitle>
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
@@ -735,7 +740,7 @@ const InsecticideToLand = () => {
 
                         <TextField
                             select
-                            label="ilaç"
+                            label="İlaç"
                             value={tempData.insecticideId || ''}
                             onChange={(e) => {
                                 const selectedInsecticide = insecticides.find(insect => insect.id === parseInt(e.target.value));
@@ -751,7 +756,7 @@ const InsecticideToLand = () => {
                         >
                             {insecticides.map((insect) => (
                                 <option key={insect.id} value={insect.id}>
-                                    {insect.title} ({insect.type === 0 ? 'Liquid' : 'Powder'})
+                                    {insect.title} ({insect.type === 0 ? 'Sıvı' : 'Toz'})
                                 </option>
                             ))}
                         </TextField>
@@ -776,7 +781,7 @@ const InsecticideToLand = () => {
                         />
 
                         <TextField
-                            label="Sayı"
+                            label="Miktar"
                             type="number"
                             value={tempData.quantity || ''}
                             onChange={(e) => setTempData({...tempData, quantity: e.target.value})}
@@ -791,7 +796,7 @@ const InsecticideToLand = () => {
                         />
 
                         <TextField
-                            label="Notes"
+                            label="Notlar"
                             value={tempData.note || ''}
                             onChange={(e) => setTempData({...tempData, note: e.target.value})}
                             fullWidth
@@ -807,7 +812,7 @@ const InsecticideToLand = () => {
                         disabled={loading}
                         sx={{ mr: 1 }}
                     >
-                        Cancel
+                        İptal
                     </MuiButton>
                     <MuiButton 
                         onClick={handleEditSave} 
@@ -815,7 +820,7 @@ const InsecticideToLand = () => {
                         variant="contained"
                         disabled={loading}
                     >
-                        {loading ? 'Saving...' : 'Save'}
+                        {loading ? 'Kaydediliyor...' : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

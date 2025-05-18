@@ -36,7 +36,7 @@ const FertilizerDepo = () => {
           setFilteredData(res.data.data);
         }
       } catch (err) {
-        console.error("Error fetching Gübre Depo:", err);
+        console.error("Gübre Deposu verileri alınırken hata oluştu:", err);
       }
     };
     fetchData();
@@ -71,8 +71,8 @@ const FertilizerDepo = () => {
   const handleFilter = (key, value) => {
     setFilterConfig({ key, value });
     const filtered = data.filter(item => {
-      const itemValue = String(getNestedValue(item, key) || '').toLowerCase();
-      return itemValue.includes(value.toLowerCase());
+      const itemValue = String(getNestedValue(item, key) || '');
+      return itemValue.toLowerCase().includes(value.toLowerCase());
     });
     setFilteredData(filtered);
   };
@@ -84,16 +84,16 @@ const FertilizerDepo = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const columns = [
-    { field: 'fertilizer.title', headerText: 'Bilimsel Adı', placeholder: 'Filter Scientific Name' },
-    { field: 'fertilizer.publicTitle', headerText: 'Ad', placeholder: 'Filter Title' },
-    { field: 'totalQuantity', headerText: 'Adit', placeholder: 'Filter total count' },
-    { field: 'fertilizer.npk', headerText: 'NPK', placeholder: 'Filter remained NPK' },
-    { field: 'fertilizer.description', headerText: 'Tanım', placeholder: 'Filter description' },
+    { field: 'fertilizer.title', headerText: 'Bilimsel Adı', placeholder: 'Bilimsel ad filtrele' },
+    { field: 'fertilizer.publicTitle', headerText: 'Ad', placeholder: 'Ad filtrele' },
+    { field: 'totalQuantity', headerText: 'Adet', placeholder: 'Adet filtrele' },
+    { field: 'fertilizer.npk', headerText: 'NPK', placeholder: 'NPK filtrele' },
+    { field: 'fertilizer.description', headerText: 'Açıklama', placeholder: 'Açıklama filtrele' },
   ];
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl shadow-lg">
-      <Header category="Page" title="Gübre Depo" />
+      <Header title="Gübre Deposu" />
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">

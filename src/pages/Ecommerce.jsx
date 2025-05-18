@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsCurrencyDollar } from 'react-icons/bs';
 import { Select } from 'antd';
 
@@ -9,6 +9,7 @@ import product9 from '../data/product9.jpg';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { FiChevronDown } from 'react-icons/fi';
+
 const DropDown = ({ currentMode, items = [], onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -25,7 +26,7 @@ const DropDown = ({ currentMode, items = [], onSelect }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
       >
-        {selectedItem || 'Items to show'}
+        {selectedItem || 'Gösterilecek Öğe'}
         <FiChevronDown className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       
@@ -47,7 +48,6 @@ const DropDown = ({ currentMode, items = [], onSelect }) => {
 };
 
 const Ecommerce = () => {
-
   const { currentColor, currentMode } = useStateContext();
   let [flowersAvg,setFlowersAvg]=useState(0);
   let [ordersAvg,setOrdersAvg]=useState(0);
@@ -101,7 +101,6 @@ const Ecommerce = () => {
           axios.get(showApi.getNumOfFlower(), { headers: { Authorization: token } }),
           axios.get(showApi.getAllFertilizerTransaction(), { headers: { Authorization: token } }),
           axios.get(showApi.getAllInsecticideTransaction(), { headers: { Authorization: token } }),
-
         ]);
 
         setOrdersAvg(ordersRes.data.data || ordersRes.data);
@@ -110,9 +109,8 @@ const Ecommerce = () => {
         setFertilizerTransaction(fertilizerRes.data.data || fertilizerRes.data);
         setInsecticideTransaction(insecticideRes.data.data || insecticideRes.data);
 
-
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error('Veri alınırken hata oluştu:', err);
       }
     };
 
@@ -125,21 +123,20 @@ const Ecommerce = () => {
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-80 p-8 pt-9 m-3 hero-pattern bg-no-repeat bg-cover bg-center">
           <div className="flex justify-between items-center">
             <div>
-              <p className="font-bold text-gray-400">Earnings</p>
-              <p className="text-2xl">$63,448.78</p>
+              <p className="font-bold text-gray-400">Kazanç</p>
+              <p className="text-2xl">₺63,448.78</p>
             </div>   
             <button
               type="button"
-              // style={{ backgroundColor: currentColor }}
               style={{ 
-              backgroundColor: currentColor,
-              width: '3rem',    // تحديد العرض
-              height: '3rem',   // تحديد الارتفاع
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
+                backgroundColor: currentColor,
+                width: '3rem',    
+                height: '3rem',   
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full p-4"
             >
               <BsCurrencyDollar />
             </button>
@@ -148,10 +145,9 @@ const Ecommerce = () => {
             <Button
               color="white"
               bgColor={currentColor}
-              text="Download"
-              size="md" // يمكنك تحديد حجم متوسط
+              text="İndir"
+              size="md" 
               style={{ height: '36px' }} 
-              // borderRadius="10px"
             />
           </div>
         </div>
@@ -161,17 +157,18 @@ const Ecommerce = () => {
               <button
                 type="button"
                 style={{ color: item.iconColor, backgroundColor: item.iconBg }}
-                className="text-2xl opacity-0.9 rounded-full  p-4 hover:drop-shadow-xl"
+                className="text-2xl opacity-0.9 rounded-full p-4 hover:drop-shadow-xl"
               >
                 {item.icon}
               </button>
               <p className="mt-3">
-                <span className="text-lg font-semibold">{item.title==='Customers'?clientAvg:item.title==='Orders'?ordersAvg:flowersAvg &'Per Donum'}</span>
-                {/* <span className={`text-sm text-${item.pcColor} ml-2`}>
-                  {item.percentage}
-                </span> */}
+                <span className="text-lg font-semibold">
+                  {item.title==='Customers'?clientAvg:item.title==='Orders'?ordersAvg:flowersAvg && 'Dönüm Başına'}
+                </span>
               </p>
-              <p className="text-sm text-gray-400  mt-1">{item.title}</p>
+              <p className="text-sm text-gray-400 mt-1">
+                {item.title==='Customers'?'Müşteriler':item.title==='Orders'?'Siparişler':'Çiçekler'}
+              </p>
             </div>
           ))}
         </div>
@@ -180,7 +177,7 @@ const Ecommerce = () => {
       <div className="flex gap-10 m-4 flex-wrap justify-center">
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-6 rounded-2xl">
           <div className="flex justify-between items-center gap-2">
-            <p className="text-xl font-semibold">Recent Fertilizer Transactions</p>
+            <p className="text-xl font-semibold">Son Gübre İşlemleri</p>
             <DropDown 
               currentMode={currentMode} 
               items={[2, 4, 6, 8]} 
@@ -206,18 +203,18 @@ const Ecommerce = () => {
                 <Button
                   color="white"
                   bgColor={currentColor}
-                  text="See More"
+                  text="Daha Fazla Gör"
                   borderRadius="10px"
                 /> 
               </Link>
             </div>
-            <p className="text-gray-400 text-sm">{displayCount || 8} Recent Transactions</p>
+            <p className="text-gray-400 text-sm">{displayCount || 8} Son İşlem</p>
           </div>
         </div>
 
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-6 rounded-2xl">
           <div className="flex justify-between items-center gap-2">
-            <p className="text-xl font-semibold">Son Gübre Stok işlemleri </p>
+            <p className="text-xl font-semibold">Son İlaç Stok İşlemleri</p>
             <DropDown 
               currentMode={currentMode} 
               items={[2, 4, 6, 8]} 
@@ -230,7 +227,9 @@ const Ecommerce = () => {
                 <div className="flex gap-4">
                   <div>
                     <p className="text-md font-semibold">{item.insecticide.publicTitle}</p>
-                    <p className="text-sm text-gray-400">{item.insecticide.type===0?'liquid':'powder'}</p>
+                    <p className="text-sm text-gray-400">
+                      {item.insecticide.type===0?'Sıvı':'Toz'}
+                    </p>
                   </div>
                 </div>
                 <p className={`text-${item.pcColor}`}>{item.quantityChange}</p>
@@ -243,39 +242,14 @@ const Ecommerce = () => {
                 <Button
                   color="white"
                   bgColor={currentColor}
-                  text="See More"
+                  text="Daha Fazla Gör"
                   borderRadius="10px"
                 /> 
               </Link>
             </div>
-            <p className="text-gray-400 text-sm">{displayCount || 8} Son  ilaç Stok işlemleri</p>
+            <p className="text-gray-400 text-sm">{displayCount || 8} Son İşlem</p>
           </div>
         </div>
-        
-      </div>
-
-      <div className="flex flex-wrap justify-center">
-        <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
-          <div className="flex justify-between">
-            <p className="text-xl font-semibold">Our Activities</p>
-            
-          </div>
-          <div className="mt-10">
-            <img
-              className="md:w-96 h-50 "
-              src={product9}
-              alt=""
-            />
-            <div className="mt-8">
-              <p className="font-semibold text-lg">Planti!</p>
-              <p className="text-gray-400 ">By Heba & Taima</p>
-              <p className="mt-8 text-sm text-gray-400">
-                This is a small project which called 'Planti!',It help agriculture companies to manage its resourses.
-              </p>
-            </div>
-          </div>
-        </div>
-        
       </div>
     </div>
   );
