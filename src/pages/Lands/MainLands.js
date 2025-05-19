@@ -193,13 +193,13 @@ const MainLands = () => {
                   <>
                     <button
                       onClick={() => handleSave(row.original)}
-                      className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm w-16"
+                      className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 flex justify-center transition-colors text-sm w-16"
                     >
                       Kaydet
                     </button>
                     <button
                       onClick={handleCancelEdit}
-                      className="px-2 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors text-sm w-16"
+                      className="px-2 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 flex justify-center transition-colors text-sm w-16"
                     >
                       İptal
                     </button>
@@ -208,19 +208,19 @@ const MainLands = () => {
                   <>
                     <button
                       onClick={() => handleEdit(row)}
-                      className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm w-16"
+                      className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center transition-colors text-sm w-16"
                     >
                       Düzenle
                     </button>
                     <button
                       onClick={() => handleDelete(row.original.id)}
-                      className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm w-16"
+                      className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 flex justify-center transition-colors text-sm w-16"
                     >
                       Sil
                     </button>
                     <NavLink to={`${row.original.id}`}>
                       <button
-                        className="px-2 py-1 bg-green-200 text-green-800 rounded-md hover:bg-green-300 transition-colors text-sm w-16"
+                        className="px-2 py-1 bg-green-200 text-green-800 rounded-md hover:bg-green-300 flex justify-center transition-colors text-sm w-16"
                       >
                         Detaylar
                       </button>

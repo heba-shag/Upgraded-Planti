@@ -35,36 +35,44 @@ export default function AdminLogIn() {
     };
 
     async function Submit(e) {
-        e.preventDefault();
-        setAccept(true);
-        
-        try {
-            const res = await axios.post(adminLoginApi.addLogin(), {
-                email: email,
-                password: password,
-            }, {
+    e.preventDefault();
+    setAccept(true);
+    
+    try {
+        const res = await axios.post(adminLoginApi.addLogin(), {
+            email: email,
+            password: password,
+        }, {
             withCredentials: true, 
             headers: {
                 'Content-Type': 'application/json'
             }
-            });
+        });
 
-            const token = res.data.token.token;
-            const userDetails = res.data;
-            
-            cookie.set("authData", userDetails);
-            UserNow.setAuth({ token, userDetails });
-            navigation('/mainPage');
-            
-        } catch (err) {
-            console.log(err);
-            if (err.response?.status === 404) {
-                setEmailError("Bu email adresi bulunamadı");
-            } else if (err.response?.status === 400) {
-                setPasswordError("Yanlış şifre");
-            }
+        const token = res.data.token.token;
+        const userDetails = res.data;
+        
+        cookie.set("authData", userDetails, { 
+            path: '/', 
+            expires: new Date(userDetails.token.expireDate) 
+        });
+        
+        UserNow.setAuth({ 
+            token: token, 
+            userDetails: userDetails 
+        });
+        
+        navigation('/mainPage', { replace: true });
+        
+    } catch (err) {
+        console.log(err);
+        if (err.response?.status === 404) {
+            setEmailError("Bu email adresi bulunamadı");
+        } else if (err.response?.status === 400) {
+            setPasswordError("Yanlış şifre");
         }
     }
+}
 
     return (
         <div className='parent'>

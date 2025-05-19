@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import Cookies from 'universal-cookie';
 
 const StateContext = createContext();
 const initialState = {
@@ -15,7 +16,14 @@ export const ContextProvider = ({ children }) => {
   const [themeSettings, setThemeSettings] = useState(false);
   const [activeMenu, setActiveMenu] = useState(true);
   const [isClicked, setIsClicked] = useState(initialState);
-  const [auth,setAuth]=useState({});
+  const [auth, setAuth] = useState(() => {
+    const cookie = new Cookies();
+    const authData = cookie.get("authData");
+    return authData ? {
+      token: authData.token.token,
+      userDetails: authData
+    } : { token: null, userDetails: null };
+  });
 
   const setMode = (e) => {
     setCurrentMode(e.target.value);
@@ -30,8 +38,26 @@ export const ContextProvider = ({ children }) => {
   const handleClick = (clicked) => setIsClicked({ ...initialState, [clicked]: true });
 
   return (
-    // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <StateContext.Provider value={{auth,setAuth, currentColor, currentMode, activeMenu, screenSize, setScreenSize, handleClick, isClicked, initialState, setIsClicked, setActiveMenu, setCurrentColor, setCurrentMode, setMode, setColor, themeSettings, setThemeSettings }}>
+    <StateContext.Provider value={{
+      auth,
+      setAuth,
+      currentColor,
+      currentMode,
+      activeMenu,
+      screenSize,
+      setScreenSize,
+      handleClick,
+      isClicked,
+      initialState,
+      setIsClicked,
+      setActiveMenu,
+      setCurrentColor,
+      setCurrentMode,
+      setMode,
+      setColor,
+      themeSettings,
+      setThemeSettings
+    }}>
       {children}
     </StateContext.Provider>
   );

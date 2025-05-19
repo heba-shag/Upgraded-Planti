@@ -5,11 +5,11 @@ const ProtectedRoute = () => {
     const { auth } = useStateContext();
     const location = useLocation();
 
-    return auth?.token ? (
-        <Outlet />
-    ) : (
-        <Navigate to="/" state={{ from: location }} replace />
-    );
+    if (!auth.token) {
+        return <Navigate to="/" state={{ from: location }} replace />;
+    }
+
+    return <Outlet />;
 };
 
 export default ProtectedRoute;

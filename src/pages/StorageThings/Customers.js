@@ -341,13 +341,13 @@ const Customers = () => {
               <>
                 <button 
                   onClick={() => handleSave(row.original)} 
-                  className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
+                  className="px-2 py-1 bg-green-500 text-white rounded-md flex justify-center hover:bg-green-600"
                 >
                   Kaydet
                 </button>
                 <button 
                   onClick={handleCancelEdit} 
-                  className="px-2 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 ml-2"
+                  className="px-2 py-1 bg-gray-500 text-white rounded-md flex justify-center hover:bg-gray-600 ml-2"
                 >
                   İptal
                 </button>
@@ -356,13 +356,13 @@ const Customers = () => {
               <>
                 <button 
                   onClick={() => handleEdit(row)} 
-                  className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  className="px-2 py-1 bg-blue-500 text-white rounded-md flex justify-center hover:bg-blue-600"
                 >
                   Düzenle
                 </button>
                 <button 
                   onClick={() => confirmDelete(row.original.id)} 
-                  className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 ml-2"
+                  className="px-2 py-1 bg-red-500 text-white rounded-md flex justify-center hover:bg-red-600 ml-2"
                 >
                   Sil
                 </button>

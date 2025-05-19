@@ -251,7 +251,7 @@ const GetAllFertilizer = () => {
                     {editingRow?.id === item.id ? (
                       <button
                         onClick={() => handleSave(item)}
-                        className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 transition-colors"
+                        className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 flex justify-center transition-colors"
                       >
                         Kaydet
                       </button>
@@ -259,7 +259,7 @@ const GetAllFertilizer = () => {
                       <>
                         <button
                           onClick={() => handleEdit(item)}
-                          className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-16 transition-colors"
+                          className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-16 flex justify-center transition-colors"
                         >
                           Düzenle
                         </button>

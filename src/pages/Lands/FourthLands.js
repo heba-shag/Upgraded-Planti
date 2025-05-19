@@ -12,7 +12,8 @@ import { Header } from '../../components';
 import { useStateContext } from '../../contexts/ContextProvider';
 import axios from 'axios';
 import { BiArrowFromBottom, BiArrowFromTop, BiCheckCircle, BiXCircle } from 'react-icons/bi';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+import { GiReturnArrow } from 'react-icons/gi';
 
 const FourthLands = () => {
   const [editingRow, setEditingRow] = useState(null);
@@ -31,6 +32,9 @@ const FourthLands = () => {
     type: 'success',
   });
   const id = window.location.pathname.split("/").slice(-1)[0];
+  const parentId = window.location.pathname.split("/").slice(-2)[0];
+  const grandId = window.location.pathname.split("/").slice(-3)[0];
+
   const [parent, setParent] = useState({});
 
   const userNow = useStateContext();
@@ -199,13 +203,13 @@ const FourthLands = () => {
                 <>
                   <button
                     onClick={() => handleSave(row.original)}
-                    className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm w-16"
+                    className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 flex justify-center transition-colors text-sm w-16"
                   >
                     Kaydet
                   </button>
                   <button
                     onClick={handleCancelEdit}
-                    className="px-2 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors text-sm w-16"
+                    className="px-2 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 flex justify-center transition-colors text-sm w-16"
                   >
                     İptal
                   </button>
@@ -214,23 +218,17 @@ const FourthLands = () => {
                 <>
                   <button
                     onClick={() => handleEdit(row)}
-                    className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm w-16"
+                    className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex justify-center text-sm w-16"
                   >
                     Düzenle
                   </button>
                   <button
                     onClick={() => handleDelete(row.original.id)}
-                    className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm w-16"
+                    className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 flex justify-center transition-colors text-sm w-16"
                   >
                     Sil
                   </button>
-                  <NavLink to={`${row.original.id}`}>
-                    <button
-                      className="px-2 py-1 bg-green-200 text-green-800 rounded-md hover:bg-green-300 transition-colors text-sm w-16"
-                    >
-                      Detaylar
-                    </button>
-                  </NavLink>
+                  
                 </>
               )}
             </div>
@@ -273,7 +271,7 @@ const FourthLands = () => {
         </div>
       )}
 
-      <Header title={`${parent.title || 'Yükleniyor...'}`} />
+      <Header category={<Link to={`/Tarlalar/${grandId}/${parentId}`}><GiReturnArrow/></Link>} title={`${parent.title || 'Yükleniyor...'}`} />
 
       <div className="mb-4">
         <input
