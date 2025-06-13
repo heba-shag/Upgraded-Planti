@@ -167,7 +167,7 @@ const Ecommerce = () => {
                 </span>
               </p>
               <p className="text-sm text-gray-400 mt-1">
-                {item.title==='Customers'?'Müşteriler':item.title==='Orders'?'Siparişler':'Çiçekler'}
+                {item.title}
               </p>
             </div>
           ))}
