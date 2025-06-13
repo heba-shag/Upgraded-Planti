@@ -27,6 +27,10 @@ const Flowers = () => {
     const [editingRow, setEditingRow] = useState(null);
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState({
+      show: false,
+      id: null
+    });
     const [tempData, setTempData] = useState({});
     const [newData, setNewData] = useState({
         date: new Date().toISOString().split('T')[0],
@@ -120,7 +124,9 @@ const Flowers = () => {
         setEditingRow(rowData.id);
         setTempData({
             ...rowData.originalData,
-            date: rowData.originalData.date.split('T')[0]
+            date: rowData.originalData.date.split('T')[0],
+            note: rowData.originalData.note || '',
+            worker: rowData.originalData.worker || ''
         });
         setEditModalOpen(true);
     };
@@ -160,10 +166,15 @@ const Flowers = () => {
     };
 
     const handleEditSave = async () => {
+        if (!tempData.count || !tempData.long) {
+            showNotification('Lütfen zorunlu alanları doldurun (Adet ve Uzunluk)', 'error');
+            return;
+        }
+        
         try {
             setLoading(true);
             const { id, ...dataToSend } = tempData;
-            await axios.post(`${APIS.updateFlower()}?id=${id}&count=${dataToSend.count}&long=${dataToSend.long}&worker=${dataToSend.worker}&date=${new Date().toISOString(dataToSend.date)}&note=${dataToSend.note}`, null, { 
+            await axios.post(`${APIS.updateFlower()}?id=${id}&count=${dataToSend.count}&long=${dataToSend.long}&worker=${dataToSend.worker || ''}&date=${new Date().toISOString(dataToSend.date)}&note=${dataToSend.note || ''}`, null, { 
                 headers: { Authorization: token }
             });
             
@@ -178,11 +189,15 @@ const Flowers = () => {
         }
     };
 
-    // Delete function
-    const handleDelete = async (id) => {
+    // Delete functions
+    const handleDelete = (id) => {
+        setDeleteConfirm({ show: true, id });
+    };
+
+    const confirmDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(APIS.deleteFlower(id), {
+            await axios.delete(APIS.deleteFlower(deleteConfirm.id), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
@@ -192,20 +207,35 @@ const Flowers = () => {
             showNotification('Kayıt silinemedi', 'error');
         } finally {
             setLoading(false);
+            setDeleteConfirm({ show: false, id: null });
         }
+    };
+
+    const cancelDelete = () => {
+        setDeleteConfirm({ show: false, id: null });
     };
 
     // Add functions
     const handleAddSubmit = async () => {
+        if (!newData.cuttingLandId || !newData.date || !newData.worker) {
+            showNotification('Lütfen zorunlu alanları doldurun (Tarla, Tarih ve İşçi)', 'error');
+            return;
+        }
+
+        if (newData.flowers.some(flower => !flower.count || !flower.long)) {
+            showNotification('Lütfen tüm çiçekler için adet ve uzunluk bilgilerini girin', 'error');
+            return;
+        }
+        
         try {
             setLoading(true);
             const dataToSend = {
                 date: newData.date,
                 worker: newData.worker,
                 flowers: newData.flowers.map(flower => ({
-                    count: parseInt(flower.count),
-                    long: parseInt(flower.long),
-                    note: flower.note,
+                    count: parseInt(flower.count) || 0,
+                    long: parseInt(flower.long) || 0,
+                    note: flower.note || "",
                 }))
             };
     
@@ -349,6 +379,22 @@ const Flowers = () => {
                     <span>{notification.message}</span>
                 </div>
             )}
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={deleteConfirm.show} onClose={cancelDelete}>
+                <DialogTitle>Silme Onayı</DialogTitle>
+                <DialogContent>
+                    <Typography>Bu kaydı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <MuiButton onClick={cancelDelete} color="primary">
+                        İptal
+                    </MuiButton>
+                    <MuiButton onClick={confirmDelete} color="error" variant="contained" disabled={loading}>
+                        {loading ? <CircularProgress size={24} /> : 'Sil'}
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
 
             <Box sx={{ height: 600, width: '100%' }}>
                 <DataGrid
@@ -708,7 +754,7 @@ const Flowers = () => {
                         onClick={handleEditSave} 
                         color="primary"
                         variant="contained"
-                        disabled={loading}
+                        disabled={loading || !tempData.count || !tempData.long}
                         sx={{
                             px: 3,
                             py: 1,

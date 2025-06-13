@@ -35,6 +35,8 @@ const FertilizerMix = () => {
     const [editingRow, setEditingRow] = useState(null);
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
     const [tempData, setTempData] = useState({});
     const [newData, setNewData] = useState({
         title: "",
@@ -159,6 +161,12 @@ const FertilizerMix = () => {
 
     const handleEditSave = async () => {
         try {
+            // Validate required fields
+            if (!tempData.title) {
+                showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+                return;
+            }
+
             setLoading(true);
             const { id, ...dataToSend } = tempData;
             await axios.post(`${APIS.updateFertilizerMix()}?id=${id}&title=${dataToSend.title}&type=${dataToSend.type}&color=${dataToSend.color}`, null,
@@ -177,11 +185,21 @@ const FertilizerMix = () => {
         }
     };
 
-    // Delete function
-    const handleDelete = async (id) => {
+    // Delete functions
+    const confirmDelete = (id) => {
+        setItemToDelete(id);
+        setDeleteConfirmOpen(true);
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteConfirmOpen(false);
+        setItemToDelete(null);
+    };
+
+    const handleDeleteConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(APIS.deleteFertilizerMix(id), {
+            await axios.delete(APIS.deleteFertilizerMix(itemToDelete), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
@@ -191,12 +209,20 @@ const FertilizerMix = () => {
             console.error(err);
         } finally {
             setLoading(false);
+            setDeleteConfirmOpen(false);
+            setItemToDelete(null);
         }
     };
 
     // Add functions
     const handleAddSubmit = async () => {
         try {
+            // Validate required fields
+            if (!newData.title || newData.mixes.some(mix => !mix.fertilizerId)) {
+                showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+                return;
+            }
+
             setLoading(true);
             await axios.post(APIS.addFertilizerMix(), newData, {
                 headers: { Authorization: token }
@@ -301,7 +327,7 @@ const FertilizerMix = () => {
                             style={{width:"20%"}}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                handleDelete(params.row.id);
+                                confirmDelete(params.row.id);
                             }}
                             disabled={loading}
                             size="small"
@@ -434,7 +460,7 @@ const FertilizerMix = () => {
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
-                            label="Başlık"
+                            label="Başlık*"
                             value={newData.title}
                             onChange={(e) => setNewData({...newData, title: e.target.value})}
                             fullWidth
@@ -444,7 +470,7 @@ const FertilizerMix = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Tür</InputLabel>
+                                    <InputLabel>Tür*</InputLabel>
                                     <Select
                                         value={newData.type}
                                         label="Tür"
@@ -457,7 +483,7 @@ const FertilizerMix = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Renk</InputLabel>
+                                    <InputLabel>Renk*</InputLabel>
                                     <Select
                                         value={newData.color}
                                         label="Renk"
@@ -473,13 +499,13 @@ const FertilizerMix = () => {
                             </Grid>
                         </Grid>
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Gübreler</Typography>
+                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Gübreler*</Typography>
                         
                         {newData.mixes.map((mix, index) => (
                             <Grid container spacing={2} key={index} alignItems="center" sx={{ mb: 2 }}>
                                 <Grid item xs={12} sm={7}>
                                     <FormControl fullWidth>
-                                        <InputLabel>Gübre</InputLabel>
+                                        <InputLabel>Gübre*</InputLabel>
                                         <Select
                                             value={mix.fertilizerId}
                                             label="Gübre"
@@ -495,7 +521,7 @@ const FertilizerMix = () => {
                                 </Grid>
                                 <Grid item xs={8} sm={3}>
                                     <TextField
-                                        label="Miktar"
+                                        label="Miktar*"
                                         type="number"
                                         value={mix.quantity}
                                         onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -530,6 +556,7 @@ const FertilizerMix = () => {
                         onClick={() => setAddModalOpen(false)} 
                         disabled={loading}
                         sx={{ mr: 1 }}
+                        variant="outlined"
                     >
                         İptal
                     </MuiButton>
@@ -537,7 +564,7 @@ const FertilizerMix = () => {
                         onClick={handleAddSubmit} 
                         color="primary"
                         variant="contained"
-                        disabled={loading || !newData.title || !newData.mixes.every(m => m.fertilizerId && m.quantity)}
+                        disabled={loading}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Kaydet'}
                     </MuiButton>
@@ -556,7 +583,7 @@ const FertilizerMix = () => {
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
-                            label="Ad"
+                            label="Ad*"
                             value={tempData.title || ''}
                             onChange={(e) => setTempData({...tempData, title: e.target.value})}
                             fullWidth
@@ -566,7 +593,7 @@ const FertilizerMix = () => {
                         <Grid container spacing={2} sx={{ mt: 1 }}>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Tür</InputLabel>
+                                    <InputLabel>Tür*</InputLabel>
                                     <Select
                                         value={tempData.type || 0}
                                         label="Tür"
@@ -579,7 +606,7 @@ const FertilizerMix = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Renk</InputLabel>
+                                    <InputLabel>Renk*</InputLabel>
                                     <Select
                                         value={tempData.color || 0}
                                         label="Renk"
@@ -601,6 +628,7 @@ const FertilizerMix = () => {
                         onClick={handleEditCancel} 
                         disabled={loading}
                         sx={{ mr: 1 }}
+                        variant="outlined"
                     >
                         İptal
                     </MuiButton>
@@ -608,9 +636,42 @@ const FertilizerMix = () => {
                         onClick={handleEditSave} 
                         color="primary"
                         variant="contained"
-                        disabled={loading || !tempData.title}
+                        disabled={loading}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Kaydet'}
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog 
+                open={deleteConfirmOpen} 
+                onClose={handleDeleteCancel} 
+                maxWidth="sm" 
+                fullWidth
+            >
+                <DialogTitle>Silme Onayı</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                        Bu gübre karışımını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{ p: 2 }}>
+                    <MuiButton 
+                        onClick={handleDeleteCancel}
+                        disabled={loading}
+                        sx={{ mr: 1 }}
+                        variant="outlined"
+                    >
+                        İptal
+                    </MuiButton>
+                    <MuiButton 
+                        onClick={handleDeleteConfirm} 
+                        color="error"
+                        variant="contained"
+                        disabled={loading}
+                    >
+                        {loading ? <CircularProgress size={24} /> : 'Sil'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

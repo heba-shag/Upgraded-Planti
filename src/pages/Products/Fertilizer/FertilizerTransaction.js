@@ -33,9 +33,11 @@ const FertilizerTransaction = () => {
   const APIS = {
     fertilizerStoreBaseUrl: isDev ? process.env.REACT_APP_API_FERTILIZERSTORE_URL : process.env.REACT_APP_API_FERTILIZERSTORE_URL,
     getAllFertilizerTransaction: () => `${APIS.fertilizerStoreBaseUrl}/GetFertilizerTransaction?pageSize=1000000000&pageNum=0`,
-    getAllFertilizer: () => `${APIS.fertilizerStoreBaseUrl}/GetAllFertilizerStore?pageSize=1000000000&pageNum=0`,
     updateFertilizerTransaction: (fertilizerId, quantity, date, isAdd) => 
       `${APIS.fertilizerStoreBaseUrl}/UpdateStore?fertilizerId=${fertilizerId}&quantity=${quantity}&date=${date}&isAdd=${isAdd}`,
+    fertilizerBaseUrl: isDev ? process.env.REACT_APP_API_FERTILIZER_URL : process.env.REACT_APP_API_FERTILIZER_URL,
+    getAllFertilizer: () => `${APIS.fertilizerBaseUrl}/GetAll?pageSize=1000000000&pageNum=0`,
+
   };
 
   useEffect(() => {
@@ -259,8 +261,8 @@ const FertilizerTransaction = () => {
               >
                 <option value="">Gübre Seçin</option>
                 {fertilizers.map(fertilizer => (
-                  <option key={fertilizer.fertilizer.id} value={fertilizer.fertilizer.id}>
-                    {fertilizer.fertilizer.publicTitle} ({fertilizer.fertilizer.title})
+                  <option key={fertilizer.id} value={fertilizer.id}>
+                    {fertilizer.publicTitle} ({fertilizer.title})
                   </option>
                 ))}
               </select>

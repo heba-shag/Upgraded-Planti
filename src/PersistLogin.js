@@ -48,7 +48,7 @@ export default function PersistLogin(){
         if (!getToken.token.refreshToken) {
             setLoading(false);
             return;
-        }
+        } 
 
         if (getToken?.token?.expireDate > nowDate) {
             refresh();

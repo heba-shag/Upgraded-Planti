@@ -14,7 +14,8 @@ import {
   InputLabel, 
   Chip, 
   MenuItem, 
-  CircularProgress
+  CircularProgress,
+  Select as MuiSelect
 } from '@mui/material';
 import { Header } from '../../components';
 import { BsArrowDown, BsArrowUp, BsPencil, BsPlus, BsTrash } from 'react-icons/bs';
@@ -36,6 +37,8 @@ const FertilizerToLand = () => {
   const [editingRow, setEditingRow] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [tempData, setTempData] = useState({});
   const [newData, setNewData] = useState({
     landIds: [],
@@ -174,6 +177,12 @@ const FertilizerToLand = () => {
 
   const handleEditSave = async () => {
     try {
+      // Validate required fields
+      if (!tempData.landId || !tempData.fertilizerId || !tempData.date || tempData.quantity === '') {
+        showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+        return;
+      }
+
       setLoading(true);
       const { id, ...dataToSend } = tempData;
       await axios.post(`${APIS.updateFertilizerLand()}?id=${id}`, dataToSend, {
@@ -191,11 +200,21 @@ const FertilizerToLand = () => {
     }
   };
 
-  // Delete function
-  const handleDelete = async (id) => {
+  // Delete functions
+  const confirmDelete = (id) => {
+    setItemToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmOpen(false);
+    setItemToDelete(null);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(APIS.deleteFertilizerLand(id), {
+      await axios.delete(APIS.deleteFertilizerLand(itemToDelete), {
         headers: { Authorization: token }
       });
       setRun(prev => prev + 1);
@@ -205,12 +224,21 @@ const FertilizerToLand = () => {
       showNotification('Gübre silinirken hata oluştu', 'error');
     } finally {
       setLoading(false);
+      setDeleteConfirmOpen(false);
+      setItemToDelete(null);
     }
   };
 
   // Add functions
   const handleAddSubmit = async () => {
     try {
+      // Validate required fields
+      if (newData.landIds.length === 0 || !newData.date || 
+          newData.mixes.some(mix => !mix.fertilizerId || mix.quantity === '')) {
+        showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+        return;
+      }
+
       setLoading(true);
       const dataToSend = {
         date: newData.date,
@@ -264,11 +292,10 @@ const FertilizerToLand = () => {
     setNewData(prev => ({ ...prev, mixes: updatedMixes }));
   };
 
-  const handleLandChange = (event) => {
-    const { value } = event.target;
+  const handleLandChange = (selectedOptions) => {
     setNewData(prev => ({
       ...prev,
-      landIds: typeof value === 'string' ? value.split(',') : value,
+      landIds: selectedOptions.map(option => option.value)
     }));
   };
 
@@ -347,7 +374,7 @@ const FertilizerToLand = () => {
               <BsPencil size={14} />
             </IconButton>
             <IconButton 
-              onClick={() => handleDelete(params.row.originalData.id)}
+              onClick={() => confirmDelete(params.row.originalData.id)}
               size="small"
               disabled={loading}
               sx={{ 
@@ -535,38 +562,36 @@ const FertilizerToLand = () => {
         <DialogContent>
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl fullWidth>
-              <InputLabel id="lands-label">Tarlalar</InputLabel>
+              <InputLabel id="lands-label">Tarlalar*</InputLabel>
               <Select
-                labelId="lands-label"
-                id="lands-select"
-                multiple
-                value={newData.landIds}
+                options={lands.map(land => ({
+                  value: land.land.id,
+                  label: land.land.title
+                }))}
+                values={newData.landIds.map(id => ({
+                  value: id,
+                  label: lands.find(l => l.land.id === id)?.land.title || id
+                }))}
                 onChange={handleLandChange}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => {
-                      const land = lands.find(l => l.land.id == value);
-                      return <Chip key={value} label={land?.title || value} />;
-                    })}
-                  </Box>
-                )}
-                sx={{
-                  '& .MuiSelect-select': {
-                    minHeight: 'auto',
-                    padding: '10px 14px'
-                  }
+                multi
+                placeholder="Tarla seçin"
+                dropdownHeight="300px"
+                style={{
+                  minHeight: '56px',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(0, 0, 0, 0.23)'
                 }}
-              >
-                {lands.map((land) => (
-                  <MenuItem key={land.land.id} value={land.land.id}>
-                    {land.land.title}
-                  </MenuItem>
-                ))}
-              </Select>
+                dropdownHandleRenderer={({ state }) => (
+                  <div style={{ padding: '8px', cursor: 'pointer' }}>
+                    {state.dropdown ? <BsArrowUp /> : <BsArrowDown />}
+                  </div>
+                )}
+              />
             </FormControl>
 
             <TextField
-              label="Tarih"
+              label="Tarih*"
               type="date"
               value={newData.date}
               onChange={(e) => setNewData({...newData, date: e.target.value})}
@@ -581,7 +606,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Gübre Türü"
+              label="Gübre Türü*"
               value={newData.type}
               onChange={(e) => setNewData({...newData, type: e.target.value})}
               fullWidth
@@ -597,7 +622,7 @@ const FertilizerToLand = () => {
               ))}
             </TextField>
 
-            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Gübre Karışımları</Typography>
+            <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>Gübre Karışımları*</Typography>
             
             {newData.mixes.map((mix, index) => (
               <Box key={index} sx={{ 
@@ -608,7 +633,7 @@ const FertilizerToLand = () => {
               }}>
                 <TextField
                   select
-                  label="Gübre"
+                  label="Gübre*"
                   value={mix.fertilizerId}
                   onChange={(e) => handleMixChange(index, 'fertilizerId', e.target.value)}
                   fullWidth
@@ -626,7 +651,7 @@ const FertilizerToLand = () => {
                 </TextField>
 
                 <TextField
-                  label="Miktar"
+                  label="Miktar*"
                   type="number"
                   value={mix.quantity}
                   onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
@@ -687,7 +712,7 @@ const FertilizerToLand = () => {
             onClick={handleAddSubmit} 
             color="primary"
             variant="contained"
-            disabled={loading || !newData.landIds.length || !newData.mixes.every(m => m.fertilizerId && m.quantity)}
+            disabled={loading}
             sx={{
               padding: '8px 16px',
               boxShadow: 'none'
@@ -705,7 +730,7 @@ const FertilizerToLand = () => {
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               select
-              label="Tarla"
+              label="Tarla*"
               value={tempData.landId || ''}
               onChange={(e) => setTempData({...tempData, landId: e.target.value})}
               fullWidth
@@ -716,6 +741,7 @@ const FertilizerToLand = () => {
                 }
               }}
             >
+              <option value="">Tarla Seçin</option>
               {lands.map((land) => (
                 <option key={land.land.id} value={land.land.id}>{land.land.title}</option>
               ))}
@@ -723,7 +749,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Gübre"
+              label="Gübre*"
               value={tempData.fertilizerId || ''}
               onChange={(e) => setTempData({...tempData, fertilizerId: e.target.value})}
               fullWidth
@@ -734,13 +760,14 @@ const FertilizerToLand = () => {
                 }
               }}
             >
+              <option value="">Gübre Seçin</option>
               {fertilizers.map((fert) => (
                 <option key={fert.id} value={fert.id}>{fert.title}</option>
               ))}
             </TextField>
 
             <TextField
-              label="Tarih"
+              label="Tarih*"
               type="date"
               value={tempData.date ? tempData.date.split('T')[0] : ''}
               onChange={(e) => setTempData({...tempData, date: e.target.value})}
@@ -755,7 +782,7 @@ const FertilizerToLand = () => {
 
             <TextField
               select
-              label="Gübre Türü"
+              label="Gübre Türü*"
               value={tempData.type || 0}
               onChange={(e) => setTempData({...tempData, type: e.target.value})}
               fullWidth
@@ -772,7 +799,7 @@ const FertilizerToLand = () => {
             </TextField>
 
             <TextField
-              label="Miktar"
+              label="Miktar*"
               type="number"
               value={tempData.quantity || ''}
               onChange={(e) => setTempData({...tempData, quantity: e.target.value})}
@@ -808,6 +835,41 @@ const FertilizerToLand = () => {
             }}
           >
             {loading ? <CircularProgress size={24} /> : 'Kaydet'}
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onClose={handleDeleteCancel} maxWidth="sm" fullWidth>
+        <DialogTitle>Silme Onayı</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Bu gübre uygulamasını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ padding: '16px 24px' }}>
+          <MuiButton 
+            onClick={handleDeleteCancel}
+            disabled={loading}
+            sx={{ 
+              mr: 1,
+              padding: '8px 16px',
+              color: 'text.secondary'
+            }}
+          >
+            İptal
+          </MuiButton>
+          <MuiButton 
+            onClick={handleDeleteConfirm} 
+            color="error"
+            variant="contained"
+            disabled={loading}
+            sx={{
+              padding: '8px 16px',
+              boxShadow: 'none'
+            }}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Sil'}
           </MuiButton>
         </DialogActions>
       </Dialog>

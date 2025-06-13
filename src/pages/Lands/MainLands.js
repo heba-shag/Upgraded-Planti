@@ -29,6 +29,10 @@ const MainLands = () => {
       message: '',
       type: 'success',
     });
+    const [deleteConfirm, setDeleteConfirm] = useState({
+      show: false,
+      id: null,
+    });
 
     const userNow = useStateContext();
     const token = userNow.auth.token;
@@ -74,14 +78,14 @@ const MainLands = () => {
     }, [runUseEffect]);
 
     const handleAdd = async () => {
-      if (!newItem.title || !newItem.size || !newItem.location) {
-        showNotification('Lütfen tüm zorunlu alanları doldurun', 'error');
+      if (!newItem.size) {
+        showNotification('Lütfen boyut alanını doldurun', 'error');
         return;
       }
       try {
         let res = await axios.post(`${APIS.addLand()}`, {
-          title: newItem.title,
-          location: newItem.location,
+          title: newItem.title || null,
+          location: newItem.location || null,
           size: newItem.size
         }, {
           headers: {
@@ -105,8 +109,12 @@ const MainLands = () => {
     };
 
     const handleDelete = async(id) => {
+      setDeleteConfirm({ show: true, id });
+    };
+
+    const confirmDelete = async() => {
       try {
-        let res = await axios.delete(`${APIS.deleteLand()}?id=${id}`, {
+        let res = await axios.delete(`${APIS.deleteLand()}?id=${deleteConfirm.id}`, {
           headers: {
             Authorization: token,
           },
@@ -114,11 +122,17 @@ const MainLands = () => {
         if (res.status === 200) {
           setRun((prev) => prev + 1);
           showNotification('Öğe başarıyla silindi!');
+          setDeleteConfirm({ show: false, id: null });
         }
       } catch {
         console.log("none");
         showNotification('Öğe silinemedi', 'error');
+        setDeleteConfirm({ show: false, id: null });
       }
+    };
+
+    const cancelDelete = () => {
+      setDeleteConfirm({ show: false, id: null });
     };
 
     const handleEdit = (row) => {
@@ -130,15 +144,15 @@ const MainLands = () => {
     };
 
     const handleSave = async (item) => {
-      if (!editingRow.title || !editingRow.location || !editingRow.size) {
-        showNotification('Lütfen tüm zorunlu alanları doldurun', 'error');
+      if (!editingRow.size) {
+        showNotification('Lütfen boyut alanını doldurun', 'error');
         return;
       }
       
       try {
         let res = await axios.post(`${APIS.updateLand()}?id=${item.id}`, {
-          title: editingRow.title,
-          location: editingRow.location,
+          title: editingRow.title || null,
+          location: editingRow.location || null,
           size: editingRow.size
         }, {
           headers: {
@@ -264,6 +278,29 @@ const MainLands = () => {
             <BiXCircle className="w-6 h-6 mr-2" />
           )}
           <span>{notification.message}</span>
+        </div>
+      )}
+
+      {deleteConfirm.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <h3 className="text-lg font-medium mb-4">Emin misiniz?</h3>
+            <p className="mb-6">Bu öğeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+              >
+                İptal
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Sil
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

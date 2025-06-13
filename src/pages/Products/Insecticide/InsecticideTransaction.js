@@ -31,9 +31,11 @@ const InsecticideTransaction = () => {
   const APIS = {
     insecticideStoreBaseUrl: isDev ? process.env.REACT_APP_API_INSECTICIDESTORE_URL : process.env.REACT_APP_API_INSECTICIDESTORE_URL,
     getAllInsecticideTransaction: () => `${APIS.insecticideStoreBaseUrl}/GetInsecticideTransaction?pageSize=1000000000&pageNum=0`,
-    getAllInsecticide: () => `${APIS.insecticideStoreBaseUrl}/GetAllInsecticideStore?pageSize=1000000000&pageNum=0`,
     updateInsecticideTransaction: (insecticideId, quantity, date, isAdd) => 
       `${APIS.insecticideStoreBaseUrl}/UpdateStore?insecticideId=${insecticideId}&quantity=${quantity}&date=${date}&isAdd=${isAdd}`,
+
+    insecticideBaseUrl: isDev ? process.env.REACT_APP_API_INSECTICIDE_URL : process.env.REACT_APP_API_INSECTICIDE_URL,
+    getAllInsecticide: () => `${APIS.insecticideBaseUrl}/GetAll?pageSize=1000000000&pageNum=0`,
   };
 
   useEffect(() => {
@@ -263,8 +265,8 @@ const InsecticideTransaction = () => {
               >
                 <option value="">İlaç seçin</option>
                 {insecticides.map(insecticide => (
-                  <option key={insecticide.insecticide.id} value={insecticide.insecticide.id}>
-                    {insecticide.insecticide.publicTitle} ({insecticide.insecticide.title})
+                  <option key={insecticide.id} value={insecticide.id}>
+                    {insecticide.publicTitle} ({insecticide.title})
                   </option>
                 ))}
               </select>

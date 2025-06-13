@@ -4,6 +4,7 @@ import { colorsGrid } from '../../../data/dummy';
 import axios from 'axios';
 import { useStateContext } from '../../../contexts/ContextProvider';
 import { BiCheckCircle, BiXCircle } from 'react-icons/bi';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 
 const GetAllColor = () => {
   let [ordersData, setOrdersData] = useState([]);
@@ -18,6 +19,8 @@ const GetAllColor = () => {
     title: '',
     code: '',
   });
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [notification, setNotification] = useState({
     show: false,
     message: '',
@@ -32,13 +35,13 @@ const GetAllColor = () => {
     baseColorUrl: process.env.REACT_APP_API_COLOR_URL,
     getAllColor: () => `${APIS.baseColorUrl}/GetAll?pageSize=1000000000&pageNum=0`,
     addColor: () => `${APIS.baseColorUrl}/Add`,
-    deleteColor: () => `${APIS.baseColorUrl}/Remove`,
+    deleteColor: (id) => `${APIS.baseColorUrl}/Remove?id=${id}`,
     updateColor: () => `${APIS.baseColorUrl}/Update`,
   } : {
     baseColorUrl: process.env.REACT_APP_API_COLOR_URL,
     getAllColor: () => `${APIS.baseColorUrl}/GetAll?pageSize=1000000000&pageNum=0`,
     addColor: () => `${APIS.baseColorUrl}/Add`,
-    deleteColor: () => `${APIS.baseColorUrl}/Remove`,
+    deleteColor: (id) => `${APIS.baseColorUrl}/Remove?id=${id}`,
     updateColor: () => `${APIS.baseColorUrl}/Update`,
   };
 
@@ -118,9 +121,19 @@ const GetAllColor = () => {
     }
   };
 
-  const handleDelete = async(id) => {
+  const confirmDelete = (id) => {
+    setItemToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmOpen(false);
+    setItemToDelete(null);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
-      let res = await axios.delete(`${APIS.deleteColor()}?id=${id}`, {
+      let res = await axios.delete(APIS.deleteColor(itemToDelete), {
         headers: {
           Authorization: token,
         },
@@ -132,6 +145,9 @@ const GetAllColor = () => {
     } catch(err) {
       console.log(err);
       showNotification(err.response?.data?.errorMessage || 'Renk silinemedi', 'error');
+    } finally {
+      setDeleteConfirmOpen(false);
+      setItemToDelete(null);
     }
   };
 
@@ -239,12 +255,20 @@ const GetAllColor = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex justify-center space-x-2">
                     {editingRow?.id === item.id ? (
-                      <button
-                        onClick={() => handleSave(item)}
-                        className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 flex justify-center transition-colors"
-                      >
-                        Kaydet
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleSave(item)}
+                          className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 w-16 flex justify-center transition-colors"
+                        >
+                          Kaydet
+                        </button>
+                        <button
+                          onClick={() => setEditingRow(null)}
+                          className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 w-16 flex justify-center transition-colors"
+                        >
+                          İptal
+                        </button>
+                      </>
                     ) : (
                       <>
                         <button
@@ -254,7 +278,7 @@ const GetAllColor = () => {
                           Düzenle
                         </button>
                         <button
-                          onClick={() => handleDelete(item.id)}
+                          onClick={() => confirmDelete(item.id)}
                           className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 w-16 flex justify-center transition-colors"
                         >
                           Sil
@@ -328,6 +352,34 @@ const GetAllColor = () => {
           </button>
         ))}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteConfirmOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Silme Onayı</DialogTitle>
+        <DialogContent>
+          <div className="py-4">
+            Bu rengi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            İptal
+          </Button>
+          <Button 
+            onClick={handleDeleteConfirm} 
+            color="error"
+            variant="contained"
+            autoFocus
+          >
+            Sil
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

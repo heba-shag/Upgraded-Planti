@@ -32,6 +32,10 @@ const CuttingToLand = () => {
   const [editingRow, setEditingRow] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState({
+    show: false,
+    id: null
+  });
   const [tempData, setTempData] = useState({});
   const [newData, setNewData] = useState({
     landId: 0,
@@ -68,7 +72,7 @@ const CuttingToLand = () => {
     updateCuttingLand: () => `${APIS.baseCuttingLandUrl}/Update`,
 
     baseLandUrl: isDev ? process.env.REACT_APP_API_LAND_URL : process.env.REACT_APP_API_LAND_URL,
-    getAllLand: () => `${APIS.baseLandUrl}/GetAll?justChildren=true&isActive=true`,
+    getAllLand: () => `${APIS.baseLandUrl}/GetAll?justChildren=true`,
 
     baseCuttingUrl: isDev ? process.env.REACT_APP_API_CUTTING_URL : process.env.REACT_APP_API_CUTTING_URL,
     getAllCutting: () => `${APIS.baseCuttingUrl}/GetAll?pageSize=1000000000&pageNum=0`,
@@ -142,7 +146,8 @@ const CuttingToLand = () => {
       ...rowData.originalData,
       landId: rowData.originalData.land?.id,
       cuttingColorId: rowData.originalData.cuttingColor?.id,
-      date: rowData.date
+      date: rowData.date,
+      note: rowData.originalData.note || ''
     });
     setEditModalOpen(true);
   };
@@ -154,10 +159,18 @@ const CuttingToLand = () => {
   };
 
   const handleEditSave = async () => {
+    if (!tempData.quantity || !tempData.cuttingColorId || !tempData.landId) {
+      showNotification('Lütfen zorunlu alanları doldurun (Adet, Fide Renk ve Tarla)', 'error');
+      return;
+    }
+    
     try {
       setLoading(true);
       const { id, ...dataToSend } = tempData;
-      await axios.post(`${APIS.updateCuttingLand()}?id=${id}`, dataToSend, {
+      await axios.post(`${APIS.updateCuttingLand()}?id=${id}`, {
+        ...dataToSend,
+        note: dataToSend.note || null
+      }, {
         headers: { Authorization: token }
       });
       
@@ -172,11 +185,15 @@ const CuttingToLand = () => {
     }
   };
 
-  // Delete function
-  const handleDelete = async (id) => {
+  // Delete functions
+  const handleDelete = (id) => {
+    setDeleteConfirm({ show: true, id });
+  };
+
+  const confirmDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(APIS.deleteCuttingLand(id), {
+      await axios.delete(APIS.deleteCuttingLand(deleteConfirm.id), {
         headers: { Authorization: token }
       });
       setRun(prev => prev + 1);
@@ -186,18 +203,28 @@ const CuttingToLand = () => {
       showNotification('Fide uygulaması silinemedi', 'error');
     } finally {
       setLoading(false);
+      setDeleteConfirm({ show: false, id: null });
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirm({ show: false, id: null });
   };
 
   // Add functions
   const handleAddSubmit = async () => {
+    if (!newData.landId || !newData.date || !newData.cuttings.every(m => m.cuttingColorId && m.quantity)) {
+      showNotification('Lütfen tüm zorunlu alanları doldurun (Tarla, Tarih ve Fide bilgileri)', 'error');
+      return;
+    }
+    
     try {
       setLoading(true);
       const dataToSend = {
         date: newData.date,
         landId: newData.landId,
         cuttings: newData.cuttings.map(mix => ({
-          quantity: parseFloat(mix.quantity),
+          quantity: parseFloat(mix.quantity) || 0,
           cuttingColorId: parseInt(mix.cuttingColorId)
         }))
       };
@@ -258,6 +285,11 @@ const CuttingToLand = () => {
   };
 
   const handleAddColorSubmit = async () => {
+    if (!newColorData.cuttingId || !newColorData.colorId || !newColorData.code) {
+      showNotification('Lütfen tüm alanları doldurun', 'error');
+      return;
+    }
+    
     try {
       setLoading(true);
       await axios.post(APIS.addCuttingColor(), newColorData, {
@@ -328,7 +360,7 @@ const CuttingToLand = () => {
               <BsPencil size={14} />
             </IconButton>
             <IconButton 
-              onClick={() => handleDelete(params.row.originalData.id)}
+              onClick={() => handleDelete(params.row.id)}
               size="small"
               disabled={loading}
               sx={{ 
@@ -402,6 +434,22 @@ const CuttingToLand = () => {
           <span>{notification.message}</span>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirm.show} onClose={cancelDelete}>
+        <DialogTitle>Silme Onayı</DialogTitle>
+        <DialogContent>
+          <Typography>Bu kaydı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={cancelDelete} color="primary">
+            İptal
+          </MuiButton>
+          <MuiButton onClick={confirmDelete} color="error" variant="contained" disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : 'Sil'}
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
 
       <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
@@ -751,6 +799,20 @@ const CuttingToLand = () => {
                 }
               }}
             />
+
+            <TextField
+              label="Not"
+              value={tempData.note || ''}
+              onChange={(e) => setTempData({...tempData, note: e.target.value})}
+              fullWidth
+              multiline
+              rows={3}
+              sx={{
+                '& .MuiInputBase-input': {
+                  padding: '10px 14px'
+                }
+              }}
+            />
           </Box>
         </DialogContent>
         <DialogActions sx={{ padding: '16px 24px' }}>
@@ -769,7 +831,7 @@ const CuttingToLand = () => {
             onClick={handleEditSave} 
             color="primary"
             variant="contained"
-            disabled={loading}
+            disabled={loading || !tempData.quantity || !tempData.cuttingColorId || !tempData.landId}
             sx={{
               padding: '8px 16px',
               boxShadow: 'none'

@@ -102,6 +102,8 @@ const InsecticideMix = () => {
     const [editingRow, setEditingRow] = useState(null);
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
     const [tempData, setTempData] = useState({});
     const [newData, setNewData] = useState({
         title: "",
@@ -230,6 +232,12 @@ const InsecticideMix = () => {
 
     const handleEditSave = async () => {
         try {
+            // Validate required fields
+            if (!tempData.title || !tempData.color) {
+                showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+                return;
+            }
+
             setLoading(true);
             const { id, ...dataToSend } = tempData;
             await axios.post(`${APIS.updateInsecticideMix()}?id=${id}&title=${dataToSend.title}&note=${dataToSend.note}&color=${dataToSend.color}`, null, {
@@ -247,12 +255,21 @@ const InsecticideMix = () => {
         }
     };
 
-    // Delete function
-    const handleDelete = async (id) => {
-        
+    // Delete functions
+    const confirmDelete = (id) => {
+        setItemToDelete(id);
+        setDeleteConfirmOpen(true);
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteConfirmOpen(false);
+        setItemToDelete(null);
+    };
+
+    const handleDeleteConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(APIS.deleteInsecticideMix(id), {
+            await axios.delete(APIS.deleteInsecticideMix(itemToDelete), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
@@ -262,12 +279,20 @@ const InsecticideMix = () => {
             console.error(err);
         } finally {
             setLoading(false);
+            setDeleteConfirmOpen(false);
+            setItemToDelete(null);
         }
     };
 
     // Add functions
     const handleAddSubmit = async () => {
         try {
+            // Validate required fields
+            if (!newData.title || !newData.color || newData.mixes.some(mix => !mix.insecticideId)) {
+                showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+                return;
+            }
+
             setLoading(true);
             await axios.post(APIS.addInsecticideMix(), newData, {
                 headers: { Authorization: token }
@@ -400,7 +425,7 @@ const InsecticideMix = () => {
                         <IconButton 
                             onClick={(e) => {
                                 e.stopPropagation();
-                                handleDelete(params.row.originalData.id);
+                                confirmDelete(params.row.originalData.id);
                             }}
                             style={{width:"20%"}}
                             disabled={loading}
@@ -537,7 +562,7 @@ const InsecticideMix = () => {
                         gap: '20px'
                     }}>
                         <TextField
-                            label="Ad"
+                            label="Ad*"
                             value={newData.title}
                             onChange={(e) => setNewData({...newData, title: e.target.value})}
                             fullWidth
@@ -557,7 +582,7 @@ const InsecticideMix = () => {
                         />
 
                         <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
-                            <InputLabel>Renk</InputLabel>
+                            <InputLabel>Renk*</InputLabel>
                             <Select
                                 value={newData.color}
                                 label="Renk"
@@ -571,7 +596,7 @@ const InsecticideMix = () => {
                             </Select>
                         </FormControl>
 
-                        <Typography variant="h6" sx={{ mb: 2 }}>İlaçlar</Typography>
+                        <Typography variant="h6" sx={{ mb: 2 }}>İlaçlar*</Typography>
                         
                         {newData.mixes.map((mix, index) => (
                             <Box key={index} sx={{ 
@@ -582,7 +607,7 @@ const InsecticideMix = () => {
                                 flexWrap: 'wrap'
                             }}>
                                 <FormControl sx={{ flex: 2, minWidth: '200px' }}>
-                                    <InputLabel>İlaç</InputLabel>
+                                    <InputLabel>İlaç*</InputLabel>
                                     <Select
                                         value={mix.insecticideId}
                                         label="İlaç"
@@ -615,7 +640,7 @@ const InsecticideMix = () => {
                                 />
 
                                 <TextField
-                                    label="Litre"
+                                    label="Litre(ml)*"
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value)}
@@ -671,7 +696,7 @@ const InsecticideMix = () => {
                         onClick={handleAddSubmit} 
                         color="primary"
                         variant="contained"
-                        disabled={loading || !newData.title || !newData.mixes.every(m => m.insecticideId && m.liter)}
+                        disabled={loading}
                         sx={{ 
                             px: 3,
                             py: 1
@@ -688,7 +713,7 @@ const InsecticideMix = () => {
                 <DialogContent>
                     <Box sx={{ mt: 2 }}>
                         <TextField
-                            label="Ad"
+                            label="Ad*"
                             value={tempData.title || ''}
                             onChange={(e) => setTempData({...tempData, title: e.target.value})}
                             fullWidth
@@ -704,7 +729,7 @@ const InsecticideMix = () => {
                         />
 
                         <FormControl fullWidth margin="normal">
-                            <InputLabel>Renk</InputLabel>
+                            <InputLabel>Renk*</InputLabel>
                             <Select
                                 value={tempData.color || 0}
                                 label="Renk"
@@ -718,7 +743,7 @@ const InsecticideMix = () => {
                             </Select>
                         </FormControl>
 
-                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>İlaçlar</Typography>
+                        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>İlaçlar*</Typography>
                         
                         {tempData.mixes?.map((mix, index) => (
                             <Box key={index} sx={{ 
@@ -729,7 +754,7 @@ const InsecticideMix = () => {
                                 flexWrap: 'wrap'
                             }}>
                                 <FormControl sx={{ flex: 2, minWidth: '200px' }}>
-                                    <InputLabel>İlaç</InputLabel>
+                                    <InputLabel>İlaç*</InputLabel>
                                     <Select
                                         value={mix.insecticideId}
                                         label="İlaç"
@@ -762,7 +787,7 @@ const InsecticideMix = () => {
                                 />
 
                                 <TextField
-                                    label="Litre"
+                                    label="Litre(ml)*"
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value, true)}
@@ -813,9 +838,45 @@ const InsecticideMix = () => {
                         onClick={handleEditSave} 
                         color="primary"
                         variant="contained"
-                        disabled={loading || !tempData.title || !tempData.note || !tempData.color}
+                        disabled={loading}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Kaydet'}
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={deleteConfirmOpen} onClose={handleDeleteCancel} maxWidth="sm" fullWidth>
+                <DialogTitle>Silme Onayı</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                        Bu ilaç karışımını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{ p: 3 }}>
+                    <MuiButton 
+                        onClick={handleDeleteCancel}
+                        disabled={loading}
+                        sx={{ 
+                            mr: 2,
+                            px: 3,
+                            py: 1
+                        }}
+                        variant="outlined"
+                    >
+                        İptal
+                    </MuiButton>
+                    <MuiButton 
+                        onClick={handleDeleteConfirm} 
+                        color="error"
+                        variant="contained"
+                        disabled={loading}
+                        sx={{ 
+                            px: 3,
+                            py: 1
+                        }}
+                    >
+                        {loading ? <CircularProgress size={24} /> : 'Sil'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>

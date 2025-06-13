@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import {Chip, MenuItem, Select, InputLabel, FormControl, Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Typography, Button as MuiButton } from '@mui/material';
+import { 
+  Chip, MenuItem, Select, InputLabel, FormControl, Box, Dialog, DialogActions, 
+  DialogContent, DialogTitle, IconButton, TextField, Typography, Button as MuiButton,
+  CircularProgress
+} from '@mui/material';
 import { Header } from '../../components';
-import { BsArrowDown, BsArrowUp, BsCheck, BsPencil, BsPlus, BsTrash, BsX } from 'react-icons/bs';
+import { BsArrowDown, BsArrowUp, BsPencil, BsPlus, BsTrash } from 'react-icons/bs';
+import { BiDownload, BiCheckCircle, BiXCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { useStateContext } from '../../contexts/ContextProvider';
-import { BiDownload, BiCheckCircle, BiXCircle } from 'react-icons/bi';
 
 const InsecticideToLand = () => {
     // States
@@ -15,6 +19,8 @@ const InsecticideToLand = () => {
     const [editingRow, setEditingRow] = useState(null);
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
     const [tempData, setTempData] = useState({});
     const [newData, setNewData] = useState({
         landIds: [],
@@ -24,7 +30,7 @@ const InsecticideToLand = () => {
             liter: '',
             quantity: '',
             insecticideId: '',
-            insecticideType: 0 // 0: fixed quantity, 1: editable quantity
+            insecticideType: 0
         }]
     });
     const [expandedRows, setExpandedRows] = useState({});
@@ -45,7 +51,7 @@ const InsecticideToLand = () => {
         baseInsecticideLandUrl: isDev ? process.env.REACT_APP_API_INSECTICIDELAND_URL : process.env.REACT_APP_API_INSECTICIDELAND_URL,
         getAllIsecticideLand: () => `${APIS.baseInsecticideLandUrl}/GetAll?pageSize=1000000000&pageNum=0`,
         addIsecticideLand: () => `${APIS.baseInsecticideLandUrl}/Add`,
-        deleteIsecticideLand: (id) => `${APIS.baseInsecticideLandUrl}/Remove`,
+        deleteIsecticideLand: (id) => `${APIS.baseInsecticideLandUrl}/Remove?id=${id}`,
         updateInsecticideLand: () => `${APIS.baseInsecticideLandUrl}/Update`,
         excelIsecticideLand: () => `${APIS.baseInsecticideLandUrl}/ExportExcel`,
 
@@ -77,7 +83,7 @@ const InsecticideToLand = () => {
                 setLands(landRes.data.data || landRes.data);
                 setInsecticides(insecticideRes.data.data.map(insect => ({
                     ...insect,
-                    type: insect.type || 0 // Default to 0 if type is not provided
+                    type: insect.type || 0
                 })));
                 setInsecticideLand(insecticideLandRes.data.data);
             } catch (err) {
@@ -157,16 +163,14 @@ const InsecticideToLand = () => {
         setEditModalOpen(false);
     };
 
-    const handleLandChange = (event) => {
-        const { value } = event.target;
-        setNewData(prev => ({
-          ...prev,
-          landIds: typeof value === 'string' ? value.split(',') : value,
-        }));
-    };
-
     const handleEditSave = async () => {
         try {
+            // Validate required fields
+            if (!tempData.landId || !tempData.insecticideId || !tempData.date || tempData.liter === '') {
+                showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+                return;
+            }
+
             setLoading(true);
             const { id, ...dataToSend } = tempData;
             await axios.post(`${APIS.updateInsecticideLand()}?id=${id}`, dataToSend, {
@@ -184,11 +188,21 @@ const InsecticideToLand = () => {
         }
     };
 
-    // Delete function
-    const handleDelete = async (id) => {
+    // Delete functions
+    const confirmDelete = (id) => {
+        setItemToDelete(id);
+        setDeleteConfirmOpen(true);
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteConfirmOpen(false);
+        setItemToDelete(null);
+    };
+
+    const handleDeleteConfirm = async () => {
         try {
             setLoading(true);
-            await axios.delete(`${APIS.deleteIsecticideLand()}?id=${id}`, {
+            await axios.delete(APIS.deleteIsecticideLand(itemToDelete), {
                 headers: { Authorization: token }
             });
             setRun(prev => prev + 1);
@@ -198,12 +212,21 @@ const InsecticideToLand = () => {
             showNotification('Uygulama silinirken hata oluştu', 'error');
         } finally {
             setLoading(false);
+            setDeleteConfirmOpen(false);
+            setItemToDelete(null);
         }
     };
 
     // Add functions
     const handleAddSubmit = async () => {
         try {
+            // Validate required fields
+            if (newData.landIds.length === 0 || !newData.date || 
+                newData.mixes.some(mix => !mix.insecticideId || mix.liter === '')) {
+                showNotification('Lütfen zorunlu alanları doldurunuz', 'error');
+                return;
+            }
+
             setLoading(true);
             const dataToSend = {
                 note: newData.note,
@@ -211,7 +234,7 @@ const InsecticideToLand = () => {
                 landIds: newData.landIds.map(id => parseInt(id)),
                 mixes: newData.mixes.map(mix => ({
                     liter: parseFloat(mix.liter),
-                    quantity: parseFloat(mix.quantity),
+                    quantity: mix.quantity ? parseFloat(mix.quantity) : null,
                     insecticideId: parseInt(mix.insecticideId)
                 }))
             };
@@ -265,12 +288,10 @@ const InsecticideToLand = () => {
     const handleMixChange = (index, field, value) => {
         const updatedMixes = [...newData.mixes];
         
-        // If changing insecticide, update the type as well
         if (field === 'insecticideId') {
             const selectedInsecticide = insecticides.find(insect => insect.id === parseInt(value));
             updatedMixes[index].insecticideType = selectedInsecticide?.type || 0;
             
-            // Reset quantity if type is 0 (fixed)
             if (selectedInsecticide?.type === 0) {
                 updatedMixes[index].quantity = '';
             }
@@ -278,6 +299,13 @@ const InsecticideToLand = () => {
         
         updatedMixes[index][field] = value;
         setNewData(prev => ({ ...prev, mixes: updatedMixes }));
+    };
+
+    const handleLandChange = (selectedOptions) => {
+        setNewData(prev => ({
+            ...prev,
+            landIds: selectedOptions.map(option => option.value)
+        }));
     };
 
     // Columns configuration
@@ -349,7 +377,7 @@ const InsecticideToLand = () => {
                             <BsPencil size={14} />
                         </IconButton>
                         <IconButton 
-                            onClick={() => handleDelete(params.row.originalData.id)}
+                            onClick={() => confirmDelete(params.row.originalData.id)}
                             size="small"
                             disabled={loading}
                             sx={{ 
@@ -407,12 +435,11 @@ const InsecticideToLand = () => {
     const handleExportExcel = async () => {
         try {
             setLoading(true);
-            const response = await axios.post(APIS.excelIsecticideLand(), {
+            const response = await axios.post(APIS.excelIsecticideLand(), null, {
                 headers: { Authorization: token },
-                responseType: 'blob' 
+                responseType: 'blob'
             });
         
-            // Create download link
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -420,7 +447,6 @@ const InsecticideToLand = () => {
             document.body.appendChild(link);
             link.click();
             
-            // Clean up
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(url);
             
@@ -435,10 +461,7 @@ const InsecticideToLand = () => {
 
     return (
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <Header 
-                title="Tarlalara İlaç Uygulamaları" 
-                sx={{ width: 'fit-content' }} 
-            />
+            <Header title="Tarlalara İlaç Uygulamaları" />
             
             {/* Notification */}
             {notification.show && (
@@ -474,7 +497,8 @@ const InsecticideToLand = () => {
                     {loading ? 'Dışa Aktarılıyor...' : 'Excel İndir'}
                 </MuiButton>
             </Box>
-            <div style={{ height: 600, width: '100%', overflowX: 'auto' }}>
+            
+            <Box sx={{ height: 600, width: '100%' }}>
                 <DataGrid
                     rows={prepareRows()}
                     columns={columns}
@@ -484,12 +508,12 @@ const InsecticideToLand = () => {
                     components={{
                         Toolbar: GridToolbar,
                     }}
+                    loading={loading}
                     getRowClassName={(params) => {
                         if (params.row.isParent) return 'parent-row';
                         if (params.row.isAddNew) return 'add-new-row';
                         return 'child-row';
                     }}
-                    loading={loading}
                     sx={{
                         '& .parent-row': { 
                             backgroundColor: '#f5f5f5', 
@@ -513,7 +537,6 @@ const InsecticideToLand = () => {
                         '& .MuiDataGrid-columnHeaders': {
                             backgroundColor: '#f0f0f0',
                             fontWeight: 'bold',
-                            
                         },
                         '& .MuiDataGrid-cell': {
                             display: 'flex',
@@ -532,7 +555,7 @@ const InsecticideToLand = () => {
                         }
                     }}
                 />
-            </div>
+            </Box>
 
             {/* Add Modal */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} maxWidth="md" fullWidth>
@@ -540,38 +563,36 @@ const InsecticideToLand = () => {
                 <DialogContent>
                     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl fullWidth>
-                            <InputLabel id="lands-label">Tarla</InputLabel>
+                            <InputLabel id="lands-label">Tarlalar*</InputLabel>
                             <Select
-                                labelId="lands-label"
-                                id="lands-select"
-                                multiple
-                                value={newData.landIds}
+                                options={lands.map(land => ({
+                                    value: land.land.id,
+                                    label: land.land.title
+                                }))}
+                                values={newData.landIds.map(id => ({
+                                    value: id,
+                                    label: lands.find(l => l.land.id === id)?.land.title || id
+                                }))}
                                 onChange={handleLandChange}
-                                renderValue={(selected) => (
-                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        {selected.map((value) => {
-                                            const land = lands.find(l => l.land.id == value);
-                                            return <Chip key={value} label={land?.title || value} />;
-                                        })}
-                                    </Box>
-                                )}
-                                sx={{
-                                    '& .MuiSelect-select': {
-                                        minHeight: 'auto',
-                                        padding: '10px 14px'
-                                    }
+                                multi
+                                placeholder="Tarla seçin"
+                                dropdownHeight="300px"
+                                style={{
+                                    minHeight: '56px',
+                                    padding: '8px',
+                                    borderRadius: '4px',
+                                    border: '1px solid rgba(0, 0, 0, 0.23)'
                                 }}
-                            >
-                                {lands.map((land) => (
-                                    <MenuItem key={land.land.id} value={land.land.id}>
-                                        {land.land.title}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                                dropdownHandleRenderer={({ state }) => (
+                                    <div style={{ padding: '8px', cursor: 'pointer' }}>
+                                        {state.dropdown ? <BsArrowUp /> : <BsArrowDown />}
+                                    </div>
+                                )}
+                            />
                         </FormControl>
 
                         <TextField
-                            label="Tarih"
+                            label="Tarih*"
                             type="date"
                             value={newData.date}
                             onChange={(e) => setNewData({...newData, date: e.target.value})}
@@ -598,7 +619,7 @@ const InsecticideToLand = () => {
                             }}
                         />
 
-                        <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>İlaç Karışımları</Typography>
+                        <Typography variant="h6" sx={{ mt: 1, mb: 1, fontWeight: 'bold' }}>İlaç Karışımları*</Typography>
                         
                         {newData.mixes.map((mix, index) => (
                             <Box key={index} sx={{ 
@@ -609,7 +630,7 @@ const InsecticideToLand = () => {
                             }}>
                                 <TextField
                                     select
-                                    label="İlaç"
+                                    label="İlaç*"
                                     value={mix.insecticideId}
                                     onChange={(e) => handleMixChange(index, 'insecticideId', e.target.value)}
                                     fullWidth
@@ -620,7 +641,7 @@ const InsecticideToLand = () => {
                                         }
                                     }}
                                 >
-                                    <option value=""></option>
+                                    <option value="">İlaç Seçin</option>
                                     {insecticides.map((insect) => (
                                         <option key={insect.id} value={insect.id}>
                                             {insect.title} ({insect.type === 0 ? 'Sıvı' : 'Toz'})
@@ -629,7 +650,7 @@ const InsecticideToLand = () => {
                                 </TextField>
 
                                 <TextField
-                                    label="Litre"
+                                    label="Litre(ml)*"
                                     type="number"
                                     value={mix.liter}
                                     onChange={(e) => handleMixChange(index, 'liter', e.target.value)}
@@ -648,7 +669,7 @@ const InsecticideToLand = () => {
                                     value={mix.quantity}
                                     onChange={(e) => handleMixChange(index, 'quantity', e.target.value)}
                                     fullWidth
-                                    disabled={mix.insecticideType === 0} // Disable if type is 0
+                                    disabled={mix.insecticideType === 0}
                                     sx={{
                                         '& .MuiInputBase-input': {
                                             padding: '10px 14px',
@@ -708,13 +729,13 @@ const InsecticideToLand = () => {
                         onClick={handleAddSubmit} 
                         color="primary"
                         variant="contained"
-                        disabled={loading || !newData.landIds.length || !newData.mixes.every(m => m.insecticideId && m.liter && (m.insecticideType === 1 ? m.quantity : true))}
+                        disabled={loading}
                         sx={{
                             padding: '8px 16px',
                             boxShadow: 'none'
                         }}
                     >
-                        {loading ? 'Kaydediliyor...' : 'Kaydet'}
+                        {loading ? <CircularProgress size={24} /> : 'Kaydet'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
@@ -723,16 +744,21 @@ const InsecticideToLand = () => {
             <Dialog open={editModalOpen} onClose={handleEditCancel} maxWidth="md" fullWidth>
                 <DialogTitle>İlaç Uygulamasını Düzenle</DialogTitle>
                 <DialogContent>
-                    <Box sx={{ mt: 2 }}>
+                    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <TextField
                             select
-                            label="Tarla"
+                            label="Tarla*"
                             value={tempData.landId || ''}
                             onChange={(e) => setTempData({...tempData, landId: e.target.value})}
                             fullWidth
-                            margin="normal"
                             SelectProps={{ native: true }}
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                }
+                            }}
                         >
+                            <option value="">Tarla Seçin</option>
                             {lands.map((land) => (
                                 <option key={land.land.id} value={land.land.id}>{land.land.title}</option>
                             ))}
@@ -740,7 +766,7 @@ const InsecticideToLand = () => {
 
                         <TextField
                             select
-                            label="İlaç"
+                            label="İlaç*"
                             value={tempData.insecticideId || ''}
                             onChange={(e) => {
                                 const selectedInsecticide = insecticides.find(insect => insect.id === parseInt(e.target.value));
@@ -751,9 +777,14 @@ const InsecticideToLand = () => {
                                 });
                             }}
                             fullWidth
-                            margin="normal"
                             SelectProps={{ native: true }}
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                }
+                            }}
                         >
+                            <option value="">İlaç Seçin</option>
                             {insecticides.map((insect) => (
                                 <option key={insect.id} value={insect.id}>
                                     {insect.title} ({insect.type === 0 ? 'Sıvı' : 'Toz'})
@@ -762,22 +793,30 @@ const InsecticideToLand = () => {
                         </TextField>
 
                         <TextField
-                            label="Tarih"
+                            label="Tarih*"
                             type="date"
                             value={tempData.date ? tempData.date.split('T')[0] : ''}
                             onChange={(e) => setTempData({...tempData, date: e.target.value})}
                             fullWidth
-                            margin="normal"
                             InputLabelProps={{ shrink: true }}
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                }
+                            }}
                         />
 
                         <TextField
-                            label="Litre"
+                            label="Litre(ml)*"
                             type="number"
                             value={tempData.liter || ''}
                             onChange={(e) => setTempData({...tempData, liter: e.target.value})}
                             fullWidth
-                            margin="normal"
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                }
+                            }}
                         />
 
                         <TextField
@@ -786,9 +825,11 @@ const InsecticideToLand = () => {
                             value={tempData.quantity || ''}
                             onChange={(e) => setTempData({...tempData, quantity: e.target.value})}
                             fullWidth
-                            margin="normal"
                             disabled={tempData.insecticideType === 0}
                             sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                },
                                 '& .Mui-disabled': {
                                     backgroundColor: 'rgba(0, 0, 0, 0.04)'
                                 }
@@ -800,17 +841,25 @@ const InsecticideToLand = () => {
                             value={tempData.note || ''}
                             onChange={(e) => setTempData({...tempData, note: e.target.value})}
                             fullWidth
-                            margin="normal"
                             multiline
                             rows={3}
+                            sx={{
+                                '& .MuiInputBase-input': {
+                                    padding: '10px 14px'
+                                }
+                            }}
                         />
                     </Box>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{ padding: '16px 24px' }}>
                     <MuiButton 
                         onClick={handleEditCancel}
                         disabled={loading}
-                        sx={{ mr: 1 }}
+                        sx={{ 
+                            mr: 1,
+                            padding: '8px 16px',
+                            color: 'text.secondary'
+                        }}
                     >
                         İptal
                     </MuiButton>
@@ -819,8 +868,47 @@ const InsecticideToLand = () => {
                         color="primary"
                         variant="contained"
                         disabled={loading}
+                        sx={{
+                            padding: '8px 16px',
+                            boxShadow: 'none'
+                        }}
                     >
-                        {loading ? 'Kaydediliyor...' : 'Kaydet'}
+                        {loading ? <CircularProgress size={24} /> : 'Kaydet'}
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={deleteConfirmOpen} onClose={handleDeleteCancel} maxWidth="sm" fullWidth>
+                <DialogTitle>Silme Onayı</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                        Bu ilaç uygulamasını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{ padding: '16px 24px' }}>
+                    <MuiButton 
+                        onClick={handleDeleteCancel}
+                        disabled={loading}
+                        sx={{ 
+                            mr: 1,
+                            padding: '8px 16px',
+                            color: 'text.secondary'
+                        }}
+                    >
+                        İptal
+                    </MuiButton>
+                    <MuiButton 
+                        onClick={handleDeleteConfirm} 
+                        color="error"
+                        variant="contained"
+                        disabled={loading}
+                        sx={{
+                            padding: '8px 16px',
+                            boxShadow: 'none'
+                        }}
+                    >
+                        {loading ? <CircularProgress size={24} /> : 'Sil'}
                     </MuiButton>
                 </DialogActions>
             </Dialog>
